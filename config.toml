@@ -1,4 +1,4 @@
-baseurl = "https://example.org/"
+baseurl = "https://martian-lang.github.io/martian-docs"
 languageCode = "en-us"
 title = "Martian"
 theme = "hugo-material-docs"
@@ -57,18 +57,18 @@ googleAnalytics = ""
 
 [[menu.main]]
 	name   = "Writing Pipelines"
-	url    = "concepts/"
+	url    = "writing-pipelines/"
 	weight = 20
 
 [[menu.main]]
 	name   = "Running Pipelines"
-	url    = "language/"
+	url    = "running-pipelines/"
 	weight = 30
 
 [[menu.main]]
 	name   = "Compiling"
 	url    = "compiling/"
-	weight = 25
+	weight = 35
 
 [[menu.main]]
 	name   = "Organizing Code"
