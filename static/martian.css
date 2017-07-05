@@ -1,42 +1,47 @@
 .drawer {
-    font-size: 14px;
+  font-size: 14px;
 }
 .article {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .article h1 {
-    font-size: 26px;
+  font-size: 26px;
 }
 
 .article h2 {
-    font-size: 22px;
+  font-size: 22px;
 }
 
 ul {
-    list-style-type: disc;
+  list-style-type: disc;
 }
 
-.article ul>li:before {
-    content: none;
+ul#scrollspy {
+  list-style-type: none;
+}
+
+.article ul > li:before {
+  content: none;
 }
 
 .article .wrapper {
-    padding-top: 80px;
+  padding-top: 80px;
 }
 
 .article h1 {
-    padding-bottom: 32px;
+  padding-bottom: 32px;
 }
 
 pre code.hljs {
-    background: rgba(0,0,0,0.0);
+  background: rgba(0, 0, 0, 0.0);
 }
 
-.article table th, .article table td {
-    font-size: 14px;
+.article table th,
+.article table td {
+  font-size: 14px;
 }
 
 .article h3 {
-    font-size: 16px;
+  font-size: 16px;
 }
