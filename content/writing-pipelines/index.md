@@ -6,9 +6,9 @@ type: post
 
 ## Stages
 
-A stage is the fundamental unit of computation in Martian, and is composed with other stages into Martian pipelines, which are directed, acyclic graphs of stages.
+A "stage" is the fundamental unit of computation in Martian, and is composed with other stages into Martian pipelines, which are directed, acyclic graphs of stages.
 
-Martian stages can be implemented in any language, and each stage can even be implemented in a different language, if desired. Martian manages the flow of data from the outputs of one stage to the inputs of one or more downstream stages in the graph. Martian provides a well-structured, typed, validated, JSON-based mechanism for exchanging data between stages in a language-independent manner.
+Martian stages can be [implemented in any language](../writing-stages/), and each stage can even be implemented in a different language, if desired. Martian manages the flow of data from the outputs of one stage to the inputs of one or more downstream stages in the graph. Martian provides a well-structured, typed, validated, JSON-based mechanism for exchanging data between stages in a language-independent manner.
 
 Here is a basic stage definition example:
 
@@ -25,8 +25,8 @@ stage SORT(
 
 A stage is minimally defined by three things:
 
-1. **Input Parameters -** A stage can declare one or more typed ```in``` parameters, to which upstream stages' outputs are bound. At runtime, Martian passes type-checked arguments into the stage code.
-2. **Output Parameters -** Martian also provides a structured way for stage code to return typed ```out``` values, which are validated and passed by Martian to downstream stages.
+1. **Input Parameters -** A stage can declare one or more typed ```in``` parameters, to which upstream stages' outputs are bound. At runtime, Martian passes arguments into the stage code.
+2. **Output Parameters -** Martian also provides a structured way for stage code to return typed ```out``` values, which are passed by Martian to downstream stages.
 3. **Stage Code -** The ```src``` parameter specifies the executable code that implements the functionality of the stage. The type of this parameter indicates the language of that code. For example, a stage could refer to a Python module, a C, C++, Go, or Rust binary, or a shell script, just to name a few possibilities. There is no required or preferred implementation language in Martian. The third element of this parameter is a language-dependent string that Martian uses to locate the code. In this example, ```stages/sort``` is a folder that exists relative to the ```MROPATH``` environment variable, and contains a valid Python module with a ```__init__.py```.
 
 ## Pipelines
@@ -74,9 +74,8 @@ The example above does the following:
 
 ### Composability
 
-Pipelines specify input and output parameter the same way stages do, so they may also themselves act as stages. This allows for the composition of an arbitrary mix of individual stages and pipelines into still larger pipelines. We refer to pipelines as "subpipelines" when they are composed into other pipelines.
+Pipelines specify input and output parameter the same way stages do, so they may themselves also act as stages. This allows for the composition of an arbitrary mix of individual stages and pipelines into still larger pipelines. We refer to pipelines as "subpipelines" when they are composed into other pipelines.
 
-When a pipeline is run, the instantiation of it is called a "pipestance", which is a portmanteau of "pipeline" and "instance".
 
 ## Organizing Code
 
@@ -121,89 +120,62 @@ pipeline DUPLICATE_FINDER(
 
 By convention, the ```@include``` directive allows the developer to organize code into header files, although there is no formal distinction between header and non-header MRO files in Martian. Typically, stages that are logically grouped together are declared in one file, for example ```_sorting_stages.mro```, and that file would be included into another MRO file that declares a pipeline that calls these included stages. By convention, MRO files containing stage declarations should be named with the suffix ```_stages```.
 
-## Pipeline Invocation
+## Formatting Code
 
-Thus far we have shown how to define stages and pipelines in MRO files. To run a pipeline, one writes a single pipeline `call` statement with a particular set of input arguments, into an MRO file. This is called an invocation. To invoke the example pipeline from above:
-
-```invoke.mro```
-~~~~
-@include "pipeline.mro"
-
-call DUPLICATE_FINDER(
-    unsorted = "/home/duplicator_dave/unsorted.txt",
-)
-~~~~
-
-Typically, an invocation MRO file contains a single `@include` statement that includes the pipeline definition, and a single `call` statement. It is generally discouraged to `call` a pipeline in the same file in which it is defined, because then the pipeline definition cannot be easily reused for other invocations with different input arguments.
-
-For more details on how to run an invocation MRO with the Martian runtime, see [Running Pipelines](../running-pipelines).
-
-## Symbols and Scope
-
-Symbols in Martian may comprise uppercase and lowercase letters, numeric digits, and underscores. A symbol may not, however, begin with a numeric digit, which is reserved for number literals. The Martian lexer's regular expression for symbols is ```[a-zA-Z_][a-zA-Z0-9_]*\\b```.
-
-Martian defines two scopes within which symbol names must be unique:
-
-1. Within the scope of one pipeline invocation, which encompasses all recursively included MRO files, no two stages or pipelines may share the same name. This is considered the global scope of a pipestance.
-2. Within the scope of a stage declaration, no two input parameters of a given stage can have the same name, and same for output parameters.
-
-### Naming Conventions
-
-The following naming conventions are strongly recommended for consistency and readability, but are not currently enforced by the compiler.
-
-Stage and pipeline names should written in `ALL CAPS SNAKE_CASE`.
-
-- Stage names should be a subject and verb: `FIND_DIPS`, `CALL_VARIANTS`
-- Pipelines names should be actor verbs: `COIN_SORTER`, `DYSON_SPHERE_DETECTOR`
-- Names of pipelines intended to serve as subpipelines should be prefixed with an underscore: `_METRICS_REPORTER`
-
-Parameter names should be written in `all lowercase snake_case`.
-
-## Parameter Binding
-
-This section describes the rules associated with parameter binding, the mechanism by which inputs and outputs of stages and pipelines are connected together.
-
-Whenever a stage is called, each of its input parameters must be bound to either an output parameter of another stage, or an input parameter of the enclosing pipeline. Parameter bindings use a dotted notation where the left-hand term is either the name of a stage, or `self` when binding to an input of the pipeline itself.
-
-Each output parameter of the pipeline must also be bound to an output of one of its called stages. This is done using a `return` statement, as shown above.
-
-Martian enforces type matching on parameter bindings, statically verifying that two parameters bound together have the same type.
-
-## Types
-
-Martian supports the following built-in types:
-
-|Type|Description|
-|----|-----------|
-|string|A string.|
-|int|An integer number.|
-|float|A floating point number with support for exponential notation.  |
-|bool|A boolean flag whose valid values are ```true``` and ```false```.|
-|path|A string meant to be interpreted as a filesystem path.|
-|map|A JSON-compatible data structure whose top-level type is an object.|
-
-Martian also supports user-defined filetypes for which file extensions are enforced. A filetype is defined and referenced like this:
+Martian includes a canonical code formatting utility called `mrf`. It parses your MRO code into its abstract syntax tree and re-emits the code with canonical whitespacing. In particular, `mrf` performs intelligent column-wise alignment of parameter fields so that this:
 
 ~~~~
-filetype txt;
+    stage SORT_ITEMS  (in txt unsorted,
+in bool case_sensitive,
+out txt sorted,
+src py "stages/sort",)
+~~~~
 
-stage SORT(
-    in  txt  unsorted_txt,
+becomes this:
+
+~~~~
+stage SORT_ITEMS(
+    in  txt  unsorted,
     in  bool case_sensitive,
-    out txt  sorted_txt,
+    out txt  sorted,
     src py   "stages/sort",
 )
 ~~~~
 
-## Compiling with mrc
+`mrf` is inspired by `gofmt`, therefore we will borrow [their explanation](https://blog.golang.org/go-fmt-your-code) of the benefits of canonical code formatting:
 
-## Formatting with mrf
+- **Easier to write**: never worry about minor formatting concerns while hacking away.
+- **Easier to read**: when all code looks the same you need not mentally convert others' formatting style into something you can understand.
+- **Easier to maintain**: mechanical changes to the source don't cause unrelated changes to the file's formatting; diffs show only the real changes.
+- **Uncontroversial**: never have a debate about spacing or brace position ever again!
 
+`mrf` takes a list of MRO filenames as arguments. By default, it will output the formatted code back to `stdout`. If given the `--rewrite` option, it will write the formatted code back into the original files. If given the `--all` option, it will rewrite all MRO files found in your `MROPATH`. For consistency of your MRO codebase, consider configuring editor save-hooks or git commit-hooks that run `mrf --rewrite` or `mrf --all`.
 
-## Volatile Data Removal
+`mrf` does not support any arguments that affect the formatting, otherwise it would not be canonical!
 
-`volatile` keyword.
+## Compiling* Code
 
-## Chunks
-## Forks
-## Preflights
+One of the core components and principal benefits of Martian is `mrc`, a tool which statically verifies your MRO code before you commit to a resource-intensive run of your pipeline. `mrc` identifies and helps you fix errors that you might otherwise encounter hours, days, or even weeks into your pipeline run.
+
+While `mrc` does not actually compile* your code into an intermediate or binary format, it does perform many of the same parsing and semantic checking steps that a compiler would, helping you to write correct code, and making it easier to perform major refactorings when necessary.
+
+### Running `mrc`
+
+`mrc` takes a list of MRO filenames as arguments and parses and verifies those files, emitting line-numbered messages for any errors encountered. If given the `--all` option, it will parse and verify all MRO files found in your `MROPATH`. The following verification steps are performed:
+
+- **Preprocessing**: All `@include` directives are recursively executed to produce a single string of MRO code. A source map is constructed so that later stages of processing can report errors with file-specific line numbers. Any preprocessing errors, such as a file not found, will stop `mrc` and be reported.
+- **Lexing and Parsing**: The MRO code string produced by the preprocessor is then lexed and parsed according to the [Martian grammar](https://github.com/martian-lang/martian/blob/master/src/martian/core/grammar.y), producing an in-memory abstract syntax tree. Any syntax errors will stop `mrc` and be reported.
+- **Semantic Analysis**: The abstract syntax tree is then analyzed according a number of semantic rules. Any semantic errors will will be reported.
+  - All referenced types are built-ins or user-defined with `filetype`.
+  - All called stages and pipelines are defined.
+  - All parameter names are unique within each stage or pipeline interface.
+  - All stage and pipeline names are unique.
+  - All input parameters of stages and pipelines are bound.
+  - Inputs and outputs that are bound together have matching types.
+  - All pipeline output parameters are bound by a return statement.
+
+If no errors are encountered, `mrc` returns 0, otherwise it returns 1 and prints error messages to `STDERR`. It is recommended that you configure a git commit-hook that runs `mrc --all`.
+
+### Outputting the Abstract Syntax Tree as JSON
+
+`mrc` also supports a `--json` option that outputs the abstract syntax tree and associated data as a JSON object. This can be useful for further processing of the AST in external tools.

@@ -66,14 +66,9 @@ googleAnalytics = ""
 	weight = 30
 
 [[menu.main]]
-	name   = "Compiling"
-	url    = "compiling/"
-	weight = 35
-
-[[menu.main]]
-	name   = "Organizing Code"
-	url    = "organizing-code/"
-	weight = 40
+	name   = "Inspecting Pipelines"
+	url    = "inspecting-pipelines/"
+	weight = 32
 
 [[menu.main]]
 	name   = "Writing Stages"
@@ -81,19 +76,25 @@ googleAnalytics = ""
 	weight = 50
 
 [[menu.main]]
-	name   = "Runtime"
-	url    = "runtime/"
+	name   = "Advanced Features"
+	url    = "advanced-features/"
 	weight = 60
 
 [[menu.main]]
-	name   = "Metadata & Provenance"
-	url    = "metadata-provenance/"
+	name   = "Language Details"
+	url    = "language-details/"
 	weight = 70
 
-[[menu.main]]
-	name   = "Resource Management"
-	url    = "resource-management/"
-	weight = 80
+
+#[[menu.main]]
+#	name   = "Metadata & Provenance"
+#	url    = "metadata-provenance/"
+#	weight = 70
+
+#[[menu.main]]
+#	name   = "Resource Management"
+#	url    = "resource-management/"
+#	weight = 80
 
 [[menu.main]]
 	name   = "About"

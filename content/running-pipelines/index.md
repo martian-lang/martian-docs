@@ -4,7 +4,24 @@ title: Running Pipelines
 type: post
 ---
 
-## Invocation
+## Invoking a Pipeline
+
+Thus far we have shown how to define stages and pipelines in MRO files. To run a pipeline, one writes a single pipeline `call` statement with a particular set of input arguments, into an MRO file. This is called an invocation. To invoke the example pipeline from above:
+
+```invoke.mro```
+~~~~
+@include "pipeline.mro"
+
+call DUPLICATE_FINDER(
+    unsorted = "/home/duplicator_dave/unsorted.txt",
+)
+~~~~
+
+Typically, an invocation MRO file contains a single `@include` statement that includes the pipeline definition, and a single `call` statement. It is generally discouraged to `call` a pipeline in the same file in which it is defined, because then the pipeline definition cannot be easily reused for other invocations with different input arguments.
+
+When a pipeline is run, the instantiation of it is called a **"pipestance"**, which is a portmanteau of "pipeline" and "instance".
+
+For more details on how to run an invocation MRO with the Martian runtime, see [Running Pipelines](../running-pipelines).
 
 Running a pipeline requires an invocation MRO file that contains a pipeline `call` statement. We will use the example invocation from the [Writing Pipelines](../writing-pipelines/#pipeline-invocation) section:
 
@@ -23,54 +40,7 @@ call DUPLICATE_FINDER(
 mrp invoke.mro
 ~~~~
 
-## Pipestance Layout
-
-`mrp` creates a folder structure.
-
-Easy to navigate. All you need are `cd`, `ls`, and `cat`. Pretty-printed JSON.
-
-All pipestance state are in the filesystem. No database.
-
-`files` folders
-
-### Metadata
-- `_log`
-- `_jobinfo`
-- `_stdout`
-- `_stderr`
-- `_errors`
-- `_args`
-- `_outs`
-- `_complete`
-
-## Volatile Data Removal
-
-## Outputs
-
-`outs` folder. Files get copied to this folder. Their original locations inside `files` folders are symlinked to the file in the `outs` folder.
-
-`_uuid` uniquely identifies this pipestance. Useful for integration with other tracking systems.
-
-`_timestamp` reports start and end times of the pipestance.
-
-`invocation.mro` is copied and preserved. `mrosource.mro` contains the fully recursive preprocessed source code that was involved in this pipestance.
-
 ## Restarting
 
-## Completion Hooks
 
 ## Logging
-
-## User Interface
-
-`--uiport=N`
-
-## Resource Management
-
-### Local Mode
-
-### Cluster Mode
-
-Templates
-
-Throttling

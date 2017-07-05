@@ -4,7 +4,7 @@ title: About
 type: post
 ---
 
-Martian was created by [@ablewhiskey](https://twitter.com/ablewhiskey) at [10x Genomics](https://www.10xgenomics.com/), where it serves as a core part of the software engineering toolchain. As a developer framework, Martian helps to make tractable the building and maintenance of over 30 pipelines by 25+ developers. As a runtime, Martian has cumulatively executed, just internally at 10x Genomics, over 91 million jobs consuming 1.3 core-*millennia* of CPU time. Martian has executed many millions more core-hours at customer sites, and is one of the most heavily exercised computational pipeline frameworks in the field.
+Martian was created by at [10x Genomics](https://www.10xgenomics.com/), where it serves as a core part of the software engineering toolchain. As a developer framework, Martian helps to make tractable the building and maintenance of over 30 pipelines by 25+ developers. As a runtime, Martian has cumulatively executed, just internally at 10x Genomics, over 91 million jobs consuming 1.3 core-*millennia* of CPU time. Martian has executed many millions more core-hours at customer sites, and is one of the most heavily exercised computational pipeline frameworks deployed in the field.
 
 ### History
 
@@ -14,7 +14,7 @@ Martian was originally prototyped in [Javascript / Node.js](https://nodejs.org/)
 
 ### The Name
 
-Martian was originally named Mario. This was because, many presumed, pipelines and plumbing. However, being an inveterate contrarian, the creator vehemently insisted that Mario bore no relation whatever to [Super Mario Bros.](https://en.wikipedia.org/wiki/Super_Mario_Bros.), and was in fact named after [Mario Lopez](https://en.wikipedia.org/wiki/Mario_Lopez) because, reasons.
+Martian was originally named Mario. This was because, many presumed, pipelines and plumbing. However, being an inveterate contrarian, the [creator](https://twitter.com/ablewhiskey) vehemently insisted that Mario bore no relation whatever to [Super Mario Bros.](https://en.wikipedia.org/wiki/Super_Mario_Bros.), and was in fact named after [Mario Lopez](https://en.wikipedia.org/wiki/Mario_Lopez) because, reasons.
 
 When this etymological yarn proved too challenging to explain to those unfamiliar with [Saturday Morning TV](https://en.wikipedia.org/wiki/Saved_by_the_Bell), it was grudgingly decided to find a new name that would appeal more to culturally illiterate audiences. The only constraint imposed was that the new name should conserve the first three letters of the old, so as to minimize disruption to the naming harmony of the extant ecosystem of Mario-based repositories, tools, and applications.
 
