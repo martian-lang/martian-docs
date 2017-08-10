@@ -5,9 +5,9 @@ type: index
 ---
 Martian is a language and framework for developing and executing complex computational pipelines.
 
-Manages complexity.
 
 Increases performance and quality.
+Manages complexity.
 
 - Allows you to combine software components written in any language into a single pipeline
 - Designed for simplicity: simple to learn, simple to develop, simple to run, simple to debug
