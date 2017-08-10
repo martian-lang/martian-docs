@@ -6,7 +6,7 @@ type: post
 
 ## Installing
 
-The easiest way to start using Martian is to download its binary distribution.
+The easiest way to start using Martian is to download its binary distribution. (Standalone binaries coming soon. Binaries currently available as part of 10x Genomics software packages.)
 
 ## Environment Setup
 
@@ -24,4 +24,4 @@ Set `MROPATH` to a folder where you will write stage and pipeline code.
 
 ## Source Code
 
-[Martian GitHub repository](https://github.com/martian-lang/martian)
+[Martian GitHub repository](https://github.com/martian-lang/martian) (Coming soon.)

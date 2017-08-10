@@ -11,7 +11,7 @@ googleAnalytics = ""
 	# General information
 	author = "Digitalcraftsman"
 	description = "A material design theme for documentations."
-	copyright = "Released under the MIT license"
+	copyright = ""
 
 	# Repository
 	provider = "GitHub"
@@ -83,7 +83,7 @@ googleAnalytics = ""
 [[menu.main]]
 	name   = "Language Details"
 	url    = "language-details/"
-	weight = 70
+	weight = 25
 
 
 #[[menu.main]]

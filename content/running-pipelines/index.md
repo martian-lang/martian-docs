@@ -36,11 +36,18 @@ call DUPLICATE_FINDER(
 
 ## How mrp Works
 
+To run a pipeline, simply pass the invocation MRO file to `mrp`, which is the Martian runtime that executes pipelines.
+
 ~~~~
 mrp invoke.mro
 ~~~~
 
+[ WIP - mrp options ]
+
 ## Restarting
 
+[ WIP ]
 
 ## Logging
+
+[ WIP ]

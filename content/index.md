@@ -5,25 +5,17 @@ type: index
 ---
 Martian is a language and framework for developing and executing complex computational pipelines.
 
-
-Increases performance and quality.
-Manages complexity.
-
-- Allows you to combine software components written in any language into a single pipeline
-- Designed for simplicity: simple to learn, simple to develop, simple to run, simple to debug
-- Powerful support for scaling computationally intensive pipelines from standalone machines, to clusters, to cloud
-- Rich support for managing complex, data-intensive pipelines
+- Designed for simplicity: simple to learn, simple to develop, simple to run, and simple to debug.
+- Allows you to combine software components written in any language into a single pipeline.
+- Powerful support for scaling computationally intensive pipelines from standalone machines, to clusters, to cloud.
+- Rich support for managing the full lifecycle of complex, data-intensive pipelines.
 
 ## Motivation & Design Goals
 
-- Like any good developer tool: Reduce cognitive load, manage complexity and enhance tractablility.
-- Simplicity, just makes sense when you look at it, eschew esotericity
-- Language is familiar, like the average person
-- No boilerplate
-- Why have a separate language
-- No separate database or web server required
-- Manage data growth
-- Manage provenance
-- Easy navigability
-- Consistency
-- Computability - code is obviously computable, but the codebase is not, machine reasoning about the structure of pipelines
+- Like any good developer tool, Martian seeks to reduce cognitive load, manage complexity and enhance tractablility.
+- Simplicity. Things just makes sense when you look at them.
+- No separate database or web server required.
+- No boilerplate.
+- Language is familiar. Eschew esotericity.
+- Martian pipelines feature consistent structure, easy navigability, and rich provenance metadata.
+- Support for managing data footprint at scale.
