@@ -27,7 +27,7 @@ A stage is minimally defined by three things:
 
 1. **Input Parameters -** A stage can declare one or more typed ```in``` parameters, to which upstream stages' outputs are bound. At runtime, Martian passes arguments into the stage code.
 2. **Output Parameters -** Martian also provides a structured way for stage code to return typed ```out``` values, which are passed by Martian to downstream stages.
-3. **Stage Code -** The ```src``` parameter specifies the executable code that implements the functionality of the stage. The type of this parameter indicates the language of that code. For example, a stage could refer to a Python module, a C, C++, Go, or Rust binary, or a shell script, just to name a few possibilities. There is no required or preferred implementation language in Martian. The third element of this parameter is a language-dependent string that Martian uses to locate the code. In this example, ```stages/sort``` is a folder that exists relative to the ```MROPATH``` environment variable, and contains a valid Python module with a ```__init__.py```.
+3. **Stage Code -** The ```src``` parameter specifies the executable code that implements the functionality of the stage. The type of this parameter indicates the language of that code. For example, a stage could refer to a Python module, a C, C++, Go, or Rust binary, or a shell script, just to name a few possibilities. There is no required or preferred implementation language in Martian. The third element of this parameter is a language-dependent string that Martian uses to locate the code. In this example, ```stages/sort``` is a directory that exists relative to the ```MROPATH``` environment variable, and contains a valid Python module with a ```__init__.py```.
 
 ## Pipelines
 
@@ -87,7 +87,8 @@ Stage and pipeline code are referred to as **MRO code**, because they are writte
 
 Martian supports lexical preprocessing with an ```@include``` directive, which takes the path to another MRO file as an argument. This directive is evaluated by splicing the contents of the included file into the file where the directive is given, replacing the directive itself. This evaluation is recursive, and Martian keeps track of the inclusion tree in order to be able to report errors using per-source file line numbers.
 
-```_my_stages.mro```
+`_my_stages.mro`
+
 ~~~~
 filetype txt;
 
@@ -98,7 +99,9 @@ stage SORT_ITEMS(
     src py   "stages/sort",
 )
 ~~~~
-```pipeline.mro```
+
+`pipeline.mro`
+
 ~~~~
 @include "_my_stages.mro"
 
@@ -119,6 +122,34 @@ pipeline DUPLICATE_FINDER(
 ### Stage Code vs Pipeline Code
 
 By convention, the ```@include``` directive allows the developer to organize code into header files, although there is no formal distinction between header and non-header MRO files in Martian. Typically, stages that are logically grouped together are declared in one file, for example ```_sorting_stages.mro```, and that file would be included into another MRO file that declares a pipeline that calls these included stages. By convention, MRO files containing stage declarations should be named with the suffix ```_stages```.
+
+### Martian Project Directory Structure
+
+To give you an idea of how a Martian project looks in practice, here's an example:
+
+~~~~
+martian_project/
+    lib/
+        go/
+            bin/
+                hello_go
+            src/
+                hello_go.go
+        rust/
+            Cargo.lock
+            Cargo.toml
+            bin/
+                hello_rust
+            src/
+                hello_rust.rs
+    mro/
+        _hello_stages.mro
+        hello.mro
+        stages/
+            hello/
+                hello_py/
+                    __init__.py
+~~~~
 
 ## Formatting Code
 

@@ -4,11 +4,11 @@ title: About
 type: post
 ---
 
-Martian was created by at [10x Genomics](https://www.10xgenomics.com/), where it serves as a core part of the software engineering toolchain. As a developer framework, Martian helps to make tractable the building and maintenance of over 30 pipelines by 25+ developers. As a runtime, Martian has cumulatively executed, just internally at 10x Genomics, over 91 million jobs consuming 1.3 core-millennia of CPU time. Martian has executed many millions more core-hours at customer sites, and is one of the most heavily exercised computational pipeline frameworks deployed in the field.
+Martian was created by at [10x Genomics](https://www.10xgenomics.com/), where it serves as a core part of the software engineering toolchain. As a developer framework, Martian helps to make tractable the design, development and maintenance of over 30 pipelines by 25+ developers. As a runtime, Martian has cumulatively executed, just internally at 10x Genomics, over 91 million jobs consuming 1.3 core-millennia of CPU time. Martian has executed many millions more core-hours at customer sites, and is one of the most heavily exercised computational pipeline frameworks deployed in the field.
 
 ### History
 
-Martian came to life in April of 2014. It was built to address a number of looming challenges in complexity management, and satisfy a specific set of design objectives which were not met by any framework that existed at the time.
+Martian came to life in April of 2014. It was built to address a number of looming challenges in complexity management, and to satisfy a specific set of design objectives which were not met by any framework that existed at the time.
 
 Martian was originally prototyped in [Javascript / Node.js](https://nodejs.org/) with [Jison](http://jison.org/) as the parser generator. After Martian proved successful in production use, a search was undertaken for a modern, statically compiled language on which to pursue more ambitious, long-term development. In August of 2014, mounting social signal led to the acceptance of [Rob Pike's proposal](https://www.youtube.com/watch?v=rKnDgT73v8s). A suitable candidate found, Martian was then ported to [Go](https://golang.org/), with [goyacc](https://godoc.org/golang.org/x/tools/cmd/goyacc) replacing Jison.
 

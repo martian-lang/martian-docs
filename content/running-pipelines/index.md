@@ -6,9 +6,9 @@ type: post
 
 ## Invoking a Pipeline
 
-Thus far we have shown how to define stages and pipelines in MRO files. To run a pipeline, one writes a single pipeline `call` statement with a particular set of input arguments, into an MRO file. This is called an invocation. To invoke the example pipeline from above:
+Thus far we have shown how to **define** stages and pipelines in MRO files. To actually **run** a pipeline, one writes a single pipeline `call` statement with a particular set of input arguments, into an MRO file. This is called an invocation. To invoke the example pipeline from above:
 
-```invoke.mro```
+`invoke.mro`
 ~~~~
 @include "pipeline.mro"
 
@@ -21,19 +21,6 @@ Typically, an invocation MRO file contains a single `@include` statement that in
 
 When a pipeline is run, the instantiation of it is called a **"pipestance"**, which is a portmanteau of "pipeline" and "instance".
 
-For more details on how to run an invocation MRO with the Martian runtime, see [Running Pipelines](../running-pipelines).
-
-Running a pipeline requires an invocation MRO file that contains a pipeline `call` statement. We will use the example invocation from the [Writing Pipelines](../writing-pipelines/#pipeline-invocation) section:
-
-```invoke.mro```
-~~~~
-@include "pipeline.mro"
-
-call DUPLICATE_FINDER(
-    unsorted = "/home/duplicator_dave/unsorted.txt",
-)
-~~~~
-
 ## How mrp Works
 
 To run a pipeline, simply pass the invocation MRO file to `mrp`, which is the Martian runtime that executes pipelines.
@@ -42,11 +29,18 @@ To run a pipeline, simply pass the invocation MRO file to `mrp`, which is the Ma
 mrp invoke.mro
 ~~~~
 
+- Parse and validate MRO file
+- Convert MRO AST into the graph representation of the pipeline
+- Begin evaluating dependencies and executing the stages of the pipeline
+- Continuously monitors stages and advances through the pipeline graph when dependencies are satisfied
+
 [ WIP - mrp options ]
 
 ## Restarting
 
 [ WIP ]
+
+Just run mrp again with the same mro file. Stages that were failed
 
 ## Logging
 
