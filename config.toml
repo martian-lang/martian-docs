@@ -83,7 +83,7 @@ googleAnalytics = ""
 [[menu.main]]
 	name   = "Language Details"
 	url    = "language-details/"
-	weight = 25
+	weight = 70
 
 
 #[[menu.main]]

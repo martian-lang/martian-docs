@@ -4,7 +4,7 @@ title: About
 type: post
 ---
 
-Martian was created by at [10x Genomics](https://www.10xgenomics.com/), where it serves as a core part of the software engineering toolchain. As a developer framework, Martian helps to make tractable the design, development and maintenance of over 30 pipelines by 25+ developers. As a runtime, Martian has cumulatively executed, just internally at 10x Genomics, over 91 million jobs consuming 1.3 core-millennia of CPU time. Martian has executed many millions more core-hours at customer sites, and is one of the most heavily exercised computational pipeline frameworks deployed in the field.
+Martian was created at [10x Genomics](https://www.10xgenomics.com/), where it serves as a core part of the software engineering toolchain. As a developer framework, Martian helps to make tractable the design, development and maintenance of over 30 pipelines by 25+ developers. As a runtime, Martian has cumulatively executed, just internally at 10x Genomics, over 100 million jobs consuming 1.5 core-millennia of CPU time. Martian has executed many millions more core-hours at customer sites, and is one of the most heavily exercised computational pipeline frameworks deployed in the field.
 
 ### History
 
