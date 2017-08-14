@@ -13,7 +13,7 @@ Martian defines two scopes within which symbol names must be unique:
 1. Within the scope of one pipeline invocation, which encompasses all recursively included MRO files, no two stages or pipelines may share the same name. This is considered the global scope of a pipestance.
 2. Within the scope of a stage declaration, no two input parameters of a given stage can have the same name, and same for output parameters.
 
-### Naming Conventions
+## Naming Conventions
 
 The following naming conventions are strongly recommended for consistency and readability, but are not currently enforced by the compiler.
 
