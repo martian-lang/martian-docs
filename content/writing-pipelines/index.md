@@ -1,12 +1,12 @@
 ---
-date: 2017-05-21T17:53:15-07:00
+date: 2016-11-01T17:53:15-07:00
 title: Writing Pipelines
 type: post
 ---
 
 ## Stages
 
-A "stage" is the fundamental unit of computation in Martian, and is composed with other stages into Martian pipelines, which are directed, acyclic graphs of stages.
+A **stage** is the fundamental unit of computation in Martian, and is composed with other stages into Martian **pipelines**, which are directed, acyclic graphs of stages.
 
 Martian stages can be [implemented in any language](../writing-stages/), and each stage can even be implemented in a different language, if desired. Martian manages the flow of data from the outputs of one stage to the inputs of one or more downstream stages in the graph. Martian provides a well-structured, typed, validated, JSON-based mechanism for exchanging data between stages in a language-independent manner.
 

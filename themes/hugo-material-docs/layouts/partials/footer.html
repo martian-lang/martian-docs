@@ -50,8 +50,10 @@
   <div class="previous">
   </div>
 
-  {{ $title := (index (.Site.Pages.ByDate) 1).Title  }}
-  {{ $permalink := (index (.Site.Pages.ByDate) 1).Permalink }}
+  <!-- {{ $title := (index (.Site.Pages.ByDate) 1).Title  }} -->
+  <!-- {{ $permalink := (index (.Site.Pages.ByDate) 1).Permalink }} -->
+  {{ $title := "Getting Started" }}
+  {{ $permalink := "getting-started" }}
   <div class="next">
       <a href="{{ $permalink }}" title="{{ $title }}">
         <span class="direction">

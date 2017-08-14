@@ -1,5 +1,5 @@
 ---
-date: 2017-05-21T17:53:15-07:00
+date: 2016-11-01T17:53:15-07:00
 title: Getting Started
 type: post
 ---
@@ -39,7 +39,7 @@ The Martian toolchain comprises four core executables:
 |`mrp`|Pipeline Runtime|Executes a Martian pipeline
 |`mrs`|Stage Runtime|Executes an individual Martian pipeline stage
 
-Make these executables available on your `PATH` and then confirm you can run them. If you unpacked or cloned Martian into `/home/user/git/martian`, for example, then:
+Make these executables available on your `PATH` and then confirm that you can run them. If you unpacked or cloned Martian into `/home/user/git/martian`, for example, then:
 
 ~~~~
 $ export PATH=$PATH:/home/user/git/martian/bin

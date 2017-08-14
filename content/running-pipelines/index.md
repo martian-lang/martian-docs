@@ -1,5 +1,5 @@
 ---
-date: 2017-05-21T17:53:15-07:00
+date: 2016-10-01T17:53:15-07:00
 title: Running Pipelines
 type: post
 ---
@@ -22,9 +22,17 @@ Typically, an invocation MRO file contains a single `@include` statement that ca
 
 ## Running mrp
 
-`mrp` is the Martian runtime executable that runs pipelines. When a pipeline is run, the instantiation of it is called a **pipestance**, which is a portmanteau of "pipeline" and "instance".
+`mrp` is the runtime executable that runs Martian pipelines. When a pipeline is run, the instantiation of it is called a **pipestance**, which is a portmanteau of "pipeline" and "instance". The command-line interface for `mrp` is:
 
-To start a run, pass the invocation MRO file as the first argument to `mrp`, plus a unique name for this pipestance.
+~~~~
+$ mrp <invocation_mro> <pipestance_id>
+~~~~
+
+To start a run, provide an invocation MRO file, plus a unique **pipestance ID**, comprising only numbers, letters, dashes, and underscores. This ID will be the name of the directory containing the pipestance. When running a pipeline multiple times, choose a different pipestance ID for each run.
+
+`mrp` features a number of command-line options, which are documented in [Advanced Features](../advanced-features).
+
+Once `mrp` starts, you should see the following output:
 
 ~~~~
 $ mrp invoke.mro piperun1
@@ -36,17 +44,14 @@ Running preflight checks (please wait)...
 2018-01-02 14:23:53 [runtime] (run:local)       ID.piperun1.DUPLICATE_FINDER.SORT_ITEMS.fork0.chnk0.main
 ~~~~
 
-At a high level, `mrp` does the following to run the pipeline:
+At a high level, `mrp` performs the following to run a pipeline:
 
 - Parse and validate MRO file (e.g. invoke.mro)
 - Convert the MRO into a graph representation of the pipeline
-- Create a directory for the pipestance with the unique run name provided (e.g. piperun1)
+- Create a directory for the pipestance named with the pipestance ID provided (e.g. piperun1)
 - Begin evaluating dependencies and executing the stages of the pipeline
 - Continuously monitor stages and advance through the pipeline graph when dependencies are satisfied
 
-### mrp Options
-
-[ WIP - mrp options ]
 
 ## Completion and Failure
 
@@ -58,4 +63,4 @@ For more details about how to examine an in-progress, completed, or failed pipes
 
 ## Restarting
 
-While a pipestance fails, it can be restarted by running `mrp` with the same arguments as before. `mrp` will identify the failed stages, and reset them so that run again from a clean start. Stages that have already completed successfully will not be reset or re-run.
+When a pipestance fails, it can be restarted by running `mrp` with the same arguments as before. `mrp` will identify the failed stages, and reset them to a clean state so that they can run again. Stages that have already completed successfully will not be reset or re-run.
