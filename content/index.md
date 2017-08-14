@@ -6,23 +6,22 @@ type: index
 Martian is a language and framework for developing and executing complex computational pipelines.
 
 - Designed for simplicity: simple to learn, simple to develop, simple to run, and simple to debug.
-- Allows you to combine software components written in any language into a single pipeline.
+- Allows combination of software components written in any language into a single pipeline.
 - Powerful support for scaling computationally intensive pipelines from standalone machines, to clusters, to cloud.
-- Rich support for managing the full lifecycle of complex, data-intensive pipelines.
-
-## What Distinguishes Martian
-
-- Is not an extension of an existing language.
-- Does not require a database or persistence mechanism other than a filesystem.
-- Designed to manage complexity and reduce developers' cognitive load.
-- Designed for user experience. Developed in environment where code "goes to Mars". Hostile environments, low telemetry bandwidth (email attachments, about the same size as the Mars Curiosity rover can send back per day). [Mars Curiosity data rates](https://mars.nasa.gov/msl/mission/communicationwithearth/data/)
+- Rich support for managing the full lifecycle of complex, compute and data-intensive pipelines.
 
 ## Motivation & Design Goals
 
-- Like any good developer tool, Martian seeks to reduce cognitive load, manage complexity and enhance tractablility.
-- Simplicity. Things just makes sense when you look at them.
-- No separate database or web server required.
-- No boilerplate.
-- Language is familiar. Eschew esotericity.
-- Martian pipelines feature consistent structure, easy navigability, and rich provenance metadata.
-- Support for managing data footprint at scale.
+- Simple: things just make sense and just work, no boilerplate.
+- Manages complexity: like any good developer tool, Martian seeks to reduce cognitive load and enhance tractability.
+- Lightweight: compact toolchain, no separate database, web servers or other components required.
+- Familiar: language is designed to be familiar and eschews esotericity.
+- Human-friendly: consistent structure, easy navigability, and rich provenance metadata.
+- Machine-friendly: well-defined machine-parseable interfaces that support loosely-coupled integration.
+
+## What Distinguishes Martian
+
+- Not an extension of an existing language, therefore isn't stuck with leftover syntax.
+- Does not require a database or persistence mechanism other than a filesystem.
+- Designed to manage complexity and reduce developers' cognitive load.
+- Designed for robust user experience in diverse, heterogeneous compute environments.

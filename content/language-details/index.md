@@ -20,7 +20,7 @@ The following naming conventions are strongly recommended for consistency and re
 Stage and pipeline names should written in `ALL CAPS SNAKE_CASE`.
 
 - Stage names should be a subject and verb: `FIND_DIPS`, `CALL_VARIANTS`
-- Pipelines names should be actor verbs: `COIN_SORTER`, `DYSON_SPHERE_DETECTOR`
+- Pipelines names should be "actor nouns": `COIN_SORTER`, `DYSON_SPHERE_DETECTOR`, `SVCALLER`
 - Names of pipelines intended to serve as subpipelines should be prefixed with an underscore: `_METRICS_REPORTER`
 
 Parameter names should be written in `all lowercase snake_case`.
