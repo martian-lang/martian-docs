@@ -34,11 +34,25 @@ Martian provides support for writing stages in the form of adapters, whose purpo
 - A well-defined method for returning output values to be passed to downstream stages
 - An API so the stage can provide logging, status updates, and error reporting to its parent `mrp`
 
-The goal of Martian adapters is the minimize the amount of boilerplate code that needs to be written for each stage implementation. Exactly how stage code is written and structured varies with the implementation language, but below are examples for languages that already have Martian adapters written.
+The goal of Martian adapters is to minimize the amount of boilerplate code written for each stage implementation. Exactly how stage code is written and structured varies with the implementation language. Below are examples for some languages that currently have Martian adapters.
 
 ## Martian Adapter API
 
-The Martian adapter provides a number of services to the stage code. [ WIP ]
+The Martian adapter provides a number of services to the stage code:
+
+|Method|Description|
+|---|---|
+|martian.make_path(filename)||
+|martian.get_martian_version||
+|martian.get_pipelines_version||
+|martian.update_progress(message)||
+|martian.log_info(message)||
+|martian.log_warn(message)||
+|martian.log_time(message)||
+|martian.log_json(label, obj)||
+|martian.throw(message)||
+|martian.exit(message)||
+|martian.alarm(message)||
 
 ## Interpreted Languages
 ### Python
