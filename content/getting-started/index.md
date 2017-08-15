@@ -10,11 +10,18 @@ Official binary distributions of the Martian toolchain are available for Linux, 
 
 |Download|OS|Arch|SHA256|
 |---|---|---|---|
-|[martian-2.2.0-linux-amd64.tar.gz](-)|Linux|x86-64|
-|[martian-2.2.0-darwin-amd64.tar.gz](-)|macOS|x86-64|
+|[martian-2.3.0-rc0.1-linux-amd64.tar.gz](https://github.com/martian-lang/martian/releases/download/v2.3.0-rc0.1/martian-v2.3.0-rc0.1-linux-x86_64.tar.gz)|Linux|x86-64|
+|[martian-2.3.0-rc0.1-darwin-amd64.tar.gz](-)|macOS|x86-64|
 |Coming soon|Windows|x86-64|
 
 ## Building from Source
+
+### Prerequisites
+* [Go](https://golang.org) 1.8 or higher is required to build Martian.
+* The Python adapter for wrapping stage code requires Python 2.7.
+* To build the user interface, [Node](https://nodejs.org) 6 or higher is required, along with NPM.
+
+### Building the source
 
 To build the Martian toolchain from source, clone the [Martian GitHub repository](https://github.com/martian-lang/martian), run `make all`, and the compiled binaries will be generated in `bin/`.
 
@@ -23,14 +30,18 @@ $ git clone --recursive https://github.com/martian-lang/martian.git
 $ cd martian
 $ make all
 $ ls bin
-mrc         mrp         mrf         mrs
+mrc  mrf  mrg  mrjob  mrp  mrs  mrstat
 ~~~~
+
+To test that everything is working, `make longtests` runs a few simple test pipelines
+and verifies that thier output is correct, including test that pipeline failures are
+handled correctly.
 
 ## Environment Setup
 
 ### Martian Executables
 
-The Martian toolchain comprises four core executables:
+The Martian toolchain comprises five core executables:
 
 |Executable|Role|Details|
 |---|---|---|
@@ -38,13 +49,14 @@ The Martian toolchain comprises four core executables:
 |`mrf`|Formatter|Canonicalizes Martian code formatting and whitespace
 |`mrp`|Pipeline Runtime|Executes a Martian pipeline
 |`mrs`|Stage Runtime|Executes an individual Martian pipeline stage
+|`mrjob`|Stage wrapper|Wraps user stage code, ensuring it obeys the contracts `mrp` or `mrs` expect.
 
 Make these executables available on your `PATH` and then confirm that you can run them. If you unpacked or cloned Martian into `/home/user/git/martian`, for example, then:
 
 ~~~~
 $ export PATH=$PATH:/home/user/git/martian/bin
 $ mrc --version
-2.2.0
+v2.3.0-rc0.1
 ~~~~
 
 ### Martian Project Path – MROPATH
@@ -57,17 +69,18 @@ To give you an idea of how a Martian project looks in practice, here's an exampl
 
 ~~~~
 martian_project/
+    bin/
+        hello_go
+        hello_rust
     lib/
         go/
-            bin/
-                hello_go
+            vendor/github.com/martian-lang/martian
+                src/martian/adapter/adapter.go
             src/
                 hello_go.go
         rust/
             Cargo.lock
             Cargo.toml
-            bin/
-                hello_rust
             src/
                 hello_rust.rs
     mro/
