@@ -6,9 +6,16 @@ type: post
 
 ## Stages
 
-A **stage** is the fundamental unit of computation in Martian, and is composed with other stages into Martian **pipelines**, which are directed, acyclic graphs of stages.
+A **stage** is the fundamental unit of computation in Martian, and is composed
+with other stages into Martian **pipelines**, which are directed, acyclic
+graphs of stages.
 
-Martian stages can be [implemented in any language](../writing-stages/), and each stage can even be implemented in a different language, if desired. Martian manages the flow of data from the outputs of one stage to the inputs of one or more downstream stages in the graph. Martian provides a well-structured, typed, validated, JSON-based mechanism for exchanging data between stages in a language-independent manner.
+Martian stages can be [implemented in any language](../writing-stages/), and
+each stage can even be implemented in a different language, if desired. Martian
+manages the flow of data from the outputs of one stage to the inputs of one or
+more downstream stages in the graph. Martian provides a well-structured, typed,
+validated, JSON-based mechanism for exchanging data between stages in a
+language-independent manner.
 
 Here is a basic stage definition example:
 
@@ -25,13 +32,38 @@ stage SORT(
 
 A stage is minimally defined by three things:
 
-1. **Input Parameters -** A stage can declare one or more typed ```in``` parameters, to which upstream stages' outputs are bound. At runtime, Martian passes arguments into the stage code.
-2. **Output Parameters -** Martian also provides a structured way for stage code to return typed ```out``` values, which are passed by Martian to downstream stages.
-3. **Stage Code -** The ```src``` parameter specifies the executable code that implements the functionality of the stage. The type of this parameter indicates the language of that code. For example, a stage could refer to a Python module, a C, C++, Go, or Rust binary, or a shell script, just to name a few possibilities. There is no required or preferred implementation language in Martian. The third element of this parameter is a language-dependent string that Martian uses to locate the code. In this example, ```stages/sort``` is a directory that exists relative to the ```MROPATH``` environment variable, and contains a valid Python module with a ```__init__.py```.
+1. **Input Parameters -** A stage can declare one or more typed ```in```
+parameters, to which pipeline input arguments or upstream stages' outputs
+are bound. At runtime, Martian passes arguments into the stage code.
+2. **Output Parameters -** Martian also provides a structured way for stage
+code to return typed ```out``` values, which are passed by Martian to
+downstream stages or the final pipeline outputs.
+3. **Stage Code -** The ```src``` parameter specifies the executable code
+that implements the logic of the stage. The type of this parameter indicates
+the language of that code. For example, a stage could refer to a Python module,
+or a C, C++, Go, or Rust binary, just to name a few possibilities.
+
+Currently the there are 3 values supported for the type parameter:
+|`src` type|Stage type|
+|---|---|
+|`py`|Python stage code.  This is launched through an adapter process which provides useful utility methods for interacting with the pipeline runner.|
+|`comp`|Executable code intended to run as a child process for `mrjob`.  This is the preferred way to handle compiled code.|
+|`exe`|(deprecated) Executable code intended to be run directly.  Such code must manage the interface with `mrp` itself.|
+
+Adding support for additional languages is
+[fairly straightforward](https://github.com/martian-lang/martian/blob/master/adapters/README.md)
+- pull requests welcome!  There is no required or preferred implementation
+language in Martian. The third element of this parameter is a
+language-dependent string that Martian uses to locate the code. In this
+example, ```stages/sort``` is a directory that exists relative to the
+```PYTHONPATH``` environment variable, and contains a valid Python module with
+a ```__init__.py```.
 
 ## Pipelines
 
-A pipeline definition comprises calls to defined stages. Each stage call must bind its inputs to either the outputs of another upstream stage, or to the input parameters of the pipeline itself. Here is a simple example:
+A pipeline definition comprises calls to defined stages. Each stage call must
+bind its inputs to either the outputs of another upstream stage, or to the
+input parameters of the pipeline itself. Here is a simple example:
 
 ~~~~
 filetype txt;
@@ -72,16 +104,23 @@ The example above does the following:
 - Declares two stages `SORT` and `FIND_DUPLICATES`
 - Declares a pipeline `DUPLICATE_FINDER` that calls both stages. It accepts one input `unsorted` which must be a filename ending in `.txt`. The `unsorted` parameter is then passed to the input of `SORT`, whose output is then passed to `FIND_DUPLICATES`. The output `duplicates` of `FIND_DUPLICATES` is then returned as the output of the whole pipeline.
 
+The Martian GitHub repository includes
+[syntax highlighting](https://github.com/martian-lang/martian/tree/master/tools/syntax)
+files for [Vim](http://www.vim.org/), [Atom](https://atom.io/),
+and [Sublime](https://www.sublimetext.com/) text editors.  If your favorite
+editor is missing from this list, pull requests are welcome.
+
 ### Composability
 
-Pipelines specify input and output parameter the same way stages do, so they may themselves also act as stages. This allows for the composition of an arbitrary mix of individual stages and pipelines into still larger pipelines. We refer to pipelines as "subpipelines" when they are composed into other pipelines.
+Pipelines specify input and output parameters the same way stages do, so they may themselves also act as stages. This allows for the composition of an arbitrary mix of individual stages and pipelines into still larger pipelines. We refer to pipelines as "subpipelines" when they are composed into other pipelines.
 
 
 ## Organizing Code
 
 ### MRO Files
 
-Stage and pipeline code are referred to as **MRO code**, because they are written in files that have an ```.mro``` extension.
+Stage and pipeline specifications are referred to as **MRO code**, because
+by convention they are written in files that have an ```.mro``` extension.
 
 ### Preprocessing with @include
 
@@ -129,17 +168,18 @@ To give you an idea of how a Martian project looks in practice, here's an exampl
 
 ~~~~
 martian_project/
+    bin/
+        hello_go
+        hello_rust
     lib/
         go/
-            bin/
-                hello_go
+            vendor/github.com/martian-lang/martian
+                src/martian/adapter/adapter.go
             src/
                 hello_go.go
         rust/
             Cargo.lock
             Cargo.toml
-            bin/
-                hello_rust
             src/
                 hello_rust.rs
     mro/
@@ -173,7 +213,8 @@ stage SORT_ITEMS(
 )
 ~~~~
 
-`mrf` is inspired by `gofmt`, therefore we will borrow [their explanation](https://blog.golang.org/go-fmt-your-code) of the benefits of canonical code formatting:
+`mrf` is an "opinionated" formatter, inspired by tools like `gofmt`, therefore we will borrow
+[their explanation](https://blog.golang.org/go-fmt-your-code) of the benefits of canonical code formatting:
 
 - **Easier to write**: never worry about minor formatting concerns while hacking away.
 - **Easier to read**: when all code looks the same you need not mentally convert others' formatting style into something you can understand.
@@ -186,17 +227,27 @@ stage SORT_ITEMS(
 
 ## Compiling* Code
 
-One of the core components and principal benefits of Martian is `mrc`, a tool which statically verifies your MRO code before you commit to a resource-intensive run of your pipeline. `mrc` identifies and helps you fix errors that you might otherwise encounter hours, days, or even weeks into your pipeline run.
+One of the core components and principal benefits of Martian is `mrc`, a tool
+which statically verifies your MRO code before you commit to a potentially
+resource-intensive run of your pipeline. `mrc` identifies and helps you fix
+errors that you might otherwise encounter hours, days, or even weeks into your
+pipeline run.
 
-While `mrc` does not actually compile* your code into an intermediate or binary format, it does perform many of the same parsing and semantic checking steps that a compiler would, helping you to write correct code, and making it easier to perform major refactorings when necessary.
+While `mrc` does not actually compile* your code into an intermediate or
+binary format, it does perform many of the same parsing and semantic checking
+steps that a compiler would, helping you to write correct code, and making it
+easier to perform major refactorings when necessary.
 
 ### Running `mrc`
 
-`mrc` takes a list of MRO filenames as arguments and parses and verifies those files, emitting line-numbered messages for any errors encountered. If given the `--all` option, it will parse and verify all MRO files found in your `MROPATH`. The following verification steps are performed:
+`mrc` takes a list of MRO filenames as arguments and parses and verifies those
+files, emitting line-numbered messages for any errors encountered. If given the
+`--all` option, it will parse and verify all MRO files found in your `MROPATH`.
+The following verification steps are performed:
 
-- **Preprocessing**: All `@include` directives are recursively executed to produce a single string of MRO code. A source map is constructed so that later stages of processing can report errors with file-specific line numbers. Any preprocessing errors, such as a file not found, will stop `mrc` and be reported.
-- **Lexing and Parsing**: The MRO code string produced by the preprocessor is then lexed and parsed according to the [Martian grammar](https://github.com/martian-lang/martian/blob/master/src/martian/core/grammar.y), producing an in-memory abstract syntax tree. Any syntax errors will stop `mrc` and be reported.
-- **Semantic Analysis**: The abstract syntax tree is then analyzed according a number of semantic rules. Any semantic errors will will be reported.
+- **Preprocessing**: All `@include` directives are recursively evaluated.  Any preprocessing errors, such as a file not found, will stop `mrc` and be reported.
+- **Lexing and Parsing**: The MRO code produced by the preprocessor is then lexed and parsed according to the [Martian grammar](https://github.com/martian-lang/martian/blob/master/src/martian/core/grammar.y) to produce an in-memory representation of the pipeline called an [Abstract Syntax Tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) (AST).  Any syntax errors will stop `mrc` and be reported.
+- **Semantic Analysis**: The AST produced by the parser abstract syntax tree is then analyzed according a number of semantic rules. Any semantic errors will will be reported.
   - All referenced types are built-ins or user-defined with `filetype`.
   - All called stages and pipelines are defined.
   - All parameter names are unique within each stage or pipeline interface.
@@ -205,8 +256,11 @@ While `mrc` does not actually compile* your code into an intermediate or binary 
   - Inputs and outputs that are bound together have matching types.
   - All pipeline output parameters are bound by a return statement.
 
-If no errors are encountered, `mrc` returns 0, otherwise it returns 1 and prints error messages to `STDERR`. It is recommended that you configure a git commit-hook that runs `mrc --all`.
+If no errors are encountered, `mrc` returns 0, otherwise it returns a nonzero code and prints error messages to standard error.
+It is recommended best practice to configure a pre-commit hook that runs `mrc --all`.
 
 ### Outputting the Abstract Syntax Tree as JSON
 
-`mrc` also supports a `--json` option that outputs the abstract syntax tree and associated data as a JSON object. This can be useful for further processing of the AST in external tools.
+`mrc` also supports a `--json` option that outputs the abstract syntax tree and
+associated data as a JSON object. This can be useful for further processing of
+the AST in external tools.

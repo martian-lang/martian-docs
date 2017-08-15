@@ -34,7 +34,7 @@ mrc  mrf  mrg  mrjob  mrp  mrs  mrstat
 ~~~~
 
 To test that everything is working, `make longtests` runs a few simple test pipelines
-and verifies that thier output is correct, including test that pipeline failures are
+and verifies that their output is correct, including test that pipeline failures are
 handled correctly.
 
 ## Environment Setup
