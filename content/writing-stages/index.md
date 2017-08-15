@@ -6,76 +6,161 @@ type: post
 
 ## Overview
 
-Martian supports writing pipeline stages in virtually any language. The only requirement is that the language support JSON, which is nearly universal.
+Martian supports writing pipeline stages in virtually any language. The only
+requirement for pipeline executables is that they be able to write JSON to
+files.
 
-A Martian stage is an executable, either interpreted or compiled, that takes four command-line arguments as follows:
+A Martian stage is an executable, either interpreted or compiled, that takes
+at least four command-line arguments as follows:
 
 ~~~~
-$ stage_executable <type> <metadata_path> <files_path> <journal_prefix>
+$ stage_executable [args] <type> <metadata_path> <files_path> <journal_prefix>
 ~~~~
 
-The `type` argument is one of `split`, `join`, or `main` (the main body of the stage). The stage executable should switch on that type and provide implementations for each.
+The `type` argument is one of `split`, `join`, or `main` (`main` is run for
+chunk phases, or for stages which do not
+[split](../advanced-features/#parallelization) ). The stage executable should
+switch on that type and provide implementations for each.
+
+The details of the interface are generally handled by a language-specific
+"adapter."  Currently, there are adapters for Python and Go in the main
+repository, and an adapter for [Rust]() in also available.  Adapters for
+scripting languages are generally distributed with martian and should be
+expected to be tied to a specific martian version, while adapters for
+compiled languages obviously need to be compiled with the stage code.
+For details on the interface between the job monitor process and the
+adapter code, see the
+[adapter documentation in the Martian repository](https://github.com/martian-lang/martian/blob/master/adapters/README.md).
+When writing stage code, refer to the documentation for the
+[language-specific adapter](#Language Adapters) for additional details,
+as they are intended to provide abstraction layers wrapping the interface
+to the martian runtime, such as managing interaction with the journal
+directory and accessing inputs and outputs.
 
 ### Split Interface
-[ WIP ]
-### Join Interface
-[ WIP ]
-### Main/Chunk Interface
-[ WIP ]
+Input: The `args` file (containing the json dictionary of stage inputs)
+
+Output: A `stage_defs` file, containing a json object containing two keys.
+- `chunks`: a list of objects containing the input arguments to each stage,
+and optional keys `__threads` and `__mem_gb` to override the default resource
+reservation for each chunk.
+- `join` (optinoal): an object containing `__threads` and `__mem_gb` overrides
+to be used for the join phase.
 
 More details in [Advanced Features: Parallelization](../advanced-features/#parallelization).
 
-## Martian Adapter
+### Join Interface
+Inputs:
+- `args`: The stage input arguments
+- `chunk_defs`: The chunk definitions produced by the split phase.
+- `chunk_outs`: A json serialized list aggregating the outputs from each chunk.
+- `outs`: The stage outputs.  This is also written to, but for outputs which
+are files, the paths to the expected locations for those files are populated
+by the runtime.
 
-Martian provides support for writing stages in the form of adapters, whose purpose is to provide to stages the following:
+Output: The `outs` file is re-written with values populated for non-file
+output types.
+
+### Main/Chunk Interface
+For stages which do not split, the `args` file contains the stage inputs.
+For stages which do split, the `args` file contains the element of the
+`chunks` key from the `stage_defs` file written by the split phase.
+
+Outputs are written to the `outs` file, which is either the stage's `outs`
+file (for stages which do not split) or will be aggregated into
+`chunk_outs` to be passed to the `join` phase for stages which do split.
+
+## Language Adapters
+
+Martian provides support for writing stages in the form of adapters, whose
+purpose is to provide to stages the following:
 
 - A well-defined interface for stages to be invoked by `mrp`
 - Input arguments from upstream stages to be passed into the stage
 - A well-defined method for returning output values to be passed to downstream stages
-- An API so the stage can provide logging, status updates, and error reporting to its parent `mrp`
+- An API so the stage can provide logging, status updates, and error reporting.
 
 The goal of Martian adapters is to minimize the amount of boilerplate code written for each stage implementation. Exactly how stage code is written and structured varies with the implementation language. Below are examples for some languages that currently have Martian adapters.
 
-## Martian Adapter API
+## Interpreted Languages
 
-The Martian adapter provides a number of services to the stage code:
+### [Python](https://github.com/martian-lang/martian/blob/master/adapters/python/martian.py)
+A Martian stage written in Python is simply a Python module. That is, a
+directory with an `__init__.py` containing the stage code.  The stage code
+should not execute on import - the Martian Python adapter provides an
+executable wrapper script that does an `import` of your Python module.
+
+Python stages are run via an adapter which simplifies much of the high-level
+tasks.  The stage `.py` file must contain a `main` method, expecting  and, if
+the stage splits, a `split` and `join` method.
+
+The `split` method is called with the contents of the `args` file as the
+argument.  It must return a `stage_defs` object.
+
+The `join` method is called with `args, outs, chunk_defs, chunk_outs`.
+The `outs` are written back when the method returns.
+
+The `main` method is called with the contents of the `args` and `outs` files
+as input.  `outs` will be written back when the method returns.
+
+The adapter wraps these json objects in a `Record` object, which
+converts string keys into object attributes for convenience, and to prevent
+accidentally setting invalid keys in `outs`.
+
+Stage code may import the
+[martian](https://github.com/martian-lang/martian/blob/master/adapters/python/martian.py)
+module (the shell wrapper adds the version corresponding to the `mrp` process
+to the `PYTHONPATH` - don't try to import it from elsewhere).  This provieds
+a number of convenience methods to the stage code:
 
 |Method|Description|
 |---|---|
-|martian.make_path(filename)||
-|martian.get_martian_version||
-|martian.get_pipelines_version||
-|martian.update_progress(message)||
-|martian.log_info(message)||
-|martian.log_warn(message)||
-|martian.log_time(message)||
-|martian.log_json(label, obj)||
-|martian.throw(message)||
-|martian.exit(message)||
-|martian.alarm(message)||
+|martian.make_path(filename)|Get the absolute path, in the stage's `files` directory, corresponding to given filename|
+|martian.get_martian_version|Get the version of the parent `mrp` process|
+|martian.get_pipelines_version|Get the pipeline version reported in the invocation mro|
+|martian.update_progress(message)|Reports a progress update to bubble up to the parent `mrp` log.  There are no guarantees that the update will be reported before it is overwritten by a newer update.|
+|martian.log_info(message)|Add a message to the chunk's log.|
+|martian.log_warn(message)|Add a warning to the chunk's log.|
+|martian.log_time(message)|Add a timestamped message to the chunk's log.|
+|martian.log_json(label, obj)|Log an object as serialized json.|
+|martian.throw(message)|Fail the stage with an error.|
+|martian.exit(message)|Fail the stage with an assertion.|
+|martian.alarm(message)|Log a message which will be reported by mrp at the end of the pipeline run.|
 
-## Interpreted Languages
-### Python
-
-A Martian stage written in Python is simply a Python module. That is, a directory with an `__init__.py` containing the stage code. When writing a stage, you do not need to provide a `__main__` method as the Martian Python adapter provides an executable wrapper script that does an `import` of your Python module.
-
-To satisfy the stage requirements, you must implement three functions `split`, `join`, and `main`, which will be called by the Martian Python adapter script.
-
-The Python module should be located in its own directory somewhere under the `MROPATH`. The specific path is then specified in the MRO code to connect the MRO stage definition with the location of the Python implementation, e.g. `src py "path/to/my/python_module"`. Martian would then expect to be able to Python `import` that path as a module, and for it to implement `split`, `join` and `main` functions.
-
-[ WIP ]
+The Python module should be located in its own directory somewhere under the
+`PYTHONPATH`.  The specific path is then specified in the MRO code to connect
+the MRO stage definition with the location of the Python implementation, e.g.
+`src py "path/to/my/python_module"`. Martian would then expect to be able to
+Python `import` that path as a module.
 
 ## Compiled Languages
 
 Stage executables that are compiled must implement the command-line interface described above.
 
-### Rust
-### Go
+### [Rust](https://github.com/martian-lang/martian-rust)
+[ Documentation WIP ]
 
-## Shell Scripts
+### [Go](https://github.com/martian-lang/martian/blob/master/src/martian/adapter/adapter.go)
+To implement a stage with Go, simply import
+`github.com/martian-lang/martian/martian/adapter` and call the `RunStage`
+method with your stage code logic as parameters from the main() method.
 
-Stage executables that are shell scripts must implement the command-line interface described above.
+Given `split`, `chunk`, `join` methods are given a `core.Metadata` object
+which provides access to args, outs, and so on.  For an example of how this
+can be used, see the
+[go-based integration test stage](https://github.com/10XDev/martian-public/blob/master/test/split_test_go/stages/sum_squares/sum_squares.go)
+as an example.
+
+Stage code can write to the stage `log` file with `core.Log` and related
+methods.
+
+The adapter handles writing the expected output files for the stage through
+the return values of the methods given to `RunStage`.  `RunStage` will also
+exit the process on completion - don't put any logic after the `RunStage` call.
 
 ## Writing an Adapter
 
-If you are interested in developing a new Martian language adapter or contributing to an existing one, you can find more details [here](https://github.com/martian-lang/martian/tree/master/adapters).
+If you are interested in developing a new Martian language adapter or
+contributing to an existing one, you can find more details about the adapter
+API [here](https://github.com/martian-lang/martian/tree/master/adapters).
+Pull requests welcome!
