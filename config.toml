@@ -1,4 +1,4 @@
-baseurl = "https://martian-lang.github.io/martian-docs"
+baseurl = "http://martian-lang.org"
 languageCode = "en-us"
 title = "Martian"
 theme = "hugo-material-docs"
