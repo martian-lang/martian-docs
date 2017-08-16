@@ -17,6 +17,8 @@ at least four command-line arguments as follows:
 $ stage_executable [args] <type> <metadata_path> <files_path> <journal_prefix>
 ~~~~
 
+In most cases the interpretation of the arguments is handled by a
+[language-specific adapter](#Language Adapters).
 The `type` argument is one of `split`, `join`, or `main` (`main` is run for
 chunk phases, or for stages which do not
 [split](../advanced-features/#parallelization) ). The stage executable should

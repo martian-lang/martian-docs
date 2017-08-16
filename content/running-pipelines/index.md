@@ -82,3 +82,7 @@ restart itself in such circumstances a number of times configured either from
 the command line or in `retry.json` giving up.  This is useful for error
 types which are expected to be transient, such as receiving a signal from the
 operating system.
+
+If `mrp` is restarted with the `--inspect` flag set, it should attempt to read
+the pipestance in "read only" mode.  In combination with `--noexit` this can be
+used to open up a user interface for an old pipestance.

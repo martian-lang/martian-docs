@@ -10,6 +10,10 @@ A **stage** is the fundamental unit of computation in Martian, and is composed
 with other stages into Martian **pipelines**, which are directed, acyclic
 graphs of stages.
 
+In order to ensure pipelines can be restarted and parallelized safely, stage
+inputs are intended to be considered immutable, as are the outputs once the
+stage completes.
+
 Martian stages can be [implemented in any language](../writing-stages/), and
 each stage can even be implemented in a different language, if desired. Martian
 manages the flow of data from the outputs of one stage to the inputs of one or
