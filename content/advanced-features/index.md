@@ -12,7 +12,7 @@ Martian supports a number of advanced features to provide:
 - Loosely-coupled integration with other systems
 
 ## Parallelization
-Subject to resource constraints, martian parallelizes work by breaking
+Subject to resource constraints, Martian parallelizes work by breaking
 pipeline logic into chunks and parallelizing them in two ways.  First,
 stages can run in parallel if they don't depend on each other's outputs.
 Second, individual stages may split themselves into several chunks.
@@ -35,7 +35,7 @@ and the join.  The after the chunks run, the join phase aggregates the output
 from all of the chunks into the single output of the stage.
 
 ## Job Management
-Broadly speaking, martian has two ways to run stage jobs.
+Broadly speaking, Martian has two ways to run stage jobs: Local Mode and Cluster Mode.
 
 ### Local Mode
 In local mode, stage jobs run as a child process of `mrp` on the same machine.
@@ -45,9 +45,9 @@ behavior for local jobs
 
 |Option|Effect|
 |---|---|
-|--localcores=NUM|Specifies the number of threads worth of work `mrp` should schedule simultaneously.  The default is the number of logical cores on the machine.|
-|--localmem=NUM|Specifies the amount of memory, in gigabytes, which `mrp` will allow to be reserved by jobs running in parallel.  The default is 90% of the system's total memory.|
-|--limit-loadavg|Instructs `mrp` to monitor the system [loadavg](https://en.wikipedia.org/wiki/Load_(computing) ), and avoid starting new jobs if the difference between the number of logical cores on the system and the current one-minute load average is less than the number of threads requested by a job.  This may be useful for throttling the start of new jobs on shared systems which are heavily loaded, especially shared systems which do not enforce any kind of quota.  However it should be noted that CPU load tends to fluctuate, so in many cases this only delays the job start until the next time the load drops temporarily.|
+|<nobr>`--localcores=NUM`</nobr>|Specifies the number of threads worth of work `mrp` should schedule simultaneously.  The default is the number of logical cores on the machine.|
+|<nobr>`--localmem=NUM`</nobr>|Specifies the amount of memory, in gigabytes, which `mrp` will allow to be reserved by jobs running in parallel.  The default is 90% of the system's total memory.|
+|<nobr>`--limit-loadavg`</nobr>|Instructs `mrp` to monitor the system [loadavg](https://en.wikipedia.org/wiki/Load_(computing) ), and avoid starting new jobs if the difference between the number of logical cores on the system and the current one-minute load average is less than the number of threads requested by a job.  This may be useful for throttling the start of new jobs on shared systems which are heavily loaded, especially shared systems which do not enforce any kind of quota.  However it should be noted that CPU load tends to fluctuate, so in many cases this only delays the job start until the next time the load drops temporarily.|
 
 ### Cluster Mode
 Larger research groups often have infrastructure for shared, distributed
@@ -61,11 +61,12 @@ If `mrp` is started with `--jobmode=MODE` and `MODE` is not "`local`", it
 looks in its `jobmanagers/config.json` file for a key in the `jobmodes` element
 corresponding to `MODE`.  In that object, the following values are used to
 configure the job:
+
 |Key|Effect|
 |---|---|
 |`cmd`|The command (executable) used to submit batch work to the cluster manager.|
 |`args`|Additional arguments to pass to the executable.  Ideally the batch submit executable has a mode to return just the "job ID" on standard output, without any other formatting.  If an argument is required to enable this mode, it should be added there, as well as any other fixed arguments which are required.|
-|`queue_query`|A script, which `mrp` will look for in its `jobmanagers` directory, which accepts a newline-separated list of job IDs on standard input and returns on standard output the newline-separated list of job IDs which are known to the job manager to be still queued or running.  This is used for martian to detect if a job failed without having a chance to write its metadata files, for example if the job template incorrectly specified the environment.|
+|`queue_query`|A script, which `mrp` will look for in its `jobmanagers` directory, which accepts a newline-separated list of job IDs on standard input and returns on standard output the newline-separated list of job IDs which are known to the job manager to be still queued or running.  This is used for Martian to detect if a job failed without having a chance to write its metadata files, for example if the job template incorrectly specified the environment.|
 |`queue_query_grace_secs`|If `queue_query` was specified, this determines the minimum time `mrp` will wait, after the `queue_query` command determines that a job is no longer running, before it will declare the job dead.  In many cases, due to the way filesystems cache metadata, the completion notification files which jobs produce may not be visible from where `mrp` is running at the same time that the job manager reports the job being complete, especially when the filesystem is under heavy load.  The grace period prevents succeeded jobs from being declared failed.|
 |`env`|Specifies environment variables which are required to be set in this job mode.|
 
@@ -100,9 +101,9 @@ job manager.
 
 |Option|Effect|Default|
 |---|---|---|
-|`--maxjobs`|Limit the number of jobs queued or pending on the cluster simultaneously.  0 us treated as unlimited.||
-|`--jobinterval`|Limit the rate at which jobs are submitted to the cluster.||
-|`--mempercore`|For clusters which do not manage memory reservations, specifies the amount of memory `mrp` should expect to be available for each core.  If this number is less than the cores to memory ratio of a job, extra threads will be reserved in order to ensure that the job gets enough memory.  A very high value will effectively be ignored.  A low value will result in many wasted CPUs.|none|
+|<nobr>`--maxjobs`</nobr>|Limit the number of jobs queued or pending on the cluster simultaneously.  0 us treated as unlimited.||
+|<nobr>`--jobinterval`</nobr>|Limit the rate at which jobs are submitted to the cluster.||
+|<nobr>`--mempercore`</nobr>|For clusters which do not manage memory reservations, specifies the amount of memory `mrp` should expect to be available for each core.  If this number is less than the cores to memory ratio of a job, extra threads will be reserved in order to ensure that the job gets enough memory.  A very high value will effectively be ignored.  A low value will result in many wasted CPUs.|none|
 
 ### Additional job management settings
 

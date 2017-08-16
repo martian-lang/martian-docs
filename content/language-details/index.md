@@ -4,6 +4,12 @@ title: Language Details
 type: post
 ---
 
+## Tokens and Grammar
+
+The Martian language's tokens are defined by regular expressions in its [lexical scanner](https://github.com/martian-lang/martian/blob/master/src/martian/core/lexer.go).
+
+The Martian syntax is specified as a [YACC grammar](https://github.com/martian-lang/martian/blob/master/src/martian/core/grammar.y).
+
 ## Symbols and Scope
 
 Symbols in Martian are identifiers for stages, pipelines, and parameters. They may comprise uppercase and lowercase letters, numeric digits, and underscores. A symbol may not begin with a numeric digit, which is reserved for number literals. The Martian lexer's regular expression for symbols is ```[a-zA-Z_][a-zA-Z0-9_]*\\b```.
