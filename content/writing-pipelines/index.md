@@ -48,6 +48,7 @@ the language of that code. For example, a stage could refer to a Python module,
 or a C, C++, Go, or Rust binary, just to name a few possibilities.
 
 Currently the there are 3 values supported for the type parameter:
+
 |`src` type|Stage type|
 |---|---|
 |`py`|Python stage code.  This is launched through an adapter process which provides useful utility methods for interacting with the pipeline runner.|
