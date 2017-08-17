@@ -153,7 +153,7 @@ can be used, see the
 [go-based integration test stage](https://github.com/10XDev/martian-public/blob/master/test/split_test_go/stages/sum_squares/sum_squares.go)
 as an example.
 
-Stage code can write to the stage `log` file with `core.Log` and related
+Stage code can write to the stage `log` file with `util.Log` and related
 methods.
 
 The adapter handles writing the expected output files for the stage through
