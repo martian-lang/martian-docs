@@ -6,9 +6,9 @@ type: post
 
 ## Tokens and Grammar
 
-The Martian language's tokens are defined by regular expressions in its [lexical scanner](https://github.com/martian-lang/martian/blob/master/src/martian/core/lexer.go).
+The Martian language's tokens are defined by regular expressions in its [lexical scanner](https://github.com/martian-lang/martian/blob/master/src/martian/syntax/lexer.go).
 
-The Martian syntax is specified as a [YACC grammar](https://github.com/martian-lang/martian/blob/master/src/martian/core/grammar.y).
+The Martian syntax is specified as a [YACC grammar](https://github.com/martian-lang/martian/blob/master/src/martian/syntax/grammar.y).
 
 ## Symbols and Scope
 
