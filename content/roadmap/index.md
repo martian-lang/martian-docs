@@ -4,15 +4,17 @@ title: Development Roadmap
 type: post
 ---
 
-# Product development roadmap
+# Martian Development Roadmap
 
-All features here refer to notional plans, subject to change at any time.
-They are provided here only to provide visibility into the current priorities
-of the Martian development team.
+All features here refer to notional plans. They are provided only to provide 
+visibility into the current priorities of the Martian development team,
+and are subject to change at any time
 
-## August 2017 - 2.3.0
+## August 2017
 * Initial GitHub publication
-* Support building on OSX, and running non-pipeline tools.
+
+## Q3 2017 - 2.3.0
+* Support building on macOS, and running non-pipeline tools.
 * Always-on UI port with basic (unencrypted) authentication and a basic command
 line tool for remote administration.
 * Support for `perf record` profiling.
@@ -20,11 +22,7 @@ line tool for remote administration.
 * Improved local-mode memory management.
 * Redesigned adapter API.
 
-## September 2017 - 2.4.0
+## Q4 2017 - 2.4.0
 * Improved resiliency to accidentally resetting stages which are still running.
 * More options for remote administration over the UI port.
 * (stretch) Improved web interface.
-
-## Q1 2018 - 2.5.0
-* A pipestance aggregater product, for visibility and management of multiple
-concurrent `mrp` instances.
