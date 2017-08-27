@@ -8,7 +8,7 @@ type: post
 
 All features here refer to notional plans. They are provided only to provide 
 visibility into the current priorities of the Martian development team,
-and are subject to change at any time
+and are subject to change at any time.
 
 ## August 2017
 * Initial GitHub publication
