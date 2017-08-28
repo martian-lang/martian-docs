@@ -188,6 +188,7 @@
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
 <script>
+// This is modified from https://codepen.io/boltaway/pen/PwGxNX
 $(function() {
   var canvas = document.querySelector("canvas"),
     ctx = canvas.getContext("2d"),
@@ -260,15 +261,7 @@ $(function() {
             i_dot.x - j_dot.x > -dots.distance &&
             i_dot.y - j_dot.y > -dots.distance
           ) {
-            if (
-              /*
-              i_dot.x - mousePosition.x < dots.d_radius &&
-              i_dot.y - mousePosition.y < dots.d_radius &&
-              i_dot.x - mousePosition.x > -dots.d_radius &&
-              i_dot.y - mousePosition.y > -dots.d_radius
-            */ sel_dot ==
-              i
-            ) {
+            if (sel_dot == i) {
               ctx.beginPath();
               ctx.moveTo(i_dot.x, i_dot.y);
               ctx.bezierCurveTo(
@@ -302,10 +295,6 @@ $(function() {
   }
 
   $("canvas").on("mousemove mouseleave", function(e) {
-    /*if (e.type == "mousemove") {
-      mousePosition.x = e.pageX;
-      mousePosition.y = e.pageY;
-    }*/
     if (e.type == "mouseleave") {
       mousePosition.x = w / 2;
       mousePosition.y = h / 2;
@@ -328,7 +317,6 @@ $(function() {
         break;
       }
     }
-    //dots.num += 10;
   });
 
   setInterval(createDots, 1000 / 30);
