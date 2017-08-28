@@ -45,55 +45,49 @@ googleAnalytics = ""
 
 
 [[menu.main]]
-	name   = "What is Martian?"
+	name   = "Home"
 	url    = "/"
-	weight = 5
+	weight = 1
+
+[[menu.main]]
+	name   = "What is Martian?"
+	url    = "what-is-martian/"
+	weight = 10
 
 [[menu.main]]
 	name   = "Getting Started"
 	url    = "getting-started/"
-	weight = 10
+	weight = 20
 
 [[menu.main]]
 	name   = "Writing Pipelines"
 	url    = "writing-pipelines/"
-	weight = 20
+	weight = 30
 
 [[menu.main]]
 	name   = "Running Pipelines"
 	url    = "running-pipelines/"
-	weight = 30
+	weight = 40
 
 [[menu.main]]
 	name   = "Inspecting Pipelines"
 	url    = "inspecting-pipelines/"
-	weight = 32
+	weight = 50
 
 [[menu.main]]
 	name   = "Writing Stages"
 	url    = "writing-stages/"
-	weight = 50
+	weight = 60
 
 [[menu.main]]
 	name   = "Advanced Features"
 	url    = "advanced-features/"
-	weight = 60
+	weight = 70
 
 [[menu.main]]
 	name   = "Language Details"
 	url    = "language-details/"
-	weight = 70
-
-
-#[[menu.main]]
-#	name   = "Metadata & Provenance"
-#	url    = "metadata-provenance/"
-#	weight = 70
-
-#[[menu.main]]
-#	name   = "Resource Management"
-#	url    = "resource-management/"
-#	weight = 80
+	weight = 80
 
 [[menu.main]]
 	name   = "About"

@@ -1,0 +1,346 @@
+<html>
+<head>
+  <style>
+    header {
+      background: linear-gradient(to bottom,#000 0, #000 30%, #d1464c 100%);
+      height: 100vh;
+      min-height: 550px;
+      max-height: 1300px;
+      padding-top: 20px;
+      position: relative;
+      margin-bottom: 60px;
+      display: block;
+    }
+    body {
+      margin: 0;
+      font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+      min-height: 100%;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #4d5659;
+    }
+    img#logo {
+      margin: 10px 0;
+    }
+    canvas#starfield {
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+    a {
+      text-decoration: none;
+      cursor: pointer;
+    }
+    h1, h2, h3 {
+      margin-top: 0;
+      margin-bottom: 30px;
+      line-height: 1.25;
+    }
+    h1 {
+      font-size: 42px;
+    }
+    header h1 {
+      position: relative;
+      z-index: 2;
+    }
+    .container {
+      margin: 0 auto;
+      width: 70%;
+    }
+    .clear:after, .clear:before {
+        content: " ";
+        display: table;
+    }
+    .clear:after {
+        clear: both;
+    }
+    .float-left {
+      float: left;
+    }
+    .float-right {
+      float: right;
+    }
+    nav {
+      display: block;
+      position: relative;
+      z-index: 10;
+      margin-bottom: 0;
+      font-weight: 200;
+      font-style: normal;
+      font-size: 16px;
+    }
+    nav ul {
+      padding-left: 0;
+      margin: 0;
+    }
+    nav ul li {
+      list-style: none;
+      display: inline-block;
+      padding: 15px;
+    }
+    nav a {
+      display: inline-block;
+      color: #fff;
+      font-weight: 400;
+    }
+    .splash {
+      text-align: center;
+      color: #fff;
+      width: 100%;
+      position: relative;
+      background: transparent;
+      position: relative;
+      min-height: 480px;
+      z-index: 2;
+      background: transparent;
+      pointer-events: none;
+    }
+    .splash-inner {
+      margin-top: 15vh;
+      padding: 130px 0 80px 0;
+      background: transparent;
+      position: relative;
+      z-index: 2;
+    }
+    .splash h2 {
+      color: #fff;
+      font-weight: 200;
+      font-style: normal;
+      margin-bottom: 20px;
+      font-size: 40px;
+      position: relative;
+      z-index: 2;
+      background: transparent;
+    }
+    .splash h3 {
+      color: #fff;
+      font-weight: 200;
+      font-style: normal;
+      margin-top: 15px;
+      font-size: 22px;
+      line-height: 150%;
+      position: relative;
+      z-index: 2;
+    }
+    header .button {
+      pointer-events: all;
+      display: inline-block;
+      border-radius: 3px;
+      text-align: center;
+      cursor: pointer;
+      border-width: 2px;
+      border-style: solid;
+      padding: 8px 15px;
+      z-index: 2;
+      margin: 0 5px 10px;
+      background-color: rgba(0,0,0,0.4);
+      min-width: 150px;
+      position: relative;
+      color: rgba(209,70,76,0.7);
+      border-color: rgba(209,70,76,0.4);
+    }
+    header .button:hover {
+      color: rgba(209,70,76,1.0);
+      border-color: rgba(209,70,76,0.7);
+    }
+    .splitter {
+      width: 50px;
+      height: 3px;
+      border-radius: 3px;
+      background: rgba(209,70,76,0.4);
+      display: block;
+      margin: 0 auto 0 auto;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container clear">
+      <h1 class="float-left">
+        <a href="/">
+          <img id="logo" src="/martian-logo-dark.png"></img>
+        </a>
+      </h1>
+      <nav role="navigation" class="float-right clear">
+        <ul class="clear">
+          <li><a href="/what-is-martian" >Docs</a></li>
+          <li><a href="/getting-started">Download</a></li>
+          <li><a href="/about" >About</a></li>
+        </ul>
+      </nav>
+      <div class="splash">
+        <div class="splash-inner">
+          <h2>Martian is Science at Scale</h2>
+          <span class="splitter"></span>
+          <h3>An elegant, powerful language and framework<br/> for building high-performance computational pipelines.</h3>
+          <!-- h3>A language and framework for making computational pipelines<br/>more robust, performant, traceable, and tractable.</h3 -->
+          <div>
+            <a class="button" href="/what-is-martian">Learn More</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <canvas id="starfield"></canvas>
+  </header>
+  <div class="container">
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+<script>
+$(function() {
+  var canvas = document.querySelector("canvas"),
+    ctx = canvas.getContext("2d"),
+    color = "#d1464c";
+
+  var w = window.innerWidth;
+  var h = 1300;
+  var sel_dot = 250;
+  canvas.width = w;
+  canvas.height = h;
+  ctx.fillStyle = color;
+  ctx.lineWidth = 0.1;
+  ctx.strokeStyle = color;
+
+  var mousePosition = {
+    x: 10 * w / 100,
+    y: 10 * h / 100
+  };
+
+  var dots = {
+    num: 500,
+    distance: 800,
+    d_radius: 20,
+    velocity: -0.9,
+    array: []
+  };
+
+  function Dot() {
+    this.x = Math.random() * w;
+    this.y = Math.random() * h;
+
+    this.vx = dots.velocity + Math.random();
+    this.vy = dots.velocity + Math.random();
+
+    this.radius = Math.random() * 1;
+  }
+
+  Dot.prototype = {
+    create: function() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+      ctx.fill();
+    },
+
+    animate: function() {
+      for (i = 0; i < dots.num; i++) {
+        var dot = dots.array[i];
+
+        if (dot.y < 0 || dot.y > h) {
+          dot.vx = dot.vx;
+          dot.vy = -dot.vy;
+        } else if (dot.x < 0 || dot.x > w) {
+          dot.vx = -dot.vx;
+          dot.vy = dot.vy;
+        }
+        dot.x += dot.vx;
+        dot.y += dot.vy;
+      }
+    },
+
+    line: function() {
+      for (i = 0; i < dots.num; i++) {
+        for (j = 0; j < dots.num; j++) {
+          i_dot = dots.array[i];
+          j_dot = dots.array[j];
+
+          if (
+            i_dot.x - j_dot.x < dots.distance &&
+            i_dot.y - j_dot.y < dots.distance &&
+            i_dot.x - j_dot.x > -dots.distance &&
+            i_dot.y - j_dot.y > -dots.distance
+          ) {
+            if (
+              /*
+              i_dot.x - mousePosition.x < dots.d_radius &&
+              i_dot.y - mousePosition.y < dots.d_radius &&
+              i_dot.x - mousePosition.x > -dots.d_radius &&
+              i_dot.y - mousePosition.y > -dots.d_radius
+            */ sel_dot ==
+              i
+            ) {
+              ctx.beginPath();
+              ctx.moveTo(i_dot.x, i_dot.y);
+              ctx.bezierCurveTo(
+                i_dot.x,
+                h / 4,
+                w / 4,
+                i_dot.y,
+                j_dot.x,
+                j_dot.y
+              );
+              ctx.stroke();
+              ctx.closePath();
+            }
+          }
+        }
+      }
+    }
+  };
+
+  function createDots() {
+    ctx.clearRect(0, 0, w, h);
+    for (i = 0; i < dots.num; i++) {
+      dots.array.push(new Dot());
+      dot = dots.array[i];
+
+      dot.create();
+    }
+
+    dot.line();
+    dot.animate();
+  }
+
+  $("canvas").on("mousemove mouseleave", function(e) {
+    /*if (e.type == "mousemove") {
+      mousePosition.x = e.pageX;
+      mousePosition.y = e.pageY;
+    }*/
+    if (e.type == "mouseleave") {
+      mousePosition.x = w / 2;
+      mousePosition.y = h / 2;
+    }
+  });
+
+  $("canvas").on("click", function(e) {
+    mousePosition.x = e.pageX;
+    mousePosition.y = e.pageY;
+    sel_dot = -1;
+    for (i = 0; i < dots.num; i++) {
+      i_dot = dots.array[i];
+      if (
+        i_dot.x - mousePosition.x < dots.d_radius &&
+        i_dot.y - mousePosition.y < dots.d_radius &&
+        i_dot.x - mousePosition.x > -dots.d_radius &&
+        i_dot.y - mousePosition.y > -dots.d_radius
+      ) {
+        sel_dot = i;
+        break;
+      }
+    }
+    //dots.num += 10;
+  });
+
+  setInterval(createDots, 1000 / 30);
+
+  $(window).on("resize", function() {
+    canvas.width = w;
+    canvas.height = h;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 0.1;
+    ctx.strokeStyle = color;
+  });
+});
+</script>
+</body>
+</html>

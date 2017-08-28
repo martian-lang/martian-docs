@@ -45,3 +45,31 @@ pre code.hljs {
 .article h3 {
   font-size: 16px;
 }
+
+.palette-primary-red .footer,
+.palette-primary-red .header {
+  background: #d1464c;
+}
+
+.palette-primary-red .article h2,
+.palette-primary-red .article a,
+.palette-primary-red .article code,
+.palette-primary-red .article h1,
+.palette-primary-red .article h2 {
+  color: #d1464c;
+}
+
+.palette-primary-red .drawer .toc a.current,
+.palette-primary-red .drawer .toc a:focus,
+.palette-primary-red .drawer .toc a:hover {
+  color: #d1464c;
+}
+
+.palette-primary-red .article table th {
+  background: rgba(209, 70, 76, 0.85);
+}
+
+body,
+input {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}

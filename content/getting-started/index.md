@@ -11,8 +11,8 @@ Official binary distributions of the Martian toolchain are available for Linux, 
 |Download|OS|Arch|SHA256|
 |---|---|---|---|
 |[martian-2.3.0-rc0.1-linux-amd64.tar.gz](https://github.com/martian-lang/martian/releases/download/v2.3.0-rc0.1/martian-v2.3.0-rc0.1-linux-x86_64.tar.gz)|Linux|x86-64|
-|[martian-2.3.0-rc0.1-darwin-amd64.tar.gz](-)|macOS|x86-64|
-|Coming soon|Windows|x86-64|
+|Coming soon|macOS|x86-64|
+|[Please contribute!](https://github.com/martian-lang/martian/blob/master/.github/CONTRIBUTING.md)|Windows|x86-64|
 
 ## Building from Source
 
