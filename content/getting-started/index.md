@@ -6,18 +6,28 @@ type: post
 
 ## Installing Martian
 
-Official binary distributions of the Martian toolchain are available for Linux, macOS and Windows:
+Official binary distributions of the Martian toolchain are available for Linux.
+We hope to have MacOS and Windows support soon.
 
 |Download|OS|Arch|SHA256|
 |---|---|---|---|
 |[martian-v2.3.0-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v2.3.0/martian-v2.3.0-linux-x86_64.tar.gz)|Linux|x86-64|<span style="font-size: 8px">657eb6018a9371ac6af7267191945fd5ca590963d93d5d8096078f37d92b1107</span>|
-|Coming soon|macOS|x86-64|
+|[Coming soon](https://github.com/martian-lang/martian/blob/master/.github/CONTRIBUTING.md)|macOS|x86-64|
 |[Please contribute!](https://github.com/martian-lang/martian/blob/master/.github/CONTRIBUTING.md)|Windows|x86-64|
+
+### System Requirements
+* Currently, running pipelines requires a Linux system with kernel version 2.6.23 or later.
+  - Linux versions as far back as RHEL/CentOS 5.5 or Ubuntu 10 have been confirmed working.
+  - Future updates may drop support for anything older than RHEL/CentOS 6 or Ubuntu 12.
+  - For the time being, `mrp` only functions on Linux.
+  - Ancillary tools such as `mrc`, `mrstat`, and `mrf` are expected to work on MacOS.
+* Martian was designed for large bioinformatics pipelines.  One may run into issues on systems with less than 6GB of available memory.  Editing `jobmanagers/config.json` to reduce the default memory request for jobs may alleviate some of those issues.
+
 
 ## Building from Source
 
 ### Prerequisites
-* [Go](https://golang.org) 1.8 or higher is required to build Martian.
+* [Go](https://golang.org) 1.9 or higher is required to build Martian.
 * The Python adapter for wrapping stage code requires Python 2.7.
 * To build the user interface, [Node](https://nodejs.org) 6 or higher is required, along with NPM.
 
