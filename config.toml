@@ -9,9 +9,9 @@ googleAnalytics = "UA-105429832-1"
 
 [params]
 	# General information
-	author = "Digitalcraftsman"
-	description = "A material design theme for documentations."
-	copyright = ""
+	author = "Martian authors"
+	description = "Martian is a language and framework for developing and executing complex computational pipelines."
+	copyright = "10X Genomics"
 
 	# Repository
 	provider = "GitHub"
@@ -41,7 +41,7 @@ googleAnalytics = "UA-105429832-1"
 [social]
 	twitter = ""
 	github  = "martian-lang"
-	email   = "hello@email.com"
+	email   = ""
 
 
 [[menu.main]]
@@ -90,9 +90,14 @@ googleAnalytics = "UA-105429832-1"
 	weight = 80
 
 [[menu.main]]
+	name   = "Development Roadmap"
+	url    = "roadmap/"
+	weight = 90
+
+[[menu.main]]
 	name   = "About"
 	url    = "about/"
-	weight = 90
+	weight = 100
 
 [blackfriday]
 	smartypants	= true
