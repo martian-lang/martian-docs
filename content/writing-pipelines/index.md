@@ -119,6 +119,34 @@ editor is missing from this list, pull requests are welcome.
 
 Pipelines specify input and output parameters the same way stages do, so they may themselves also act as stages. This allows for the composition of an arbitrary mix of individual stages and pipelines into still larger pipelines. We refer to pipelines as "subpipelines" when they are composed into other pipelines.
 
+Because parameter binding is done by stage name, pipelines cannot call the same
+stage or sub-pipeline twice without aliasing it like so:
+```
+pipeline ADD_KEYS(
+    in  string key1,
+    in  string key2,
+    in  string value1,
+    in  string value2,
+    in  json input,
+    out json result,
+)
+{
+    call ADD_KEY as ADD_KEY1(
+        key = self.key1,
+        value = self.value1,
+        start = self.input,
+    )
+    call ADD_KEY as ADD_KEY2(
+        key = self.key2,
+        value = self.value2,
+        start = ADD_KEY1.result,
+    )
+
+    return (
+        outfile = ADD_KEY2.result,
+    )
+}
+```
 
 ## Organizing Code
 
