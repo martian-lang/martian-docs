@@ -11,6 +11,44 @@ Martian supports a number of advanced features to provide:
 - Data storage efficiency
 - Loosely-coupled integration with other systems
 
+## Disabling sub-pipelines
+Sometimes the choice of which sub-pipelines to run on the data depends on the
+data.  For example, the first part of a pipeline might determine which of
+several algorithms is likely to yield the best results on the given data set.
+To support this, Martian 3.0 allows disabling of calls, e.g.
+```
+pipeline DUPLICATE_FINDER(
+    in  txt  unsorted,
+    out txt  duplicates,
+)
+{
+    call CHOOSE_METHOD(
+        unsorted = self.unsorted,
+    )
+    call SORT_1(
+        unsorted = self.unsorted,
+    ) using (
+        disabled = CHOOSE_METHOD.disable1,
+    )
+    call SORT_2(
+        unsorted = self.unsorted,
+    ) using (
+        disabled = CHOOSE_METHOD.disable2,
+    )
+
+    call FIND_DUPLICATES(
+        method_1_used = CHOOSE_METHOD.disable2,
+        sorted1       = SORT_1.sorted,
+        sorted2       = SORT_2.sorted,
+    )
+    return (
+        duplicates = FIND_DUPLICATES.duplicates,
+    )
+}
+```
+Disabled pipelines or stages will not run, and their outputs will be populated
+with null values.  Downstream stages must be prepared to deal with this case.
+
 ## Parallelization
 Subject to resource constraints, Martian parallelizes work by breaking
 pipeline logic into chunks and parallelizing them in two ways.  First,
@@ -23,8 +61,9 @@ stage SUM_SQUARES(
     in  float[] values,
     out float   sum,
     src comp    "sum_squares",
-) split using (
+) split (
     in  float   value,
+    out float   value,
 )
 ```
 In this example, the stage takes an array of "values" as inputs.  The "split"
@@ -33,6 +72,35 @@ how to distribute the input data across chunks, giving a "value" to each,
 as well as potentially setting thread and memory requirements for each chunk
 and the join.  The after the chunks run, the join phase aggregates the output
 from all of the chunks into the single output of the stage.
+
+## Resource consumption
+Martian is designed to run stages in parallel.  Either locally or in cluster
+mode, it tries to ensure sufficient threads and memory are available for each
+job running in parallel.  The default reservation is controlled by the
+`jobmanagers/config.json` file (see below).  If a job needs more resources
+than the default, there are two ways to request them.
+
+If the stages splits (see above), the split stage can override the default
+reservations of the chunk or join phases by setting the `__mem_gb` or
+`__threads` keys in the chunk or join part of the `chunk_defs` it returns.
+This is required if for example the split, chunk, or join methods don't all
+have the same requirements, or if the split needs to compute the requirements
+dynamically.  Alternatively, setting the resource requirements for the split,
+or statically declaring the resources for all 3 phases (or just the chunk, if
+there is no split), can be done in the mro file, e.g.
+```
+stage SUM_SQUARES(
+    in  float[] values,
+    out float   sum,
+    src comp    "sum_squares",
+) split (
+    in  float   value,
+    out float   value,
+) using (
+    mem_gb  = 4,
+    threads = 16,
+)
+```
 
 ## Job Management
 Broadly speaking, Martian has two ways to run stage jobs: Local Mode and Cluster Mode.
@@ -140,8 +208,10 @@ it to dump all local variables from every stack frame on failure.
 
 A call to a stage can be marked `volatile` by specifying
 ```
-call volatile STAGE_NAME(
+call STAGE_NAME(
     arg1 = value,
+) using (
+    volatile = true,
 )
 ```
 
