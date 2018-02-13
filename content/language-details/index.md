@@ -54,7 +54,11 @@ Martian supports the following built-in types:
 |path|A string meant to be interpreted as a filesystem path.|
 |map|A JSON-compatible data structure whose top-level type is an object.|
 
-Martian also supports user-defined filetypes for which file extensions are enforced. A filetype is defined and referenced like this:
+Martian also supports user-defined filetypes.  The name of the file types
+controls the file extension for the default filename pre-populated in the outs.
+Martian enforces compile-time binding type matching between user-defined file
+types, but allows implicit casting between user-defined file types and generic
+"string" or "file" types.  A filetype is defined and referenced like this:
 
 ~~~~
 filetype txt;

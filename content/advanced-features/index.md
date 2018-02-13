@@ -138,7 +138,22 @@ it to dump all local variables from every stack frame on failure.
 
 ## Volatile Data Removal
 
-`volatile` keyword.
+A call to a stage can be marked `volatile` by specifying
+```
+call volatile STAGE_NAME(
+    arg1 = value,
+)
+```
+
+If a stage is marked volatile it is eligible for volatile data removal once
+all stages which depend on it are complete.  When the "VDR killer" is invoked,
+all file data owned by the stage will be deleted, freeing up disk space.  Job
+metadata is retained, and the total amount of freed space is recorded.  In
+`--vdrmode=rolling`, the VDR killer is invoked whenever any stage completes.
+In `--vdrmode=post` it is invoked when the pipeline completes.
+Mrp's default is `--vdrmode=disabled` for development purposes, however
+production pipeline wrapper scripts should set `--vdrmode=rolling` to
+minimize the disk usage high-water-mark.
 
 ## Parameter Sweeping
 
