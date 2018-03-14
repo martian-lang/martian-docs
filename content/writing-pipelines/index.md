@@ -47,7 +47,7 @@ that implements the logic of the stage. The type of this parameter indicates
 the language of that code. For example, a stage could refer to a Python module,
 or a C, C++, Go, or Rust binary, just to name a few possibilities.
 
-Currently the there are 3 values supported for the type parameter:
+Currently there are 2 values supported for the type parameter:
 
 |`src` type|Stage type|
 |---|---|
