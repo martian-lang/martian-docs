@@ -26,7 +26,7 @@ Here is a basic stage definition example:
 ~~~~
 filetype txt;
 
-stage SORT(
+stage SORT_ITEMS(
     in  txt  unsorted,
     in  bool case_sensitive,
     out txt  sorted,
@@ -95,7 +95,7 @@ pipeline DUPLICATE_FINDER(
         unsorted = self.unsorted,
     )
     call FIND_DUPLICATES(
-        sorted = SORT.sorted,
+        sorted = SORT_ITEMS.sorted,
     )
     return (
         duplicates = FIND_DUPLICATES.duplicates,
@@ -106,8 +106,8 @@ pipeline DUPLICATE_FINDER(
 The example above does the following:
 
 - Declares a user-defined filetype `txt`
-- Declares two stages `SORT` and `FIND_DUPLICATES`
-- Declares a pipeline `DUPLICATE_FINDER` that calls both stages. It accepts one input `unsorted` which must be a filename ending in `.txt`. The `unsorted` parameter is then passed to the input of `SORT`, whose output is then passed to `FIND_DUPLICATES`. The output `duplicates` of `FIND_DUPLICATES` is then returned as the output of the whole pipeline.
+- Declares two stages `SORT_ITEMS` and `FIND_DUPLICATES`
+- Declares a pipeline `DUPLICATE_FINDER` that calls both stages. It accepts one input `unsorted` which must be a filename ending in `.txt`. The `unsorted` parameter is then passed to the input of `SORT_ITEMS`, whose output is then passed to `FIND_DUPLICATES`. The output `duplicates` of `FIND_DUPLICATES` is then returned as the output of the whole pipeline.
 
 The Martian GitHub repository includes
 [syntax highlighting](https://github.com/martian-lang/martian/tree/master/tools/syntax)
