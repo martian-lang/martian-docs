@@ -251,7 +251,7 @@ files, emitting line-numbered messages for any errors encountered. If given the
 The following verification steps are performed:
 
 - **Preprocessing**: All `@include` directives are recursively evaluated.  Any preprocessing errors, such as a file not found, will stop `mrc` and be reported.
-- **Lexing and Parsing**: The MRO code produced by the preprocessor is then lexed and parsed according to the [Martian grammar](https://github.com/martian-lang/martian/blob/master/src/martian/syntax/grammar.y) to produce an in-memory representation of the pipeline called an [Abstract Syntax Tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) (AST).  Any syntax errors will stop `mrc` and be reported.
+- **Lexing and Parsing**: The MRO code produced by the preprocessor is then lexed and parsed according to the [Martian grammar](https://github.com/martian-lang/martian/blob/master/martian/syntax/grammar.y) to produce an in-memory representation of the pipeline called an [Abstract Syntax Tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) (AST).  Any syntax errors will stop `mrc` and be reported.
 - **Semantic Analysis**: The AST produced by the parser abstract syntax tree is then analyzed according a number of semantic rules. Any semantic errors will will be reported.
   - All referenced types are built-ins or user-defined with `filetype`.
   - All called stages and pipelines are defined.
