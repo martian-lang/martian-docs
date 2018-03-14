@@ -43,16 +43,18 @@ directory and accessing inputs and outputs.
 Input: The `args` file (containing the json dictionary of stage inputs)
 
 Output: A `stage_defs` file, containing a json object containing two keys.
+
 - `chunks`: a list of objects containing the input arguments to each stage,
 and optional keys `__threads` and `__mem_gb` to override the default resource
 reservation for each chunk.
-- `join` (optinoal): an object containing `__threads` and `__mem_gb` overrides
+- `join` (optional): an object containing `__threads` and `__mem_gb` overrides
 to be used for the join phase.
 
 More details in [Advanced Features: Parallelization](../advanced-features/#parallelization).
 
 ### Join Interface
 Inputs:
+
 - `args`: The stage input arguments
 - `chunk_defs`: The chunk definitions produced by the split phase.
 - `chunk_outs`: A json serialized list aggregating the outputs from each chunk.
