@@ -165,14 +165,14 @@ The URL is also written to the pipestance metadata file named `_uiport`.
 To access the UI, simply direct your browser to the specified URL.
 
 Alternatively, you may choose a specific port using the `--uiport` command-line option.
-By default, if a specific port is chosen the authentication token is only
+By default, if a specific port is chosen, the authentication token is only
 required for API calls which modify the pipestance state.  These default
-behaviors can call be altered with the `mrp` flags
+behaviors can be altered with the `mrp` flags
 `--disable-ui`, `--disable-auth`, `--require-auth`, and `--auth-key`.
 
-Normally, when a pipeline run completes, mrp terminates and the user interface
+Normally, when a pipeline run completes, `mrp` terminates and the user interface
 is no longer available.  If `mrp` was started with `--noexit` then it will stay
-up until mrp is killed (either with an operating system signal or with
+up until `mrp` is killed (either with an operating system signal or with
 `mrstat --stop`).
 
 ### Pipeline details

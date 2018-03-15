@@ -26,7 +26,7 @@ Here is a basic stage definition example:
 ~~~~
 filetype txt;
 
-stage SORT(
+stage SORT_ITEMS(
     in  txt  unsorted,
     in  bool case_sensitive,
     out txt  sorted,
@@ -47,7 +47,7 @@ that implements the logic of the stage. The type of this parameter indicates
 the language of that code. For example, a stage could refer to a Python module,
 or a C, C++, Go, or Rust binary, just to name a few possibilities.
 
-Currently the there are 3 values supported for the type parameter:
+Currently there are 2 values supported for the type parameter:
 
 |`src` type|Stage type|
 |---|---|
@@ -95,7 +95,7 @@ pipeline DUPLICATE_FINDER(
         unsorted = self.unsorted,
     )
     call FIND_DUPLICATES(
-        sorted = SORT.sorted,
+        sorted = SORT_ITEMS.sorted,
     )
     return (
         duplicates = FIND_DUPLICATES.duplicates,
@@ -106,8 +106,8 @@ pipeline DUPLICATE_FINDER(
 The example above does the following:
 
 - Declares a user-defined filetype `txt`
-- Declares two stages `SORT` and `FIND_DUPLICATES`
-- Declares a pipeline `DUPLICATE_FINDER` that calls both stages. It accepts one input `unsorted` which must be a filename ending in `.txt`. The `unsorted` parameter is then passed to the input of `SORT`, whose output is then passed to `FIND_DUPLICATES`. The output `duplicates` of `FIND_DUPLICATES` is then returned as the output of the whole pipeline.
+- Declares two stages `SORT_ITEMS` and `FIND_DUPLICATES`
+- Declares a pipeline `DUPLICATE_FINDER` that calls both stages. It accepts one input `unsorted` which must be a filename ending in `.txt`. The `unsorted` parameter is then passed to the input of `SORT_ITEMS`, whose output is then passed to `FIND_DUPLICATES`. The output `duplicates` of `FIND_DUPLICATES` is then returned as the output of the whole pipeline.
 
 The Martian GitHub repository includes
 [syntax highlighting](https://github.com/martian-lang/martian/tree/master/tools/syntax)
@@ -251,7 +251,7 @@ files, emitting line-numbered messages for any errors encountered. If given the
 The following verification steps are performed:
 
 - **Preprocessing**: All `@include` directives are recursively evaluated.  Any preprocessing errors, such as a file not found, will stop `mrc` and be reported.
-- **Lexing and Parsing**: The MRO code produced by the preprocessor is then lexed and parsed according to the [Martian grammar](https://github.com/martian-lang/martian/blob/master/src/martian/syntax/grammar.y) to produce an in-memory representation of the pipeline called an [Abstract Syntax Tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) (AST).  Any syntax errors will stop `mrc` and be reported.
+- **Lexing and Parsing**: The MRO code produced by the preprocessor is then lexed and parsed according to the [Martian grammar](https://github.com/martian-lang/martian/blob/master/martian/syntax/grammar.y) to produce an in-memory representation of the pipeline called an [Abstract Syntax Tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) (AST).  Any syntax errors will stop `mrc` and be reported.
 - **Semantic Analysis**: The AST produced by the parser abstract syntax tree is then analyzed according a number of semantic rules. Any semantic errors will will be reported.
   - All referenced types are built-ins or user-defined with `filetype`.
   - All called stages and pipelines are defined.

@@ -6,9 +6,9 @@ type: post
 
 ## Tokens and Grammar
 
-The Martian language's tokens are defined by regular expressions in its [lexical scanner](https://github.com/martian-lang/martian/blob/master/src/martian/syntax/lexer.go).
+The Martian language's tokens are defined by regular expressions in its [lexical scanner](https://github.com/martian-lang/martian/blob/master/martian/syntax/lexer.go).
 
-The Martian syntax is specified as a [YACC grammar](https://github.com/martian-lang/martian/blob/master/src/martian/syntax/grammar.y).
+The Martian syntax is specified as a [YACC grammar](https://github.com/martian-lang/martian/blob/master/martian/syntax/grammar.y).
 
 ## Symbols and Scope
 
@@ -26,7 +26,7 @@ The following naming conventions are strongly recommended for consistency and re
 Stage and pipeline names should written in `ALL CAPS SNAKE_CASE`.
 
 - Stage names should be a subject and verb: `FIND_DIPS`, `CALL_VARIANTS`
-- Pipelines names should be "actor nouns": `COIN_SORTER`, `DYSON_SPHERE_DETECTOR`, `SVCALLER`
+- Pipelines names should be "actor nouns": `COIN_SORTER`, `DYSON_SPHERE_DETECTOR`, `SV_CALLER`
 - Names of pipelines intended to serve as subpipelines should be prefixed with an underscore: `_METRICS_REPORTER`
 
 Parameter names should be written in `all lowercase snake_case`.

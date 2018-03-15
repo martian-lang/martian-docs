@@ -71,7 +71,7 @@ configure the job:
 |`env`|Specifies environment variables which are required to be set in this job mode.|
 
 `mrp` will execute the specified `cmd` with the specified `args` and pipe a job
-script to its standard input (see [Templates](#Templates) below for how the job
+script to its standard input (see [Templates](#templates) below for how the job
 script is generated).  If the command's standard output consists of a string
 with no newlines or whitespace, it is interpreted as a job ID and recorded with
 the job, to potentially be used later with the `queue_query` script.
@@ -115,7 +115,7 @@ the number of threads they parallize jobs over, for example `OMP_NUM_THREADS`
 for OpenMP.  The `thread_envs` key specifies a list of environment variables
 which should be set to be equal to the job thread reservation.  These are
 applied in cluster mode, and in local mode if the number of threads is
-constrained.  In local mode without a constraint on mrp's total thread count,
+constrained.  In local mode without a constraint on `mrp`'s total thread count,
 it is not used, as it's expected that the user is not sharing the machine with
 other users, so such a constraint on internal parallelism is just potentially
 idle CPU cycles.

@@ -18,7 +18,7 @@ $ stage_executable [args] <type> <metadata_path> <files_path> <journal_prefix>
 ~~~~
 
 In most cases the interpretation of the arguments is handled by a
-[language-specific adapter](#Language Adapters).
+[language-specific adapter](#language-adapters).
 The `type` argument is one of `split`, `join`, or `main` (`main` is run for
 chunk phases, or for stages which do not
 [split](../advanced-features/#parallelization) ). The stage executable should
@@ -26,7 +26,7 @@ switch on that type and provide implementations for each.
 
 The details of the interface are generally handled by a language-specific
 "adapter."  Currently, there are adapters for Python and Go in the main
-repository, and an adapter for [Rust]() in also available.  Adapters for
+repository, and an adapter for [Rust](https://github.com/martian-lang/martian-rust) in also available.  Adapters for
 scripting languages are generally distributed with martian and should be
 expected to be tied to a specific martian version, while adapters for
 compiled languages obviously need to be compiled with the stage code.
@@ -34,7 +34,7 @@ For details on the interface between the job monitor process and the
 adapter code, see the
 [adapter documentation in the Martian repository](https://github.com/martian-lang/martian/blob/master/adapters/README.md).
 When writing stage code, refer to the documentation for the
-[language-specific adapter](#Language Adapters) for additional details,
+[language-specific adapter](#language-adapters) for additional details,
 as they are intended to provide abstraction layers wrapping the interface
 to the martian runtime, such as managing interaction with the journal
 directory and accessing inputs and outputs.
@@ -43,16 +43,18 @@ directory and accessing inputs and outputs.
 Input: The `args` file (containing the json dictionary of stage inputs)
 
 Output: A `stage_defs` file, containing a json object containing two keys.
+
 - `chunks`: a list of objects containing the input arguments to each stage,
 and optional keys `__threads` and `__mem_gb` to override the default resource
 reservation for each chunk.
-- `join` (optinoal): an object containing `__threads` and `__mem_gb` overrides
+- `join` (optional): an object containing `__threads` and `__mem_gb` overrides
 to be used for the join phase.
 
 More details in [Advanced Features: Parallelization](../advanced-features/#parallelization).
 
 ### Join Interface
 Inputs:
+
 - `args`: The stage input arguments
 - `chunk_defs`: The chunk definitions produced by the split phase.
 - `chunk_outs`: A json serialized list aggregating the outputs from each chunk.
@@ -142,7 +144,7 @@ Stage executables that are compiled must implement the command-line interface de
 ### [Rust](https://github.com/martian-lang/martian-rust)
 [ Documentation WIP ]
 
-### [Go](https://github.com/martian-lang/martian/blob/master/src/martian/adapter/adapter.go)
+### [Go](https://github.com/martian-lang/martian/blob/master/martian/adapter/adapter.go)
 To implement a stage with Go, simply import
 `github.com/martian-lang/martian/martian/adapter` and call the `RunStage`
 method with your stage code logic as parameters from the main() method.
@@ -150,7 +152,7 @@ method with your stage code logic as parameters from the main() method.
 Given `split`, `chunk`, `join` methods are given a `core.Metadata` object
 which provides access to args, outs, and so on.  For an example of how this
 can be used, see the
-[go-based integration test stage](https://github.com/10XDev/martian-public/blob/master/test/split_test_go/stages/sum_squares/sum_squares.go)
+[go-based integration test stage](https://github.com/martian-lang/martian/blob/master/martian/test/sum_squares/sum_squares.go)
 as an example.
 
 Stage code can write to the stage `log` file with `util.Log` and related
