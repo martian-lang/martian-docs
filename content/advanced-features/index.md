@@ -173,6 +173,29 @@ job manager.
 |<nobr>`--jobinterval`</nobr>|Limit the rate at which jobs are submitted to the cluster.||
 |<nobr>`--mempercore`</nobr>|For clusters which do not manage memory reservations, specifies the amount of memory `mrp` should expect to be available for each core.  If this number is less than the cores to memory ratio of a job, extra threads will be reserved in order to ensure that the job gets enough memory.  A very high value will effectively be ignored.  A low value will result in many wasted CPUs.|none|
 
+### The "special" resource
+
+In addition to threads and memory, MRO and stage split definitions may include
+a request for the `special` resource.  This is only used in cluster mode, and
+is intended for cases where the cluster manager requires special additional
+flags for some stages, for example if there is a separate queue for jobs which
+require very large amounts of memory.
+
+The `resopt` parameter in the `jobmanagers/config.json` file configures the way
+such resources are incorporated into the job template for your cluster.
+For SGE, for example, the parameter is `#$ -l __RESOURCES__`
+
+The `MRO_JOBRESOURCES` environment variable may contain a semicolon-separated
+list of key:value pairs.  If the `special` resource requested for the job
+corresponds to one of those keys, then `__MRO_RESOURCES__` in the job template
+is replaced with the `resopt` value from `jobmanagers/config.json`, with the
+value corresponding to the given key substituted for `__RESOURCES__`.
+
+For example, if the `resopt` config parameter is `#$ -l __RESOURCES__`,
+`MRO_JOBRESOURCES=highmem;mem640=TRUE;lowmem:mem64=TRUE`, and the job requests
+the special resource `"highmem"`, then `__MRO_RESOURCES__` in the job template
+gets replaced with `#$ -l mem640=TRUE`.
+
 ### Additional job management settings
 
 There are a few additional options available in the `jobmanagers/config.json`
