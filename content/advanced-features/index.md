@@ -102,6 +102,7 @@ stage SUM_SQUARES(
 )
 ```
 
+
 ## Job Management
 Broadly speaking, Martian has two ways to run stage jobs: Local Mode and Cluster Mode.
 
@@ -223,9 +224,52 @@ For debugging stage code, the `--stackvars` flag sets an option in the
 `jobinfo` file given to stage code.  For the python adapter, this flag causes
 it to dump all local variables from every stack frame on failure.
 
-## Overrides
+## Resource Overrides
+By specifying an appropriate `json` file on the `mrp` command line with the
+`--override=<FILE>` flag, one can override the resource reservation, whether
+it was left at the default or specified in the mro source or split.  The format
+of this json file is
+```json
+{
+  "TOP_LEVEL_PIPELINE.SUBPIPELINE_1.INNER_SUBPIPELINE_1.STAGE_NAME": {
+    "split.mem_gb": 2,
+    "chunk.mem_gb": 24,
+    "join.mem_gb": 2,
+    "chunk.threads": 2
+  },
+  "TOP_LEVEL_PIPELINE.SUBPIPELINE_2.INNER_SUBPIPELINE_2.OTHER_STAGE": {
+    "split.mem_gb": 2,
+    "chunk.mem_gb": 24,
+    "join.mem_gb": 2,
+    "chunk.threads": 2
+  }
+}
+```
+In addition to threads and memory, overrides can be used to turn volatility
+(see [VDR](#volatile-data-removal) below) on or off by setting
+`"force_volatile": true` or `false`.
 
 ## Preflight Checks
+Preflight checks are used to "sanity check" the environment and top-level
+pipeline inputs for a pipeline, for example ensuring that all required
+software dependencies are available in the user's `PATH` environment, or that
+specified input files are present.  A stage can be specified as preflight in
+the call by specifying
+```
+call PREFLIGHT_STAGE(
+    arg1 = self.input1,
+) using (
+    preflight = true,
+)
+```
+Preflight stages cannot have outputs and cannot have their inputs bound to
+outputs of other stages.  Even when embedded in a sub-pipeline, they will always
+run before any other stages.
+
+Preflight stages may also specify `local = true` in the call properties to
+require that the stage runs as a child process of `mrp` even in cluster mode.
+Use this option with care, as `mrp` may be running on a submit host with
+very limited resources.
 
 ## Volatile Data Removal
 
@@ -273,6 +317,22 @@ final pipeline outputs corresponded to which fork, and the runtime may behave
 poorly if multiple parameters are swept over in the same pipestance.
 
 ## Performance Analysis
+The `_jobinfo` file in each stage's split/chunk/join directories includes
+several performance metrics, including cpu, memory, and I/O usage.  On
+successful pipestance completion these statistics are aggregated into the
+top-level `_perf` file.
+
+MRP can be started with the `--profile` mode to enable various profiling tools
+for stage code.  The `cpu` and `mem` modes depend on the language-specific
+adaptor.  For Python, the `cpu` mode uses `cProfile` and `mem` uses an
+allocator hook.  For Go stages, `cpu` and `mem` use Go's native `runtime/pprof`
+functionality.
+
+The `perf` profile mode uses Linux `perf record`.  By default, this will record
+the `task-clock` and `bpf-output` events at 200Hz for the first 2400 seconds of
+each job (to prevent excessive disk space usage).  One can override those
+values with the `MRO_PERF_EVENTS`, `MRO_PERF_FREQ`, and `MRO_PERF_DURATION`
+environment variables, respectively.
 
 ## Completion Hooks
 
