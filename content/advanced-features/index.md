@@ -227,6 +227,28 @@ minimize the disk usage high-water-mark.
 
 ## Parameter Sweeping
 
+Often when testing changes to a pipeline, one wants to try the pipeline with
+several different possible values for one or more of the pipeline inputs.
+Parameter sweeping is intended for this use case.  A call such as
+```
+call PIPELINE_NAME(
+    arg1 = "foo",
+    arg2 = sweep(
+        "bar",
+        "baz",
+    ),
+)
+```
+will run the pipeline twice, once with `arg2 = "bar"` and again with
+`arg2 = "baz"`.  The runtime is clever enough to avoid rerunning stages which
+do not depend on `arg2` either directly or by depending on a stage which does.
+In some cases this can save substantial computing resources.
+
+This feature is intended for testing purposes only and should not be used in
+production pipelines.  It can be confusing to figure out which version of the
+final pipeline outputs corresponded to which fork, and the runtime may behave
+poorly if multiple parameters are swept over in the same pipestance.
+
 ## Performance Analysis
 
 ## Completion Hooks
