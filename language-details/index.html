@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=10" />
     <title>Language Details - Martian</title>
-    <meta name="generator" content="Hugo 0.30.2" />
+    <meta name="generator" content="Hugo 0.37.1" />
 
     
     <meta name="description" content="Martian is a language and framework for developing and executing complex computational pipelines.">
@@ -372,9 +372,9 @@
 
 <h2 id="tokens-and-grammar">Tokens and Grammar</h2>
 
-<p>The Martian language&rsquo;s tokens are defined by regular expressions in its <a href="https://github.com/martian-lang/martian/blob/master/src/martian/syntax/lexer.go">lexical scanner</a>.</p>
+<p>The Martian language&rsquo;s tokens are defined by regular expressions in its <a href="https://github.com/martian-lang/martian/blob/master/martian/syntax/lexer.go">lexical scanner</a>.</p>
 
-<p>The Martian syntax is specified as a <a href="https://github.com/martian-lang/martian/blob/master/src/martian/syntax/grammar.y">YACC grammar</a>.</p>
+<p>The Martian syntax is specified as a <a href="https://github.com/martian-lang/martian/blob/master/martian/syntax/grammar.y">YACC grammar</a>.</p>
 
 <h2 id="symbols-and-scope">Symbols and Scope</h2>
 
@@ -395,7 +395,7 @@
 
 <ul>
 <li>Stage names should be a subject and verb: <code>FIND_DIPS</code>, <code>CALL_VARIANTS</code></li>
-<li>Pipelines names should be &ldquo;actor nouns&rdquo;: <code>COIN_SORTER</code>, <code>DYSON_SPHERE_DETECTOR</code>, <code>SVCALLER</code></li>
+<li>Pipelines names should be &ldquo;actor nouns&rdquo;: <code>COIN_SORTER</code>, <code>DYSON_SPHERE_DETECTOR</code>, <code>SV_CALLER</code></li>
 <li>Names of pipelines intended to serve as subpipelines should be prefixed with an underscore: <code>_METRICS_REPORTER</code></li>
 </ul>
 
@@ -456,7 +456,11 @@
 </tbody>
 </table>
 
-<p>Martian also supports user-defined filetypes for which file extensions are enforced. A filetype is defined and referenced like this:</p>
+<p>Martian also supports user-defined filetypes.  The name of the file types
+controls the file extension for the default filename pre-populated in the outs.
+Martian enforces compile-time binding type matching between user-defined file
+types, but allows implicit casting between user-defined file types and generic
+&ldquo;string&rdquo; or &ldquo;file&rdquo; types.  A filetype is defined and referenced like this:</p>
 
 <pre><code>filetype txt;
 
@@ -471,7 +475,7 @@ stage SORT(
 
 			<aside class="copyright" role="note">
 				
-				&copy; 2017 10X Genomics 
+				&copy; 2018 10X Genomics 
 				
 				
 			</aside>

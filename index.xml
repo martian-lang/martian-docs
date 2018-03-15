@@ -6,7 +6,6 @@
     <description>Recent content on Martian</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>10X Genomics</copyright>
     <lastBuildDate>Thu, 01 Dec 2016 17:53:15 -0700</lastBuildDate>
     
 	<atom:link href="http://martian-lang.org/index.xml" rel="self" type="application/rss+xml" />
@@ -29,7 +28,7 @@
       
       <guid>http://martian-lang.org/getting-started/</guid>
       <description>Installing Martian Official binary distributions of the Martian toolchain are available for Linux. We hope to have MacOS and Windows support soon.
-   Download OS Arch SHA256     martian-v2.3.0-linux-x86_64.tar.gz Linux x86-64 657eb6018a9371ac6af7267191945fd5ca590963d93d5d8096078f37d92b1107   Coming soon macOS x86-64    Please contribute! Windows x86-64     System Requirements  Currently, running pipelines requires a Linux system with kernel version 2.6.23 or later.</description>
+   Download OS Arch SHA256     martian-v2.3.2-linux-x86_64.tar.gz Linux x86-64 657eb6018a9371ac6af7267191945fd5ca590963d93d5d8096078f37d92b1107   Coming soon macOS x86-64    Please contribute! Windows x86-64     System Requirements  Currently, running pipelines requires a Linux system with kernel version 2.6.23 or later.</description>
     </item>
     
     <item>

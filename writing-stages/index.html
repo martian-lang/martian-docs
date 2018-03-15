@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=10" />
     <title>Writing Stages - Martian</title>
-    <meta name="generator" content="Hugo 0.30.2" />
+    <meta name="generator" content="Hugo 0.37.1" />
 
     
     <meta name="description" content="Martian is a language and framework for developing and executing complex computational pipelines.">
@@ -383,7 +383,7 @@ at least four command-line arguments as follows:</p>
 </code></pre>
 
 <p>In most cases the interpretation of the arguments is handled by a
-<a href="#Language Adapters">language-specific adapter</a>.
+<a href="#language-adapters">language-specific adapter</a>.
 The <code>type</code> argument is one of <code>split</code>, <code>join</code>, or <code>main</code> (<code>main</code> is run for
 chunk phases, or for stages which do not
 <a href="../advanced-features/#parallelization">split</a> ). The stage executable should
@@ -391,7 +391,7 @@ switch on that type and provide implementations for each.</p>
 
 <p>The details of the interface are generally handled by a language-specific
 &ldquo;adapter.&rdquo;  Currently, there are adapters for Python and Go in the main
-repository, and an adapter for [Rust]() in also available.  Adapters for
+repository, and an adapter for <a href="https://github.com/martian-lang/martian-rust">Rust</a> in also available.  Adapters for
 scripting languages are generally distributed with martian and should be
 expected to be tied to a specific martian version, while adapters for
 compiled languages obviously need to be compiled with the stage code.
@@ -399,7 +399,7 @@ For details on the interface between the job monitor process and the
 adapter code, see the
 <a href="https://github.com/martian-lang/martian/blob/master/adapters/README.md">adapter documentation in the Martian repository</a>.
 When writing stage code, refer to the documentation for the
-<a href="#Language Adapters">language-specific adapter</a> for additional details,
+<a href="#language-adapters">language-specific adapter</a> for additional details,
 as they are intended to provide abstraction layers wrapping the interface
 to the martian runtime, such as managing interaction with the journal
 directory and accessing inputs and outputs.</p>
@@ -408,24 +408,30 @@ directory and accessing inputs and outputs.</p>
 
 <p>Input: The <code>args</code> file (containing the json dictionary of stage inputs)</p>
 
-<p>Output: A <code>stage_defs</code> file, containing a json object containing two keys.
-- <code>chunks</code>: a list of objects containing the input arguments to each stage,
+<p>Output: A <code>stage_defs</code> file, containing a json object containing two keys.</p>
+
+<ul>
+<li><code>chunks</code>: a list of objects containing the input arguments to each stage,
 and optional keys <code>__threads</code> and <code>__mem_gb</code> to override the default resource
-reservation for each chunk.
-- <code>join</code> (optinoal): an object containing <code>__threads</code> and <code>__mem_gb</code> overrides
-to be used for the join phase.</p>
+reservation for each chunk.</li>
+<li><code>join</code> (optional): an object containing <code>__threads</code> and <code>__mem_gb</code> overrides
+to be used for the join phase.</li>
+</ul>
 
 <p>More details in <a href="../advanced-features/#parallelization">Advanced Features: Parallelization</a>.</p>
 
 <h3 id="join-interface">Join Interface</h3>
 
-<p>Inputs:
-- <code>args</code>: The stage input arguments
-- <code>chunk_defs</code>: The chunk definitions produced by the split phase.
-- <code>chunk_outs</code>: A json serialized list aggregating the outputs from each chunk.
-- <code>outs</code>: The stage outputs.  This is also written to, but for outputs which
+<p>Inputs:</p>
+
+<ul>
+<li><code>args</code>: The stage input arguments</li>
+<li><code>chunk_defs</code>: The chunk definitions produced by the split phase.</li>
+<li><code>chunk_outs</code>: A json serialized list aggregating the outputs from each chunk.</li>
+<li><code>outs</code>: The stage outputs.  This is also written to, but for outputs which
 are files, the paths to the expected locations for those files are populated
-by the runtime.</p>
+by the runtime.</li>
+</ul>
 
 <p>Output: The <code>outs</code> file is re-written with values populated for non-file
 output types.</p>
@@ -566,7 +572,7 @@ Python <code>import</code> that path as a module.</p>
 
 <p>[ Documentation WIP ]</p>
 
-<h3 id="go-https-github-com-martian-lang-martian-blob-master-src-martian-adapter-adapter-go"><a href="https://github.com/martian-lang/martian/blob/master/src/martian/adapter/adapter.go">Go</a></h3>
+<h3 id="go-https-github-com-martian-lang-martian-blob-master-martian-adapter-adapter-go"><a href="https://github.com/martian-lang/martian/blob/master/martian/adapter/adapter.go">Go</a></h3>
 
 <p>To implement a stage with Go, simply import
 <code>github.com/martian-lang/martian/martian/adapter</code> and call the <code>RunStage</code>
@@ -575,7 +581,7 @@ method with your stage code logic as parameters from the main() method.</p>
 <p>Given <code>split</code>, <code>chunk</code>, <code>join</code> methods are given a <code>core.Metadata</code> object
 which provides access to args, outs, and so on.  For an example of how this
 can be used, see the
-<a href="https://github.com/10XDev/martian-public/blob/master/test/split_test_go/stages/sum_squares/sum_squares.go">go-based integration test stage</a>
+<a href="https://github.com/martian-lang/martian/blob/master/martian/test/sum_squares/sum_squares.go">go-based integration test stage</a>
 as an example.</p>
 
 <p>Stage code can write to the stage <code>log</code> file with <code>util.Log</code> and related
@@ -595,7 +601,7 @@ Pull requests welcome!</p>
 
 			<aside class="copyright" role="note">
 				
-				&copy; 2017 10X Genomics 
+				&copy; 2018 10X Genomics 
 				
 				
 			</aside>

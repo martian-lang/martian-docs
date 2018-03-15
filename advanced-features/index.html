@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=10" />
     <title>Advanced Features - Martian</title>
-    <meta name="generator" content="Hugo 0.30.2" />
+    <meta name="generator" content="Hugo 0.37.1" />
 
     
     <meta name="description" content="Martian is a language and framework for developing and executing complex computational pipelines.">
@@ -492,7 +492,7 @@ configure the job:</p>
 </table>
 
 <p><code>mrp</code> will execute the specified <code>cmd</code> with the specified <code>args</code> and pipe a job
-script to its standard input (see <a href="#Templates">Templates</a> below for how the job
+script to its standard input (see <a href="#templates">Templates</a> below for how the job
 script is generated).  If the command&rsquo;s standard output consists of a string
 with no newlines or whitespace, it is interpreted as a job ID and recorded with
 the job, to potentially be used later with the <code>queue_query</code> script.</p>
@@ -596,7 +596,7 @@ the number of threads they parallize jobs over, for example <code>OMP_NUM_THREAD
 for OpenMP.  The <code>thread_envs</code> key specifies a list of environment variables
 which should be set to be equal to the job thread reservation.  These are
 applied in cluster mode, and in local mode if the number of threads is
-constrained.  In local mode without a constraint on mrp&rsquo;s total thread count,
+constrained.  In local mode without a constraint on <code>mrp</code>&rsquo;s total thread count,
 it is not used, as it&rsquo;s expected that the user is not sharing the machine with
 other users, so such a constraint on internal parallelism is just potentially
 idle CPU cycles.</p>
@@ -620,7 +620,22 @@ it to dump all local variables from every stack frame on failure.</p>
 
 <h2 id="volatile-data-removal">Volatile Data Removal</h2>
 
-<p><code>volatile</code> keyword.</p>
+<p>A call to a stage can be marked <code>volatile</code> by specifying</p>
+
+<pre><code>call volatile STAGE_NAME(
+    arg1 = value,
+)
+</code></pre>
+
+<p>If a stage is marked volatile it is eligible for volatile data removal once
+all stages which depend on it are complete.  When the &ldquo;VDR killer&rdquo; is invoked,
+all file data owned by the stage will be deleted, freeing up disk space.  Job
+metadata is retained, and the total amount of freed space is recorded.  In
+<code>--vdrmode=rolling</code>, the VDR killer is invoked whenever any stage completes.
+In <code>--vdrmode=post</code> it is invoked when the pipeline completes.
+Mrp&rsquo;s default is <code>--vdrmode=disabled</code> for development purposes, however
+production pipeline wrapper scripts should set <code>--vdrmode=rolling</code> to
+minimize the disk usage high-water-mark.</p>
 
 <h2 id="parameter-sweeping">Parameter Sweeping</h2>
 
@@ -673,7 +688,7 @@ it to dump all local variables from every stack frame on failure.</p>
 
 			<aside class="copyright" role="note">
 				
-				&copy; 2017 10X Genomics 
+				&copy; 2018 10X Genomics 
 				
 				
 			</aside>

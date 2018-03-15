@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=10" />
     <title>Writing Pipelines - Martian</title>
-    <meta name="generator" content="Hugo 0.30.2" />
+    <meta name="generator" content="Hugo 0.37.1" />
 
     
     <meta name="description" content="Martian is a language and framework for developing and executing complex computational pipelines.">
@@ -391,7 +391,7 @@ language-independent manner.</p>
 
 <pre><code>filetype txt;
 
-stage SORT(
+stage SORT_ITEMS(
     in  txt  unsorted,
     in  bool case_sensitive,
     out txt  sorted,
@@ -414,7 +414,7 @@ the language of that code. For example, a stage could refer to a Python module,
 or a C, C++, Go, or Rust binary, just to name a few possibilities.</li>
 </ol>
 
-<p>Currently the there are 3 values supported for the type parameter:</p>
+<p>Currently there are 2 values supported for the type parameter:</p>
 
 <table>
 <thead>
@@ -481,7 +481,7 @@ pipeline DUPLICATE_FINDER(
         unsorted = self.unsorted,
     )
     call FIND_DUPLICATES(
-        sorted = SORT.sorted,
+        sorted = SORT_ITEMS.sorted,
     )
     return (
         duplicates = FIND_DUPLICATES.duplicates,
@@ -493,8 +493,8 @@ pipeline DUPLICATE_FINDER(
 
 <ul>
 <li>Declares a user-defined filetype <code>txt</code></li>
-<li>Declares two stages <code>SORT</code> and <code>FIND_DUPLICATES</code></li>
-<li>Declares a pipeline <code>DUPLICATE_FINDER</code> that calls both stages. It accepts one input <code>unsorted</code> which must be a filename ending in <code>.txt</code>. The <code>unsorted</code> parameter is then passed to the input of <code>SORT</code>, whose output is then passed to <code>FIND_DUPLICATES</code>. The output <code>duplicates</code> of <code>FIND_DUPLICATES</code> is then returned as the output of the whole pipeline.</li>
+<li>Declares two stages <code>SORT_ITEMS</code> and <code>FIND_DUPLICATES</code></li>
+<li>Declares a pipeline <code>DUPLICATE_FINDER</code> that calls both stages. It accepts one input <code>unsorted</code> which must be a filename ending in <code>.txt</code>. The <code>unsorted</code> parameter is then passed to the input of <code>SORT_ITEMS</code>, whose output is then passed to <code>FIND_DUPLICATES</code>. The output <code>duplicates</code> of <code>FIND_DUPLICATES</code> is then returned as the output of the whole pipeline.</li>
 </ul>
 
 <p>The Martian GitHub repository includes
@@ -636,7 +636,7 @@ The following verification steps are performed:</p>
 
 <ul>
 <li><strong>Preprocessing</strong>: All <code>@include</code> directives are recursively evaluated.  Any preprocessing errors, such as a file not found, will stop <code>mrc</code> and be reported.</li>
-<li><strong>Lexing and Parsing</strong>: The MRO code produced by the preprocessor is then lexed and parsed according to the <a href="https://github.com/martian-lang/martian/blob/master/src/martian/syntax/grammar.y">Martian grammar</a> to produce an in-memory representation of the pipeline called an <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">Abstract Syntax Tree</a> (AST).  Any syntax errors will stop <code>mrc</code> and be reported.</li>
+<li><strong>Lexing and Parsing</strong>: The MRO code produced by the preprocessor is then lexed and parsed according to the <a href="https://github.com/martian-lang/martian/blob/master/martian/syntax/grammar.y">Martian grammar</a> to produce an in-memory representation of the pipeline called an <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">Abstract Syntax Tree</a> (AST).  Any syntax errors will stop <code>mrc</code> and be reported.</li>
 <li><strong>Semantic Analysis</strong>: The AST produced by the parser abstract syntax tree is then analyzed according a number of semantic rules. Any semantic errors will will be reported.
 
 <ul>
@@ -662,7 +662,7 @@ the AST in external tools.</p>
 
 			<aside class="copyright" role="note">
 				
-				&copy; 2017 10X Genomics 
+				&copy; 2018 10X Genomics 
 				
 				
 			</aside>
