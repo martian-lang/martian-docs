@@ -91,7 +91,7 @@ August 2017  Initial GitHub publication  Q3 2017 - 2.3.0  Always-on UI port with
       
       <guid>http://martian-lang.org/advanced-features/</guid>
       <description>Martian supports a number of advanced features to provide:
- Performance and resource efficiency that scales from single servers to large high-performance compute clusters Early error detection Data storage efficiency Loosely-coupled integration with other systems  Parallelization Subject to resource constraints, Martian parallelizes work by breaking pipeline logic into chunks and parallelizing them in two ways. First, stages can run in parallel if they don&amp;rsquo;t depend on each other&amp;rsquo;s outputs.</description>
+ Performance and resource efficiency that scales from single servers to large high-performance compute clusters Early error detection Data storage efficiency Loosely-coupled integration with other systems  Disabling sub-pipelines Sometimes the choice of which sub-pipelines to run on the data depends on the data. For example, the first part of a pipeline might determine which of several algorithms is likely to yield the best results on the given data set.</description>
     </item>
     
     <item>

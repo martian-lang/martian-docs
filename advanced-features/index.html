@@ -379,6 +379,46 @@
 <li>Loosely-coupled integration with other systems</li>
 </ul>
 
+<h2 id="disabling-sub-pipelines">Disabling sub-pipelines</h2>
+
+<p>Sometimes the choice of which sub-pipelines to run on the data depends on the
+data.  For example, the first part of a pipeline might determine which of
+several algorithms is likely to yield the best results on the given data set.
+To support this, Martian 3.0 allows disabling of calls, e.g.</p>
+
+<pre><code>pipeline DUPLICATE_FINDER(
+    in  txt  unsorted,
+    out txt  duplicates,
+)
+{
+    call CHOOSE_METHOD(
+        unsorted = self.unsorted,
+    )
+    call SORT_1(
+        unsorted = self.unsorted,
+    ) using (
+        disabled = CHOOSE_METHOD.disable1,
+    )
+    call SORT_2(
+        unsorted = self.unsorted,
+    ) using (
+        disabled = CHOOSE_METHOD.disable2,
+    )
+
+    call FIND_DUPLICATES(
+        method_1_used = CHOOSE_METHOD.disable2,
+        sorted1       = SORT_1.sorted,
+        sorted2       = SORT_2.sorted,
+    )
+    return (
+        duplicates = FIND_DUPLICATES.duplicates,
+    )
+}
+</code></pre>
+
+<p>Disabled pipelines or stages will not run, and their outputs will be populated
+with null values.  Downstream stages must be prepared to deal with this case.</p>
+
 <h2 id="parallelization">Parallelization</h2>
 
 <p>Subject to resource constraints, Martian parallelizes work by breaking
@@ -392,8 +432,9 @@ Second, individual stages may split themselves into several chunks.</p>
     in  float[] values,
     out float   sum,
     src comp    &quot;sum_squares&quot;,
-) split using (
+) split (
     in  float   value,
+    out float   value,
 )
 </code></pre>
 
@@ -403,6 +444,36 @@ how to distribute the input data across chunks, giving a &ldquo;value&rdquo; to 
 as well as potentially setting thread and memory requirements for each chunk
 and the join.  The after the chunks run, the join phase aggregates the output
 from all of the chunks into the single output of the stage.</p>
+
+<h2 id="resource-consumption">Resource consumption</h2>
+
+<p>Martian is designed to run stages in parallel.  Either locally or in cluster
+mode, it tries to ensure sufficient threads and memory are available for each
+job running in parallel.  The default reservation is controlled by the
+<code>jobmanagers/config.json</code> file (see below).  If a job needs more resources
+than the default, there are two ways to request them.</p>
+
+<p>If the stages splits (see above), the split stage can override the default
+reservations of the chunk or join phases by setting the <code>__mem_gb</code> or
+<code>__threads</code> keys in the chunk or join part of the <code>chunk_defs</code> it returns.
+This is required if for example the split, chunk, or join methods don&rsquo;t all
+have the same requirements, or if the split needs to compute the requirements
+dynamically.  Alternatively, setting the resource requirements for the split,
+or statically declaring the resources for all 3 phases (or just the chunk, if
+there is no split), can be done in the mro file, e.g.</p>
+
+<pre><code>stage SUM_SQUARES(
+    in  float[] values,
+    out float   sum,
+    src comp    &quot;sum_squares&quot;,
+) split (
+    in  float   value,
+    out float   value,
+) using (
+    mem_gb  = 4,
+    threads = 16,
+)
+</code></pre>
 
 <h2 id="job-management">Job Management</h2>
 
@@ -586,6 +657,29 @@ job manager.</p>
 </tbody>
 </table>
 
+<h3 id="the-special-resource">The &ldquo;special&rdquo; resource</h3>
+
+<p>In addition to threads and memory, MRO and stage split definitions may include
+a request for the <code>special</code> resource.  This is only used in cluster mode, and
+is intended for cases where the cluster manager requires special additional
+flags for some stages, for example if there is a separate queue for jobs which
+require very large amounts of memory.</p>
+
+<p>The <code>resopt</code> parameter in the <code>jobmanagers/config.json</code> file configures the way
+such resources are incorporated into the job template for your cluster.
+For SGE, for example, the parameter is <code>#$ -l __RESOURCES__</code></p>
+
+<p>The <code>MRO_JOBRESOURCES</code> environment variable may contain a semicolon-separated
+list of key:value pairs.  If the <code>special</code> resource requested for the job
+corresponds to one of those keys, then <code>__MRO_RESOURCES__</code> in the job template
+is replaced with the <code>resopt</code> value from <code>jobmanagers/config.json</code>, with the
+value corresponding to the given key substituted for <code>__RESOURCES__</code>.</p>
+
+<p>For example, if the <code>resopt</code> config parameter is <code>#$ -l __RESOURCES__</code>,
+<code>MRO_JOBRESOURCES=highmem;mem640=TRUE;lowmem:mem64=TRUE</code>, and the job requests
+the special resource <code>&quot;highmem&quot;</code>, then <code>__MRO_RESOURCES__</code> in the job template
+gets replaced with <code>#$ -l mem640=TRUE</code>.</p>
+
 <h3 id="additional-job-management-settings">Additional job management settings</h3>
 
 <p>There are a few additional options available in the <code>jobmanagers/config.json</code>
@@ -614,16 +708,65 @@ be helpful for debugging.</p>
 <code>jobinfo</code> file given to stage code.  For the python adapter, this flag causes
 it to dump all local variables from every stack frame on failure.</p>
 
-<h2 id="overrides">Overrides</h2>
+<h2 id="resource-overrides">Resource Overrides</h2>
+
+<p>By specifying an appropriate <code>json</code> file on the <code>mrp</code> command line with the
+<code>--override=&lt;FILE&gt;</code> flag, one can override the resource reservation, whether
+it was left at the default or specified in the mro source or split.  The format
+of this json file is</p>
+
+<pre><code class="language-json">{
+  &quot;TOP_LEVEL_PIPELINE.SUBPIPELINE_1.INNER_SUBPIPELINE_1.STAGE_NAME&quot;: {
+    &quot;split.mem_gb&quot;: 2,
+    &quot;chunk.mem_gb&quot;: 24,
+    &quot;join.mem_gb&quot;: 2,
+    &quot;chunk.threads&quot;: 2
+  },
+  &quot;TOP_LEVEL_PIPELINE.SUBPIPELINE_2.INNER_SUBPIPELINE_2.OTHER_STAGE&quot;: {
+    &quot;split.mem_gb&quot;: 2,
+    &quot;chunk.mem_gb&quot;: 24,
+    &quot;join.mem_gb&quot;: 2,
+    &quot;chunk.threads&quot;: 2
+  }
+}
+</code></pre>
+
+<p>In addition to threads and memory, overrides can be used to turn volatility
+(see <a href="#volatile-data-removal">VDR</a> below) on or off by setting
+<code>&quot;force_volatile&quot;: true</code> or <code>false</code>.</p>
 
 <h2 id="preflight-checks">Preflight Checks</h2>
+
+<p>Preflight checks are used to &ldquo;sanity check&rdquo; the environment and top-level
+pipeline inputs for a pipeline, for example ensuring that all required
+software dependencies are available in the user&rsquo;s <code>PATH</code> environment, or that
+specified input files are present.  A stage can be specified as preflight in
+the call by specifying</p>
+
+<pre><code>call PREFLIGHT_STAGE(
+    arg1 = self.input1,
+) using (
+    preflight = true,
+)
+</code></pre>
+
+<p>Preflight stages cannot have outputs and cannot have their inputs bound to
+outputs of other stages.  Even when embedded in a sub-pipeline, they will always
+run before any other stages.</p>
+
+<p>Preflight stages may also specify <code>local = true</code> in the call properties to
+require that the stage runs as a child process of <code>mrp</code> even in cluster mode.
+Use this option with care, as <code>mrp</code> may be running on a submit host with
+very limited resources.</p>
 
 <h2 id="volatile-data-removal">Volatile Data Removal</h2>
 
 <p>A call to a stage can be marked <code>volatile</code> by specifying</p>
 
-<pre><code>call volatile STAGE_NAME(
+<pre><code>call STAGE_NAME(
     arg1 = value,
+) using (
+    volatile = true,
 )
 </code></pre>
 
@@ -639,7 +782,47 @@ minimize the disk usage high-water-mark.</p>
 
 <h2 id="parameter-sweeping">Parameter Sweeping</h2>
 
+<p>Often when testing changes to a pipeline, one wants to try the pipeline with
+several different possible values for one or more of the pipeline inputs.
+Parameter sweeping is intended for this use case.  A call such as</p>
+
+<pre><code>call PIPELINE_NAME(
+    arg1 = &quot;foo&quot;,
+    arg2 = sweep(
+        &quot;bar&quot;,
+        &quot;baz&quot;,
+    ),
+)
+</code></pre>
+
+<p>will run the pipeline twice, once with <code>arg2 = &quot;bar&quot;</code> and again with
+<code>arg2 = &quot;baz&quot;</code>.  The runtime is clever enough to avoid rerunning stages which
+do not depend on <code>arg2</code> either directly or by depending on a stage which does.
+In some cases this can save substantial computing resources.</p>
+
+<p>This feature is intended for testing purposes only and should not be used in
+production pipelines.  It can be confusing to figure out which version of the
+final pipeline outputs corresponded to which fork, and the runtime may behave
+poorly if multiple parameters are swept over in the same pipestance.</p>
+
 <h2 id="performance-analysis">Performance Analysis</h2>
+
+<p>The <code>_jobinfo</code> file in each stage&rsquo;s split/chunk/join directories includes
+several performance metrics, including cpu, memory, and I/O usage.  On
+successful pipestance completion these statistics are aggregated into the
+top-level <code>_perf</code> file.</p>
+
+<p>MRP can be started with the <code>--profile</code> mode to enable various profiling tools
+for stage code.  The <code>cpu</code> and <code>mem</code> modes depend on the language-specific
+adaptor.  For Python, the <code>cpu</code> mode uses <code>cProfile</code> and <code>mem</code> uses an
+allocator hook.  For Go stages, <code>cpu</code> and <code>mem</code> use Go&rsquo;s native <code>runtime/pprof</code>
+functionality.</p>
+
+<p>The <code>perf</code> profile mode uses Linux <code>perf record</code>.  By default, this will record
+the <code>task-clock</code> and <code>bpf-output</code> events at 200Hz for the first 2400 seconds of
+each job (to prevent excessive disk space usage).  One can override those
+values with the <code>MRO_PERF_EVENTS</code>, <code>MRO_PERF_FREQ</code>, and <code>MRO_PERF_DURATION</code>
+environment variables, respectively.</p>
 
 <h2 id="completion-hooks">Completion Hooks</h2>
 
