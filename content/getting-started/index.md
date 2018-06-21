@@ -11,7 +11,7 @@ We hope to have MacOS and Windows support soon.
 
 |Download|OS|Arch|SHA256|
 |---|---|---|---|
-|[martian-v3.0.0-rc3-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v3.0.0-rc3/martian-v3.0.0-rc3-linux-x86_64.tar.gz)|Linux|x86-64|<span style="font-size: 8px">ce841b5df88735b876d5c1315011d928c52f6a298caf89b214bc8e9c982f35b3</span>|
+|[martian-v3.0.0-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v3.0.0/martian-v3.0.0-linux-x86_64.tar.gz)|Linux|x86-64|<span style="font-size: 8px">f0708a27113417d8d69ad61835930dba8a8fd827f11d4fb6ce5c6108e773a57e</span>|
 |[martian-v2.3.2-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v2.3.2/martian-v2.3.2-linux-x86_64.tar.gz)|Linux|x86-64|<span style="font-size: 8px">657eb6018a9371ac6af7267191945fd5ca590963d93d5d8096078f37d92b1107</span>|
 |[Coming soon](https://github.com/martian-lang/martian/blob/master/.github/CONTRIBUTING.md)|macOS|x86-64|
 |[Please contribute!](https://github.com/martian-lang/martian/blob/master/.github/CONTRIBUTING.md)|Windows|x86-64|
