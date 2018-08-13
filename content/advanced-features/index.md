@@ -102,6 +102,14 @@ stage SUM_SQUARES(
 )
 ```
 
+As a special signal to the runtime, a stage may request a negative quantity for
+memory or threads.  A negative value serves as a signal to the runtime that the
+stage requires at least the absolute value of the requested amount, but can use
+more if available.  That is, if a stage requests `threads = -4`, and `mrp` was
+started with `--localcores=2` it will fail, but if it were started with
+`--localcores=8` it would be treated as if it had asked for 8 threads.  The job
+can check the metadata in the `_jobinfo` file to find out how many it actually
+got.
 
 ## Job Management
 Broadly speaking, Martian has two ways to run stage jobs: Local Mode and Cluster Mode.
@@ -246,7 +254,7 @@ of this json file is
 }
 ```
 In addition to threads and memory, overrides can be used to turn volatility
-(see [VDR](#volatile-data-removal) below) on or off by setting
+(see [Storage Management](../storage-management/)) on or off by setting
 `"force_volatile": true` or `false`.
 
 ## Preflight Checks
@@ -272,25 +280,7 @@ Use this option with care, as `mrp` may be running on a submit host with
 very limited resources.
 
 ## Volatile Data Removal
-
-A call to a stage can be marked `volatile` by specifying
-```
-call STAGE_NAME(
-    arg1 = value,
-) using (
-    volatile = true,
-)
-```
-
-If a stage is marked volatile it is eligible for volatile data removal once
-all stages which depend on it are complete.  When the "VDR killer" is invoked,
-all file data owned by the stage will be deleted, freeing up disk space.  Job
-metadata is retained, and the total amount of freed space is recorded.  In
-`--vdrmode=rolling`, the VDR killer is invoked whenever any stage completes.
-In `--vdrmode=post` it is invoked when the pipeline completes.
-Mrp's default is `--vdrmode=disabled` for development purposes, however
-production pipeline wrapper scripts should set `--vdrmode=rolling` to
-minimize the disk usage high-water-mark.
+See [Storage Management](../storage-management/).
 
 ## Parameter Sweeping
 

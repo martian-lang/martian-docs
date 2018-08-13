@@ -41,7 +41,7 @@ $ git clone --recursive https://github.com/martian-lang/martian.git
 $ cd martian
 $ make all
 $ ls bin
-mrc  mrf  mrg  mrjob  mrp  mrs  mrstat
+mrc  mrf  mrg  mrjob  mrp  mrstat
 ~~~~
 
 To test that everything is working, `make longtests` runs a few simple test pipelines
@@ -58,9 +58,8 @@ The Martian toolchain comprises five core executables:
 |---|---|---|
 |`mrc`|Compiler/Checker|Parses and validates Martian code
 |`mrf`|Formatter|Canonicalizes Martian code formatting and whitespace
-|`mrp`|Pipeline Runtime|Executes a Martian pipeline
-|`mrs`|Stage Runtime|Executes an individual Martian pipeline stage
-|`mrjob`|Stage wrapper|Wraps user stage code, ensuring it obeys the contracts `mrp` or `mrs` expect.
+|`mrp`|Pipeline Runtime|Executes a Martian pipeline or stage.
+|`mrjob`|Stage wrapper|Wraps user stage code, ensuring it obeys the contracts `mrp` expects.
 
 Make these executables available on your `PATH` and then confirm that you can run them. If you unpacked or cloned Martian into `/home/user/git/martian`, for example, then:
 
