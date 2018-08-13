@@ -9,18 +9,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=10" />
-    <title>Language Details - Martian</title>
+    <title>Storage Management - Martian</title>
     <meta name="generator" content="Hugo 0.37.1" />
 
     
     <meta name="description" content="Martian is a language and framework for developing and executing complex computational pipelines.">
     
-    <link rel="canonical" href="http://martian-lang.org/language-details/">
+    <link rel="canonical" href="http://martian-lang.org/storage-management/">
     
     <meta name="author" content="Martian authors">
     
 
-    <meta property="og:url" content="http://martian-lang.org/language-details/">
+    <meta property="og:url" content="http://martian-lang.org/storage-management/">
     <meta property="og:title" content="Martian">
     <meta property="og:image" content="http://martian-lang.org/images/logo.png">
     <meta name="apple-mobile-web-app-title" content="Martian">
@@ -299,14 +299,11 @@
 
 
 
-<a class="current" title="Language Details" href="http://martian-lang.org/language-details/">
+<a  title="Language Details" href="http://martian-lang.org/language-details/">
 	
 	Language Details
 </a>
 
-
-<ul id="scrollspy">
-</ul>
 
 
   
@@ -366,111 +363,183 @@
 
 	<article class="article">
 		<div class="wrapper">
-			<h1>Language Details </h1>
+			<h1>Storage Management </h1>
 
 			
 
-<h2 id="tokens-and-grammar">Tokens and Grammar</h2>
+<p>Big data pipeline frequently produce large amounts of intermediate data, stored
+on the filesystem both because it isn&rsquo;t practical to store it all in RAM and
+because this allows for a pipeline which fails part way through to be restarted
+without redoing all the work from scratch.  The Martian runtime&rsquo;s VDR (volatile
+data removal) feature is intended for removing this intermediate data once it
+is no longer needed.</p>
 
-<p>The Martian language&rsquo;s tokens are defined by regular expressions in its <a href="https://github.com/martian-lang/martian/blob/master/martian/syntax/lexer.go">lexical scanner</a>.</p>
+<h2 id="volatile-data-removal">Volatile Data Removal</h2>
 
-<p>The Martian syntax is specified as a <a href="https://github.com/martian-lang/martian/blob/master/martian/syntax/grammar.y">YACC grammar</a>.</p>
+<p>A call to a stage can be marked <code>volatile</code> by specifying</p>
 
-<h2 id="symbols-and-scope">Symbols and Scope</h2>
-
-<p>Symbols in Martian are identifiers for stages, pipelines, and parameters. They may comprise uppercase and lowercase letters, numeric digits, and underscores. A symbol may not begin with a numeric digit, which is reserved for number literals. The Martian lexer&rsquo;s regular expression for symbols is <code>[a-zA-Z_][a-zA-Z0-9_]*\\b</code>.</p>
-
-<p>Martian defines two scopes within which symbol names must be unique:</p>
-
-<ol>
-<li>Within the scope of one pipeline invocation, which encompasses all recursively included MRO files, no two stages or pipelines may share the same name. This is considered the global scope of a pipestance.</li>
-<li>Within the scope of a stage declaration, no two input parameters of a given stage can have the same name, and same for output parameters.</li>
-</ol>
-
-<h2 id="naming-conventions">Naming Conventions</h2>
-
-<p>The following naming conventions are strongly recommended for consistency and readability, but are not currently enforced by the compiler.</p>
-
-<p>Stage and pipeline names should written in <code>ALL CAPS SNAKE_CASE</code>.</p>
-
-<ul>
-<li>Stage names should be a subject and verb: <code>FIND_DIPS</code>, <code>CALL_VARIANTS</code></li>
-<li>Pipelines names should be &ldquo;actor nouns&rdquo;: <code>COIN_SORTER</code>, <code>DYSON_SPHERE_DETECTOR</code>, <code>SV_CALLER</code></li>
-<li>Names of pipelines intended to serve as subpipelines should be prefixed with an underscore: <code>_METRICS_REPORTER</code></li>
-</ul>
-
-<p>Parameter names should be written in <code>all lowercase snake_case</code>.</p>
-
-<h2 id="parameter-binding">Parameter Binding</h2>
-
-<p>This section describes the rules associated with parameter binding, the mechanism by which inputs and outputs of stages and pipelines are connected together.</p>
-
-<p>Whenever a stage is called, each of its input parameters must be bound to either an output parameter of another stage, or an input parameter of the enclosing pipeline. Parameter bindings use a dotted notation where the left-hand term is either the name of a stage, or <code>self</code> when binding to an input of the pipeline itself.</p>
-
-<p>Each output parameter of the pipeline must also be bound to an output of one of its called stages. This is done using a <code>return</code> statement, as shown above.</p>
-
-<p>Martian enforces type matching on parameter bindings, statically verifying that two parameters bound together have the same type.</p>
-
-<h2 id="types">Types</h2>
-
-<p>Martian supports the following built-in types:</p>
-
-<table>
-<thead>
-<tr>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>string</td>
-<td>A string.</td>
-</tr>
-
-<tr>
-<td>int</td>
-<td>An integer number.</td>
-</tr>
-
-<tr>
-<td>float</td>
-<td>A floating point number with support for exponential notation.</td>
-</tr>
-
-<tr>
-<td>bool</td>
-<td>A boolean flag whose valid values are <code>true</code> and <code>false</code>.</td>
-</tr>
-
-<tr>
-<td>path</td>
-<td>A string meant to be interpreted as a filesystem path.</td>
-</tr>
-
-<tr>
-<td>map</td>
-<td>A JSON-compatible data structure whose top-level type is an object.</td>
-</tr>
-</tbody>
-</table>
-
-<p>Martian also supports user-defined filetypes.  The name of the file types
-controls the file extension for the default filename pre-populated in the outs.
-Martian enforces compile-time binding type matching between user-defined file
-types, but allows implicit casting between user-defined file types and generic
-&ldquo;string&rdquo; or &ldquo;file&rdquo; types.  A filetype is defined and referenced like this:</p>
-
-<pre><code>filetype txt;
-
-stage SORT(
-    in  txt  unsorted_txt,
-    in  bool case_sensitive,
-    out txt  sorted_txt,
-    src py   &quot;stages/sort&quot;,
+<pre><code>call STAGE_NAME(
+    arg1 = value,
+) using (
+    volatile = true,
 )
 </code></pre>
+
+<p>If a stage is marked volatile it is eligible for volatile data removal once
+all stages which depend on it are complete.  When the &ldquo;VDR killer&rdquo; is invoked,
+all file data owned by the stage will be deleted, freeing up disk space.  Job
+metadata is retained, and the total amount of freed space is recorded.</p>
+
+<p>If the top-level pipeline output is bound to one of the outputs of a stage,
+the <code>volatile</code> flag for that call is ignored.</p>
+
+<p>In <code>--vdrmode=rolling</code>, the VDR killer is invoked whenever any stage completes.
+In <code>--vdrmode=post</code> it is invoked when the pipeline completes.
+Mrp&rsquo;s default is <code>--vdrmode=rolling</code>, however for development purposes, one
+may wish to set <code>--vdrmode=disabled</code> to preserve intermediate results.</p>
+
+<p>Additionally, when VDR is not disabled, all stages which split will have their
+chunks&rsquo; files cleaned out by VDR when all dependent stages have completed.</p>
+
+<h2 id="martian-3-1-preview-new-vdr-features">Martian 3.1 preview: new VDR features</h2>
+
+<p>NOTE: the following refers to features in the release candidate version of
+Martian 3.1.  The syntax will not work in 3.0 or earlier releases.</p>
+
+<p>In addition to the new syntax listed below, the behavior for volatile stages
+with outputs bound to the top-level pipeline&rsquo;s outputs has also changed.
+Instead of cleaning up those stages as if they were non-volatile, once all
+dependent stages have completed they are cleaned up as if they were strict-mode
+volatile - that is, only the files mentioned in the top-level outputs are
+preserved.</p>
+
+<h3 id="strict-mode-vdr">Strict-mode VDR</h3>
+
+<p>A stage can be marked &ldquo;strict-mode compatible&rdquo; when it is declared:</p>
+
+<pre><code>stage STAGE_NAME(
+    in  int  value,
+    out txt  summary,
+    out gz[] archives,
+    out json index,
+) using (
+    volatile = strict,
+)
+</code></pre>
+
+<p>This is telling the runtime that the stage should not be producing any files
+which other stages depend on without explicitly mentioning them in an output.
+As a best practice, all new stages should opt in to this behavior.  All calls
+to stages declared using <code>volatile = strict</code> are implicitly volatile.</p>
+
+<p>When a stage is marked strict-mode compatible, rather than waiting for all
+dependent stages to complete and then deleting all of the files (or just the
+chunk files if the top-level pipeline&rsquo;s outputs are bound to any of the outs),
+each of the stage&rsquo;s output parameters is checked for file paths.  Files with
+paths which are not mentioned in the stage&rsquo;s outputs are deleted immediately
+when the stage completes.  Other files are deleted when there are no longer
+any incomplete stages depending on the parameter which mentions that file.</p>
+
+<p>In the example above, imagine a pipeline</p>
+
+<pre><code>pipeline COMPLEX_VDR(
+    in  int value,
+    out txt output1,
+    out int output2,
+    out int output3,
+)
+{
+    call STAGE_NAME(
+        value = self.value,
+    )
+
+    call STAGE_2(
+        value = STAGE_NAME.archives,
+    )
+
+    call STAGE_3(
+        value = STAGE_NAME.index,
+    )
+
+    return (
+        output1 = STAGE_NAME.summary,
+        output2 = STAGE_2.output,
+        output3 = STAGE_3.output,
+    )
+}
+</code></pre>
+
+<p><code>summary</code> will be deleted immediately unless <code>COMPLEX_VDR</code>&rsquo;s <code>output1</code> is
+bound to another stage&rsquo;s inputs or the top-level pipeline&rsquo;s outputs (or if
+<code>COMPLEX_VDR</code> itself is the top-level pipeline).  Otherwise it will never be
+deleted. The files mentioned in <code>archives</code> will be deleted as soon as
+<code>STAGE_2</code> completes successfully, and <code>index</code> will be deleted as soon as
+<code>STAGE_3</code> completes successfully.  Note that this means that <code>index</code> should not
+contain paths to the files listed in <code>archives</code>, because those files have
+different lifetimes.</p>
+
+<h3 id="retained-outputs">Retained outputs</h3>
+
+<p>Frequently during debugging, and occasionally in other circumstances, it is
+desirable to keep a file around after a pipeline completes even if it is not
+part of the formal outputs, for example if one wants to later rerun a subset
+of the pipeline which depends on that file, or if one wants to be able to
+access a more &ldquo;raw&rdquo; form of the output.</p>
+
+<p>&ldquo;Retained&rdquo; outputs are treated from a VDR perspective as if they were bound to
+the top-level pipeline&rsquo;s outputs - they are never deleted.</p>
+
+<p>A stage can be declared as retaining some outputs:</p>
+
+<pre><code>stage STAGE_NAME(
+    in  int  value,
+    out txt  summary,
+    out gz[] archives,
+    out json index,
+) using (
+    volatile = strict,
+) retain (
+    summary,
+)
+</code></pre>
+
+<p>This prevents <code>summary</code> from ever being deleted by VDR, regardless of whether
+it is bound to anything else.  This should be used mainly for cases of small
+output files which are important for later debugging.</p>
+
+<p>Additionally, pipelines can declare retained parameters, e.g.</p>
+
+<pre><code>pipeline PIPELINE_NAME(
+    ...
+)
+{
+    call PIPELINE_1(
+        ...
+    )
+
+    call STAGE_2(
+        ...
+        PIPELINE_1.output1,
+    )
+
+    return (
+        ...
+    )
+
+    retain (
+        PIPELINE_1.output1,
+    )
+}
+</code></pre>
+
+<p>This means that the files mentioned in <code>output1</code> of <code>PIPELINE_1</code> will never be
+deleted by VDR.  This is the preferred method to use during debugging to
+preserve outputs which may be required for rerunning a later stage, in this
+example <code>STAGE_2</code>.  It is preferred in part because it puts the <code>retain</code>
+declaration closer to where the value is being used (and thus more clear about
+why it&rsquo;s being retained) and because the stage to which <code>PIPELINE_1.output1</code> is
+eventually bound might be called in other places where retention is not
+required.</p>
 
 
 			<aside class="copyright" role="note">
@@ -486,7 +555,7 @@ stage SORT(
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
   
-      <a href="http://martian-lang.org/storage-management/" title="Storage Management">
+      <a href="http://martian-lang.org/advanced-features/" title="Advanced Features">
         <span class="direction">
           Previous
         </span>
@@ -496,7 +565,7 @@ stage SORT(
           </div>
           <div class="stretch">
             <div class="title">
-              Storage Management
+              Advanced Features
             </div>
           </div>
         </div>
@@ -506,14 +575,14 @@ stage SORT(
 
   <div class="next">
   
-      <a href="http://martian-lang.org/about/" title="About">
+      <a href="http://martian-lang.org/language-details/" title="Language Details">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              About
+              Language Details
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">

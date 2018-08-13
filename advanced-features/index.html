@@ -475,6 +475,15 @@ there is no split), can be done in the mro file, e.g.</p>
 )
 </code></pre>
 
+<p>As a special signal to the runtime, a stage may request a negative quantity for
+memory or threads.  A negative value serves as a signal to the runtime that the
+stage requires at least the absolute value of the requested amount, but can use
+more if available.  That is, if a stage requests <code>threads = -4</code>, and <code>mrp</code> was
+started with <code>--localcores=2</code> it will fail, but if it were started with
+<code>--localcores=8</code> it would be treated as if it had asked for 8 threads.  The job
+can check the metadata in the <code>_jobinfo</code> file to find out how many it actually
+got.</p>
+
 <h2 id="job-management">Job Management</h2>
 
 <p>Broadly speaking, Martian has two ways to run stage jobs: Local Mode and Cluster Mode.</p>
@@ -732,7 +741,7 @@ of this json file is</p>
 </code></pre>
 
 <p>In addition to threads and memory, overrides can be used to turn volatility
-(see <a href="#volatile-data-removal">VDR</a> below) on or off by setting
+(see <a href="../storage-management/">Storage Management</a>) on or off by setting
 <code>&quot;force_volatile&quot;: true</code> or <code>false</code>.</p>
 
 <h2 id="preflight-checks">Preflight Checks</h2>
@@ -761,24 +770,7 @@ very limited resources.</p>
 
 <h2 id="volatile-data-removal">Volatile Data Removal</h2>
 
-<p>A call to a stage can be marked <code>volatile</code> by specifying</p>
-
-<pre><code>call STAGE_NAME(
-    arg1 = value,
-) using (
-    volatile = true,
-)
-</code></pre>
-
-<p>If a stage is marked volatile it is eligible for volatile data removal once
-all stages which depend on it are complete.  When the &ldquo;VDR killer&rdquo; is invoked,
-all file data owned by the stage will be deleted, freeing up disk space.  Job
-metadata is retained, and the total amount of freed space is recorded.  In
-<code>--vdrmode=rolling</code>, the VDR killer is invoked whenever any stage completes.
-In <code>--vdrmode=post</code> it is invoked when the pipeline completes.
-Mrp&rsquo;s default is <code>--vdrmode=disabled</code> for development purposes, however
-production pipeline wrapper scripts should set <code>--vdrmode=rolling</code> to
-minimize the disk usage high-water-mark.</p>
+<p>See <a href="../storage-management/">Storage Management</a>.</p>
 
 <h2 id="parameter-sweeping">Parameter Sweeping</h2>
 
@@ -902,14 +894,14 @@ environment variables, respectively.</p>
 
   <div class="next">
   
-      <a href="http://martian-lang.org/language-details/" title="Language Details">
+      <a href="http://martian-lang.org/storage-management/" title="Storage Management">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              Language Details
+              Storage Management
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">

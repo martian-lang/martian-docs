@@ -95,6 +95,16 @@ August 2017  Initial GitHub publication  Q3 2017 - 2.3.0  Always-on UI port with
     </item>
     
     <item>
+      <title>Storage Management</title>
+      <link>http://martian-lang.org/storage-management/</link>
+      <pubDate>Fri, 01 Jul 2016 17:53:15 -0700</pubDate>
+      
+      <guid>http://martian-lang.org/storage-management/</guid>
+      <description>Big data pipeline frequently produce large amounts of intermediate data, stored on the filesystem both because it isn&amp;rsquo;t practical to store it all in RAM and because this allows for a pipeline which fails part way through to be restarted without redoing all the work from scratch. The Martian runtime&amp;rsquo;s VDR (volatile data removal) feature is intended for removing this intermediate data once it is no longer needed.
+Volatile Data Removal A call to a stage can be marked volatile by specifying</description>
+    </item>
+    
+    <item>
       <title>Language Details</title>
       <link>http://martian-lang.org/language-details/</link>
       <pubDate>Wed, 01 Jun 2016 17:53:15 -0700</pubDate>

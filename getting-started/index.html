@@ -448,7 +448,7 @@ We hope to have MacOS and Windows support soon.</p>
 $ cd martian
 $ make all
 $ ls bin
-mrc  mrf  mrg  mrjob  mrp  mrs  mrstat
+mrc  mrf  mrg  mrjob  mrp  mrstat
 </code></pre>
 
 <p>To test that everything is working, <code>make longtests</code> runs a few simple test pipelines
@@ -486,19 +486,13 @@ handled correctly.</p>
 <tr>
 <td><code>mrp</code></td>
 <td>Pipeline Runtime</td>
-<td>Executes a Martian pipeline</td>
-</tr>
-
-<tr>
-<td><code>mrs</code></td>
-<td>Stage Runtime</td>
-<td>Executes an individual Martian pipeline stage</td>
+<td>Executes a Martian pipeline or stage.</td>
 </tr>
 
 <tr>
 <td><code>mrjob</code></td>
 <td>Stage wrapper</td>
-<td>Wraps user stage code, ensuring it obeys the contracts <code>mrp</code> or <code>mrs</code> expect.</td>
+<td>Wraps user stage code, ensuring it obeys the contracts <code>mrp</code> expects.</td>
 </tr>
 </tbody>
 </table>
