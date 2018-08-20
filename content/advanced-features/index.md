@@ -338,7 +338,7 @@ environment variables, respectively.
 
 |Option|Description|
 |---|---|
-|`--zip`|After pipestance Zip metadata files after pipestance completes.|
+|`--zip`|Zip metadata files after pipestance completes.|
 |`--tags=TAGS`|Tag pipestance with comma-separated key:value pairs.|
 |`--autoretry=NUM`|Automatically retry failed runs up to NUM times.|
 |All others|See [Advanced Features](../advanced-features)|
