@@ -387,6 +387,13 @@ We hope to have MacOS and Windows support soon.</p>
 
 <tbody>
 <tr>
+<td><a href="https://github.com/martian-lang/martian/releases/download/v3.1.0-pre2/martian-v3.1.0-pre2-linux-x86_64.tar.gz">martian-v3.1.0-pre2-linux-x86_64.tar.gz</a> (pre-release)</td>
+<td>Linux</td>
+<td>x86-64</td>
+<td><span style="font-size: 8px">df95b801d5aec3daaada54ebcdde015a120bf57be2a952a88e89860593f73b15</span></td>
+</tr>
+
+<tr>
 <td><a href="https://github.com/martian-lang/martian/releases/download/v3.0.0/martian-v3.0.0-linux-x86_64.tar.gz">martian-v3.0.0-linux-x86_64.tar.gz</a></td>
 <td>Linux</td>
 <td>x86-64</td>
@@ -435,7 +442,7 @@ We hope to have MacOS and Windows support soon.</p>
 <h3 id="prerequisites">Prerequisites</h3>
 
 <ul>
-<li><a href="https://golang.org">Go</a> 1.9 or higher is required to build Martian.</li>
+<li><a href="https://golang.org">Go</a> 1.11 or higher is required to build Martian.</li>
 <li>The Python adapter for wrapping stage code requires Python 2.7.</li>
 <li>To build the user interface, <a href="https://nodejs.org">Node</a> 6 or higher is required, along with NPM.</li>
 </ul>
@@ -454,6 +461,16 @@ mrc  mrf  mrg  mrjob  mrp  mrstat
 <p>To test that everything is working, <code>make longtests</code> runs a few simple test pipelines
 and verifies that their output is correct, including test that pipeline failures are
 handled correctly.</p>
+
+<p>Alternatively, you can use</p>
+
+<pre><code>$ go get github.com/martian-lang/martian/cmd/...
+$ go generate github.com/martian-lang/martian/...
+$ go install github.com/martian-lang/martian/cmd/...
+</code></pre>
+
+<p>However you&rsquo;ll still need to run <code>make web</code> in the repository directory in
+order to build the web UI.</p>
 
 <h2 id="environment-setup">Environment Setup</h2>
 
