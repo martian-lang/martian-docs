@@ -11,6 +11,7 @@ We hope to have MacOS and Windows support soon.
 
 |Download|OS|Arch|SHA256|
 |---|---|---|---|
+|[martian-v3.1.0-pre2-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v3.1.0-pre2/martian-v3.1.0-pre2-linux-x86_64.tar.gz) (pre-release)|Linux|x86-64|<span style="font-size: 8px">df95b801d5aec3daaada54ebcdde015a120bf57be2a952a88e89860593f73b15</span>|
 |[martian-v3.0.0-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v3.0.0/martian-v3.0.0-linux-x86_64.tar.gz)|Linux|x86-64|<span style="font-size: 8px">f0708a27113417d8d69ad61835930dba8a8fd827f11d4fb6ce5c6108e773a57e</span>|
 |[martian-v2.3.2-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v2.3.2/martian-v2.3.2-linux-x86_64.tar.gz)|Linux|x86-64|<span style="font-size: 8px">657eb6018a9371ac6af7267191945fd5ca590963d93d5d8096078f37d92b1107</span>|
 |[Coming soon](https://github.com/martian-lang/martian/blob/master/.github/CONTRIBUTING.md)|macOS|x86-64|
@@ -28,7 +29,7 @@ We hope to have MacOS and Windows support soon.
 ## Building from Source
 
 ### Prerequisites
-* [Go](https://golang.org) 1.9 or higher is required to build Martian.
+* [Go](https://golang.org) 1.11 or higher is required to build Martian.
 * The Python adapter for wrapping stage code requires Python 2.7.
 * To build the user interface, [Node](https://nodejs.org) 6 or higher is required, along with NPM.
 
@@ -47,6 +48,15 @@ mrc  mrf  mrg  mrjob  mrp  mrstat
 To test that everything is working, `make longtests` runs a few simple test pipelines
 and verifies that their output is correct, including test that pipeline failures are
 handled correctly.
+
+Alternatively, you can use
+~~~~
+$ go get github.com/martian-lang/martian/cmd/...
+$ go generate github.com/martian-lang/martian/...
+$ go install github.com/martian-lang/martian/cmd/...
+~~~~
+However you'll still need to run `make web` in the repository directory in
+order to build the web UI.
 
 ## Environment Setup
 
