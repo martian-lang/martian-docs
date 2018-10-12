@@ -24,11 +24,9 @@ call STAGE_NAME(
 
 If a stage is marked volatile it is eligible for volatile data removal once
 all stages which depend on it are complete.  When the "VDR killer" is invoked,
-all file data owned by the stage will be deleted, freeing up disk space.  Job
+all data files owned by the stage will be deleted (except those files specified
+in output parameters of the top-level pipeline), freeing up disk space.  Job
 metadata is retained, and the total amount of freed space is recorded.
-
-If the top-level pipeline output is bound to one of the outputs of a stage,
-the `volatile` flag for that call is ignored.
 
 In `--vdrmode=rolling`, the VDR killer is invoked whenever any stage completes.
 In `--vdrmode=post` it is invoked when the pipeline completes.
@@ -38,21 +36,10 @@ may wish to set `--vdrmode=disabled` to preserve intermediate results.
 Additionally, when VDR is not disabled, all stages which split will have their
 chunks' files cleaned out by VDR when all dependent stages have completed.
 
-## Martian 3.1 preview: new VDR features
+### Strict-mode VDR (new in 3.1!)
 
-NOTE: the following refers to features in the release candidate version of
-Martian 3.1.  The syntax will not work in 3.0 or earlier releases.
-
-In addition to the new syntax listed below, the behavior for volatile stages
-with outputs bound to the top-level pipeline's outputs has also changed.
-Instead of cleaning up those stages as if they were non-volatile, once all
-dependent stages have completed they are cleaned up as if they were strict-mode
-volatile - that is, only the files mentioned in the top-level outputs are
-preserved.
-
-### Strict-mode VDR
-
-A stage can be marked "strict-mode compatible" when it is declared:
+To enable more aggressive file cleanup, a stage can be marked
+"strict-mode compatible" when it is declared:
 ```
 stage STAGE_NAME(
     in  int  value,
@@ -66,7 +53,8 @@ stage STAGE_NAME(
 This is telling the runtime that the stage should not be producing any files
 which other stages depend on without explicitly mentioning them in an output.
 As a best practice, all new stages should opt in to this behavior.  All calls
-to stages declared using `volatile = strict` are implicitly volatile.
+to stages declared using `volatile = strict` are implicitly volatile,
+regardless of the state of the `volatile` modifier on the `call`.
 
 When a stage is marked strict-mode compatible, rather than waiting for all
 dependent stages to complete and then deleting all of the files (or just the
@@ -106,7 +94,8 @@ pipeline COMPLEX_VDR(
 ```
 `summary` will be deleted immediately unless `COMPLEX_VDR`'s `output1` is
 bound to another stage's inputs or the top-level pipeline's outputs (or if
-`COMPLEX_VDR` itself is the top-level pipeline).  Otherwise it will never be
+`COMPLEX_VDR` itself is the top-level pipeline).  Otherwise it will be once
+those stages have completed, or never if it's bound to the top-level outputs.
 deleted. The files mentioned in `archives` will be deleted as soon as
 `STAGE_2` completes successfully, and `index` will be deleted as soon as
 `STAGE_3` completes successfully.  Note that this means that `index` should not
@@ -116,7 +105,7 @@ different lifetimes.
 ### Retained outputs
 
 Frequently during debugging, and occasionally in other circumstances, it is
-desirable to keep a file around after a pipeline completes even if it is not
+desirable to preserve a file after a pipeline completes even if it is not
 part of the formal outputs, for example if one wants to later rerun a subset
 of the pipeline which depends on that file, or if one wants to be able to
 access a more "raw" form of the output.

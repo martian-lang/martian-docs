@@ -173,7 +173,8 @@ behaviors can be altered with the `mrp` flags
 Normally, when a pipeline run completes, `mrp` terminates and the user interface
 is no longer available.  If `mrp` was started with `--noexit` then it will stay
 up until `mrp` is killed (either with an operating system signal or with
-`mrstat --stop`).
+`mrstat --stop`).  One can also restart `mrp` in read-only mode with the
+`--inspect` option (which implies `--noexit`).
 
 ### Pipeline details
 The right pane of the user interface provides general information about
