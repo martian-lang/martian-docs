@@ -387,11 +387,9 @@ is no longer needed.</p>
 
 <p>If a stage is marked volatile it is eligible for volatile data removal once
 all stages which depend on it are complete.  When the &ldquo;VDR killer&rdquo; is invoked,
-all file data owned by the stage will be deleted, freeing up disk space.  Job
+all data files owned by the stage will be deleted (except those files specified
+in output parameters of the top-level pipeline), freeing up disk space.  Job
 metadata is retained, and the total amount of freed space is recorded.</p>
-
-<p>If the top-level pipeline output is bound to one of the outputs of a stage,
-the <code>volatile</code> flag for that call is ignored.</p>
 
 <p>In <code>--vdrmode=rolling</code>, the VDR killer is invoked whenever any stage completes.
 In <code>--vdrmode=post</code> it is invoked when the pipeline completes.
@@ -401,21 +399,10 @@ may wish to set <code>--vdrmode=disabled</code> to preserve intermediate results
 <p>Additionally, when VDR is not disabled, all stages which split will have their
 chunks&rsquo; files cleaned out by VDR when all dependent stages have completed.</p>
 
-<h2 id="martian-3-1-preview-new-vdr-features">Martian 3.1 preview: new VDR features</h2>
+<h3 id="strict-mode-vdr-new-in-3-1">Strict-mode VDR (new in 3.1!)</h3>
 
-<p>NOTE: the following refers to features in the release candidate version of
-Martian 3.1.  The syntax will not work in 3.0 or earlier releases.</p>
-
-<p>In addition to the new syntax listed below, the behavior for volatile stages
-with outputs bound to the top-level pipeline&rsquo;s outputs has also changed.
-Instead of cleaning up those stages as if they were non-volatile, once all
-dependent stages have completed they are cleaned up as if they were strict-mode
-volatile - that is, only the files mentioned in the top-level outputs are
-preserved.</p>
-
-<h3 id="strict-mode-vdr">Strict-mode VDR</h3>
-
-<p>A stage can be marked &ldquo;strict-mode compatible&rdquo; when it is declared:</p>
+<p>To enable more aggressive file cleanup, a stage can be marked
+&ldquo;strict-mode compatible&rdquo; when it is declared:</p>
 
 <pre><code>stage STAGE_NAME(
     in  int  value,
@@ -430,7 +417,8 @@ preserved.</p>
 <p>This is telling the runtime that the stage should not be producing any files
 which other stages depend on without explicitly mentioning them in an output.
 As a best practice, all new stages should opt in to this behavior.  All calls
-to stages declared using <code>volatile = strict</code> are implicitly volatile.</p>
+to stages declared using <code>volatile = strict</code> are implicitly volatile,
+regardless of the state of the <code>volatile</code> modifier on the <code>call</code>.</p>
 
 <p>When a stage is marked strict-mode compatible, rather than waiting for all
 dependent stages to complete and then deleting all of the files (or just the
@@ -471,7 +459,8 @@ any incomplete stages depending on the parameter which mentions that file.</p>
 
 <p><code>summary</code> will be deleted immediately unless <code>COMPLEX_VDR</code>&rsquo;s <code>output1</code> is
 bound to another stage&rsquo;s inputs or the top-level pipeline&rsquo;s outputs (or if
-<code>COMPLEX_VDR</code> itself is the top-level pipeline).  Otherwise it will never be
+<code>COMPLEX_VDR</code> itself is the top-level pipeline).  Otherwise it will be once
+those stages have completed, or never if it&rsquo;s bound to the top-level outputs.
 deleted. The files mentioned in <code>archives</code> will be deleted as soon as
 <code>STAGE_2</code> completes successfully, and <code>index</code> will be deleted as soon as
 <code>STAGE_3</code> completes successfully.  Note that this means that <code>index</code> should not
@@ -481,7 +470,7 @@ different lifetimes.</p>
 <h3 id="retained-outputs">Retained outputs</h3>
 
 <p>Frequently during debugging, and occasionally in other circumstances, it is
-desirable to keep a file around after a pipeline completes even if it is not
+desirable to preserve a file after a pipeline completes even if it is not
 part of the formal outputs, for example if one wants to later rerun a subset
 of the pipeline which depends on that file, or if one wants to be able to
 access a more &ldquo;raw&rdquo; form of the output.</p>

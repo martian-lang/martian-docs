@@ -657,7 +657,8 @@ behaviors can be altered with the <code>mrp</code> flags
 <p>Normally, when a pipeline run completes, <code>mrp</code> terminates and the user interface
 is no longer available.  If <code>mrp</code> was started with <code>--noexit</code> then it will stay
 up until <code>mrp</code> is killed (either with an operating system signal or with
-<code>mrstat --stop</code>).</p>
+<code>mrstat --stop</code>).  One can also restart <code>mrp</code> in read-only mode with the
+<code>--inspect</code> option (which implies <code>--noexit</code>).</p>
 
 <h3 id="pipeline-details">Pipeline details</h3>
 

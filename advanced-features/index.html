@@ -577,6 +577,9 @@ script is generated).  If the command&rsquo;s standard output consists of a stri
 with no newlines or whitespace, it is interpreted as a job ID and recorded with
 the job, to potentially be used later with the <code>queue_query</code> script.</p>
 
+<p>If the command line to <code>mrp</code> includes the <code>--never-local</code> flag, the <code>local</code>
+attribute on stages other than preflight stages will be ignored.</p>
+
 <h3 id="templates">Templates</h3>
 
 <p>In addition to the information in the <code>config.json</code> file, <code>mrp</code> looks for a
@@ -649,18 +652,18 @@ job manager.</p>
 <tr>
 <td><nobr><code>--maxjobs</code></nobr></td>
 <td>Limit the number of jobs queued or pending on the cluster simultaneously.  0 us treated as unlimited.</td>
-<td></td>
+<td>64</td>
 </tr>
 
 <tr>
 <td><nobr><code>--jobinterval</code></nobr></td>
 <td>Limit the rate at which jobs are submitted to the cluster.</td>
-<td></td>
+<td>100ms</td>
 </tr>
 
 <tr>
 <td><nobr><code>--mempercore</code></nobr></td>
-<td>For clusters which do not manage memory reservations, specifies the amount of memory <code>mrp</code> should expect to be available for each core.  If this number is less than the cores to memory ratio of a job, extra threads will be reserved in order to ensure that the job gets enough memory.  A very high value will effectively be ignored.  A low value will result in many wasted CPUs.</td>
+<td>For clusters which do not manage memory reservations, specifies the amount of memory <code>mrp</code> should expect to be available for each core.  If this number is less than the cores to memory ratio of a job, extra threads will be reserved in order to ensure that the job gets enough memory.  A very high value will effectively be ignored.  A low value will result in idle CPUs, but hopefully prevent cluster nodes from exhausting their memory.</td>
 <td>none</td>
 </tr>
 </tbody>
@@ -710,8 +713,8 @@ values.</p>
 
 <h2 id="debugging-options">Debugging options</h2>
 
-<p>The <code>--debug</code> option to mrp causes it to log additional information which may
-be helpful for debugging.</p>
+<p>The <code>--debug</code> option to <code>mrp</code> causes it to log additional information which may
+be helpful for debugging <code>mrp</code>.</p>
 
 <p>For debugging stage code, the <code>--stackvars</code> flag sets an option in the
 <code>jobinfo</code> file given to stage code.  For the python adapter, this flag causes
@@ -743,6 +746,10 @@ of this json file is</p>
 <p>In addition to threads and memory, overrides can be used to turn volatility
 (see <a href="../storage-management/">Storage Management</a>) on or off by setting
 <code>&quot;force_volatile&quot;: true</code> or <code>false</code>.</p>
+
+<p>The overrides file can also be used to control profile data collection
+(see below) for an individual stage, by for example setting
+&ldquo;chunk.profile&rdquo;: &ldquo;cpu&rdquo;`.</p>
 
 <h2 id="preflight-checks">Preflight Checks</h2>
 
@@ -804,19 +811,92 @@ several performance metrics, including cpu, memory, and I/O usage.  On
 successful pipestance completion these statistics are aggregated into the
 top-level <code>_perf</code> file.</p>
 
-<p>MRP can be started with the <code>--profile</code> mode to enable various profiling tools
-for stage code.  The <code>cpu</code> and <code>mem</code> modes depend on the language-specific
-adaptor.  For Python, the <code>cpu</code> mode uses <code>cProfile</code> and <code>mem</code> uses an
-allocator hook.  For Go stages, <code>cpu</code> and <code>mem</code> use Go&rsquo;s native <code>runtime/pprof</code>
-functionality.</p>
+<p>In addition, MRP can be started with the <code>--profile</code> mode to enable various
+profiling tools for stage code, or profile modes can be enabled for a subset
+of stages using <code>--override</code> (see above).  Similarly to <code>--jobmode</code>, profile
+modes are defined in the <code>profiles</code> key of <code>jobmanagers/config.json</code>.</p>
 
-<p>The <code>perf</code> profile mode uses Linux <code>perf record</code>.  By default, this will record
-the <code>task-clock</code> and <code>bpf-output</code> events at 200Hz for the first 2400 seconds of
-each job (to prevent excessive disk space usage).  One can override those
-values with the <code>MRO_PERF_EVENTS</code>, <code>MRO_PERF_FREQ</code>, and <code>MRO_PERF_DURATION</code>
-environment variables, respectively.</p>
+<p>Each configured profile mode may have several configured parameters.</p>
+
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Effect</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>adapter</code></td>
+<td>This string is passed to the native stage code adapter, and the adapter decides what to do with it.</td>
+</tr>
+
+<tr>
+<td><code>env</code></td>
+<td>This dictionary allows environment variables to be set.  If <code>${PROFILE_DEST}</code> or <code>${RAW_PERF_DEST}</code> are present in the value, they will be replaced with the full path to the <code>_profile.out</code> or <code>_perf.data</code> files in the stage&rsquo;s metadata directory. Any other environment variables will also be expanded at run time.</td>
+</tr>
+
+<tr>
+<td><code>cmd</code></td>
+<td>This string specifies a command which should run in parallel with the stage code and attempt attach to the stage code process.</td>
+</tr>
+
+<tr>
+<td><code>args</code></td>
+<td>This array specifies the arguments passed to <code>cmd</code>. Just like with <code>env</code>, these arguments are subject to environment variable expansion.  The additional psudo-environment variable <code>${STAGE_PID}</code> is expanded to the pid of the running stage process so that the command may attach.</td>
+</tr>
+
+<tr>
+<td><code>defaults</code></td>
+<td>This dictionary allows users to specify default values for environment variables used in expanding <code>args</code> and <code>env</code>, if they aren&rsquo;t already non-empty at runtime.</td>
+</tr>
+</tbody>
+</table>
+
+<p>The default martian distribution configures the following profile modes:</p>
+
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Effect</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>cpu</code></td>
+<td>Enables adapter-based cpu profiling.  For python, this uses <code>cProfile</code>.  For Go, this uses <code>runtime/pprof</code>.</td>
+</tr>
+
+<tr>
+<td><code>line</code></td>
+<td>Enables Python&rsquo;s <code>line_profiler</code> (which must be installed).</td>
+</tr>
+
+<tr>
+<td><code>mem</code></td>
+<td>Enables adapter-based memory profiling, using an allocator hook in python, or <code>runtime/pprof</code> in Go.  Additionally sets <code>MALLOC_CONF</code> and <code>HEAPPROFILE</code> to enable heap profiling for <code>jemalloc</code> (which is used by default for Rust) and <code>tcmalloc</code>, respectively.</td>
+</tr>
+
+<tr>
+<td><code>perf</code></td>
+<td>Enables profile sample collection with Linux&rsquo;s <code>perf record</code>.</td>
+</tr>
+
+<tr>
+<td><code>pyflame</code></td>
+<td>Enables profile sample collection with <a href="https://github.com/uber/pyflame">PyFlame</a>.</td>
+</tr>
+</tbody>
+</table>
 
 <h2 id="completion-hooks">Completion Hooks</h2>
+
+<p>A command may be specified in <code>mrp</code>&rsquo;s <code>--onfinish=&lt;command&gt;</code> flag.  This
+command will run when the pipestance completes or fails.  It will be given
+the following arguments:</p>
 
 <ul>
 <li>path to pipestance</li>
@@ -851,6 +931,11 @@ environment variables, respectively.</p>
 <tr>
 <td><code>--autoretry=NUM</code></td>
 <td>Automatically retry failed runs up to NUM times.</td>
+</tr>
+
+<tr>
+<td><code>--retry-wait=SECS</code></td>
+<td>After a failure, wait <code>SECS</code> seconds before automatically retrying.</td>
 </tr>
 
 <tr>
