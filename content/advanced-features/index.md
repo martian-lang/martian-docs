@@ -262,7 +262,7 @@ In addition to threads and memory, overrides can be used to turn volatility
 
 The overrides file can also be used to control profile data collection
 (see below) for an individual stage, by for example setting
-"chunk.profile": "cpu"`.
+`"chunk.profile": "cpu"`.
 
 ## Preflight Checks
 Preflight checks are used to "sanity check" the environment and top-level
