@@ -30,7 +30,7 @@ We hope to have MacOS and Windows support soon.
 
 ### Prerequisites
 * [Go](https://golang.org) 1.11 or higher is required to build Martian.
-* The Python adapter for wrapping stage code requires Python 2.7.
+* The Python adapter for wrapping stage code requires Python 2.7.  Python 3 support is present in the current master branch, and will be released with version 3.2.
 * To build the user interface, [Node](https://nodejs.org) 6 or higher is required, along with NPM.
 
 ### Building the source
