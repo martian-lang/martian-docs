@@ -2,41 +2,41 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Martian</title>
-    <link>http://martian-lang.org/</link>
+    <link>https://martian-lang.org/</link>
     <description>Recent content on Martian</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 01 Dec 2016 17:53:15 -0700</lastBuildDate>
     
-	<atom:link href="http://martian-lang.org/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://martian-lang.org/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>What is Martian?</title>
-      <link>http://martian-lang.org/what-is-martian/</link>
+      <link>https://martian-lang.org/what-is-martian/</link>
       <pubDate>Thu, 01 Dec 2016 17:53:15 -0700</pubDate>
       
-      <guid>http://martian-lang.org/what-is-martian/</guid>
+      <guid>https://martian-lang.org/what-is-martian/</guid>
       <description>Martian is a language and framework for developing and executing complex computational pipelines.
  Designed for simplicity: simple to learn, simple to develop, simple to run, and simple to debug. Allows combination of software components written in any language into a single pipeline. Powerful support for scaling computationally intensive pipelines from standalone machines, to clusters, to cloud. Rich support for managing the full lifecycle of complex, compute and data-intensive pipelines.</description>
     </item>
     
     <item>
       <title>Getting Started</title>
-      <link>http://martian-lang.org/getting-started/</link>
+      <link>https://martian-lang.org/getting-started/</link>
       <pubDate>Tue, 01 Nov 2016 17:53:15 -0700</pubDate>
       
-      <guid>http://martian-lang.org/getting-started/</guid>
+      <guid>https://martian-lang.org/getting-started/</guid>
       <description>Installing Martian Official binary distributions of the Martian toolchain are available for Linux. We hope to have MacOS and Windows support soon.
    Download OS Arch SHA256     martian-v3.2.0-linux-x86_64.tar.gz Linux x86-64 b941ef5048326ec3db159e3ad4a749ec86d5205497f20422fcbce206e200f2f1   martian-v3.2.0-linux-x86_64.tar.gz Linux x86-64 14e0f5ea91b67e9f5f589aaac37c397e499b02c6d2c7caa7963123715363b211   martian-v3.1.0-linux-x86_64.tar.gz Linux x86-64 669d6722563dc23834162993fcb29d2471317a993b3ca30782fa879b8a6f94ff   martian-v3.0.0-linux-x86_64.tar.gz Linux x86-64 f0708a27113417d8d69ad61835930dba8a8fd827f11d4fb6ce5c6108e773a57e   martian-v2.3.2-linux-x86_64.tar.gz Linux x86-64 657eb6018a9371ac6af7267191945fd5ca590963d93d5d8096078f37d92b1107   Coming soon macOS x86-64    Please contribute!</description>
     </item>
     
     <item>
       <title>Writing Pipelines</title>
-      <link>http://martian-lang.org/writing-pipelines/</link>
+      <link>https://martian-lang.org/writing-pipelines/</link>
       <pubDate>Tue, 01 Nov 2016 17:53:15 -0700</pubDate>
       
-      <guid>http://martian-lang.org/writing-pipelines/</guid>
+      <guid>https://martian-lang.org/writing-pipelines/</guid>
       <description>Stages A stage is the fundamental unit of computation in Martian, and is composed with other stages into Martian pipelines, which are directed, acyclic graphs of stages.
 In order to ensure pipelines can be restarted and parallelized safely, stage inputs are intended to be considered immutable, as are the outputs once the stage completes.
 Martian stages can be implemented in any language, and each stage can even be implemented in a different language, if desired.</description>
@@ -44,10 +44,10 @@ Martian stages can be implemented in any language, and each stage can even be im
     
     <item>
       <title>Running Pipelines</title>
-      <link>http://martian-lang.org/running-pipelines/</link>
+      <link>https://martian-lang.org/running-pipelines/</link>
       <pubDate>Sat, 01 Oct 2016 17:53:15 -0700</pubDate>
       
-      <guid>http://martian-lang.org/running-pipelines/</guid>
+      <guid>https://martian-lang.org/running-pipelines/</guid>
       <description>Invoking a Pipeline Thus far we have shown how to define stages and pipelines in MRO files. To invoke a pipeline, write an MRO file containing a pipeline call statement with the desired input arguments. This call statement is called an invocation. To invoke the example pipeline from above:
 invoke.mro
 @include &amp;quot;pipeline.mro&amp;quot; call DUPLICATE_FINDER( unsorted = &amp;quot;/home/duplicator_dave/unsorted.txt&amp;quot;, )  Typically, an invocation MRO file contains a single @include statement that causes the pipeline definition to be included, and a single call statement of that pipeline.</description>
@@ -55,20 +55,20 @@ invoke.mro
     
     <item>
       <title>Inspecting Pipelines</title>
-      <link>http://martian-lang.org/inspecting-pipelines/</link>
+      <link>https://martian-lang.org/inspecting-pipelines/</link>
       <pubDate>Thu, 01 Sep 2016 17:53:15 -0700</pubDate>
       
-      <guid>http://martian-lang.org/inspecting-pipelines/</guid>
+      <guid>https://martian-lang.org/inspecting-pipelines/</guid>
       <description>Overview One of Martian&amp;rsquo;s principal design objectives is to make it easy to develop and debug pipelines. Key to that objective is making it easy to inspect the state of in-progress, completed, and failed pipeline runs. A particular instantiation of a pipeline is referred to as a &amp;ldquo;pipestance.&amp;rdquo;
 All Martian pipestance state is persisted in the filesystem in an intuitive, human-decipherable layout. There is no opaque database, client, or other mechanism impeding visibility into pipestance state and metadata.</description>
     </item>
     
     <item>
       <title>Writing Stages</title>
-      <link>http://martian-lang.org/writing-stages/</link>
+      <link>https://martian-lang.org/writing-stages/</link>
       <pubDate>Mon, 01 Aug 2016 17:53:15 -0700</pubDate>
       
-      <guid>http://martian-lang.org/writing-stages/</guid>
+      <guid>https://martian-lang.org/writing-stages/</guid>
       <description>Overview Martian supports writing pipeline stages in virtually any language. The only requirement for pipeline executables is that they be able to write JSON to files.
 A Martian stage is an executable, either interpreted or compiled, that takes at least four command-line arguments as follows:
 $ stage_executable [args] &amp;lt;type&amp;gt; &amp;lt;metadata_path&amp;gt; &amp;lt;files_path&amp;gt; &amp;lt;journal_prefix&amp;gt;  In most cases the interpretation of the arguments is handled by a language-specific adapter. The type argument is one of split, join, or main (main is run for chunk phases, or for stages which do not split ).</description>
@@ -76,40 +76,40 @@ $ stage_executable [args] &amp;lt;type&amp;gt; &amp;lt;metadata_path&amp;gt; &am
     
     <item>
       <title>Development Roadmap</title>
-      <link>http://martian-lang.org/roadmap/</link>
+      <link>https://martian-lang.org/roadmap/</link>
       <pubDate>Fri, 08 Jul 2016 15:53:15 -0700</pubDate>
       
-      <guid>http://martian-lang.org/roadmap/</guid>
+      <guid>https://martian-lang.org/roadmap/</guid>
       <description>Martian Development Roadmap All features here refer to notional plans. They are provided only to provide visibility into the current priorities of the Martian development team, and are subject to change at any time.
 August 2017  Initial GitHub publication  Q3 2017 - 2.3.0  Always-on UI port with basic (unencrypted) authentication and a basic command line tool for remote administration. Support for perf record profiling. Some tracking of stage vmem usage.</description>
     </item>
     
     <item>
       <title>Advanced Features</title>
-      <link>http://martian-lang.org/advanced-features/</link>
+      <link>https://martian-lang.org/advanced-features/</link>
       <pubDate>Fri, 01 Jul 2016 17:53:15 -0700</pubDate>
       
-      <guid>http://martian-lang.org/advanced-features/</guid>
+      <guid>https://martian-lang.org/advanced-features/</guid>
       <description>Martian supports a number of advanced features to provide:
  Performance and resource efficiency that scales from single servers to large high-performance compute clusters Early error detection Data storage efficiency Loosely-coupled integration with other systems  Disabling sub-pipelines Sometimes the choice of which sub-pipelines to run on the data depends on the data. For example, the first part of a pipeline might determine which of several algorithms is likely to yield the best results on the given data set.</description>
     </item>
     
     <item>
       <title>Storage Management</title>
-      <link>http://martian-lang.org/storage-management/</link>
+      <link>https://martian-lang.org/storage-management/</link>
       <pubDate>Fri, 01 Jul 2016 17:53:15 -0700</pubDate>
       
-      <guid>http://martian-lang.org/storage-management/</guid>
+      <guid>https://martian-lang.org/storage-management/</guid>
       <description>Big data pipeline frequently produce large amounts of intermediate data, stored on the filesystem both because it isn&amp;rsquo;t practical to store it all in RAM and because this allows for a pipeline which fails part way through to be restarted without redoing all the work from scratch. The Martian runtime&amp;rsquo;s VDR (volatile data removal) feature is intended for removing this intermediate data once it is no longer needed.
 Volatile Data Removal A call to a stage can be marked volatile by specifying</description>
     </item>
     
     <item>
       <title>Language Details</title>
-      <link>http://martian-lang.org/language-details/</link>
+      <link>https://martian-lang.org/language-details/</link>
       <pubDate>Wed, 01 Jun 2016 17:53:15 -0700</pubDate>
       
-      <guid>http://martian-lang.org/language-details/</guid>
+      <guid>https://martian-lang.org/language-details/</guid>
       <description>Tokens and Grammar The Martian language&amp;rsquo;s tokens are defined by regular expressions in its lexical scanner.
 The Martian syntax is specified as a YACC grammar.
 Symbols and Scope Symbols in Martian are identifiers for stages, pipelines, and parameters. They may comprise uppercase and lowercase letters, numeric digits, and underscores. A symbol may not begin with a numeric digit, which is reserved for number literals. Identifiers beginning with two underscores are reserved as well.</description>
@@ -117,10 +117,10 @@ Symbols and Scope Symbols in Martian are identifiers for stages, pipelines, and 
     
     <item>
       <title>About</title>
-      <link>http://martian-lang.org/about/</link>
+      <link>https://martian-lang.org/about/</link>
       <pubDate>Sun, 01 May 2016 17:53:15 -0700</pubDate>
       
-      <guid>http://martian-lang.org/about/</guid>
+      <guid>https://martian-lang.org/about/</guid>
       <description>Martian was created at 10x Genomics, where it serves as a core part of the software engineering toolchain. As a developer framework, Martian helps to make tractable the design, development and maintenance of over 30 pipelines by 25+ developers. As a runtime, Martian has cumulatively executed, just internally at 10x Genomics, over 100 million jobs consuming 1.5 core-millennia of CPU time. Martian has executed many millions more core-hours at customer sites, and is one of the most heavily exercised computational pipeline frameworks deployed in the field.</description>
     </item>
     
