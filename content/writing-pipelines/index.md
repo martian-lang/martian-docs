@@ -111,7 +111,7 @@ The example above does the following:
 
 The Martian GitHub repository includes
 [syntax highlighting](https://github.com/martian-lang/martian/tree/master/tools/syntax)
-files for [Vim](http://www.vim.org/), [Atom](https://atom.io/),
+files for [Vim](https://www.vim.org/), [Atom](https://atom.io/),
 and [Sublime](https://www.sublimetext.com/) text editors.  If your favorite
 editor is missing from this list, pull requests are welcome.
 
