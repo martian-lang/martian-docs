@@ -28,7 +28,7 @@
       
       <guid>http://martian-lang.org/getting-started/</guid>
       <description>Installing Martian Official binary distributions of the Martian toolchain are available for Linux. We hope to have MacOS and Windows support soon.
-   Download OS Arch SHA256     martian-v3.1.0-linux-x86_64.tar.gz Linux x86-64 669d6722563dc23834162993fcb29d2471317a993b3ca30782fa879b8a6f94ff   martian-v3.0.0-linux-x86_64.tar.gz Linux x86-64 f0708a27113417d8d69ad61835930dba8a8fd827f11d4fb6ce5c6108e773a57e   martian-v2.3.2-linux-x86_64.tar.gz Linux x86-64 657eb6018a9371ac6af7267191945fd5ca590963d93d5d8096078f37d92b1107   Coming soon macOS x86-64    Please contribute! Windows x86-64     System Requirements  Currently, running pipelines requires a Linux system with kernel version 2.</description>
+   Download OS Arch SHA256     martian-v3.2.0-linux-x86_64.tar.gz Linux x86-64 b941ef5048326ec3db159e3ad4a749ec86d5205497f20422fcbce206e200f2f1   martian-v3.2.0-linux-x86_64.tar.gz Linux x86-64 14e0f5ea91b67e9f5f589aaac37c397e499b02c6d2c7caa7963123715363b211   martian-v3.1.0-linux-x86_64.tar.gz Linux x86-64 669d6722563dc23834162993fcb29d2471317a993b3ca30782fa879b8a6f94ff   martian-v3.0.0-linux-x86_64.tar.gz Linux x86-64 f0708a27113417d8d69ad61835930dba8a8fd827f11d4fb6ce5c6108e773a57e   martian-v2.3.2-linux-x86_64.tar.gz Linux x86-64 657eb6018a9371ac6af7267191945fd5ca590963d93d5d8096078f37d92b1107   Coming soon macOS x86-64    Please contribute!</description>
     </item>
     
     <item>
@@ -112,7 +112,7 @@ Volatile Data Removal A call to a stage can be marked volatile by specifying</de
       <guid>http://martian-lang.org/language-details/</guid>
       <description>Tokens and Grammar The Martian language&amp;rsquo;s tokens are defined by regular expressions in its lexical scanner.
 The Martian syntax is specified as a YACC grammar.
-Symbols and Scope Symbols in Martian are identifiers for stages, pipelines, and parameters. They may comprise uppercase and lowercase letters, numeric digits, and underscores. A symbol may not begin with a numeric digit, which is reserved for number literals. The Martian lexer&amp;rsquo;s regular expression for symbols is [a-zA-Z_][a-zA-Z0-9_]*\\b.</description>
+Symbols and Scope Symbols in Martian are identifiers for stages, pipelines, and parameters. They may comprise uppercase and lowercase letters, numeric digits, and underscores. A symbol may not begin with a numeric digit, which is reserved for number literals. Identifiers beginning with two underscores are reserved as well.</description>
     </item>
     
     <item>

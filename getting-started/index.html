@@ -387,6 +387,20 @@ We hope to have MacOS and Windows support soon.</p>
 
 <tbody>
 <tr>
+<td><a href="https://github.com/martian-lang/martian/releases/download/v3.2.0/martian-v3.2.0-linux-x86_64.tar.gz">martian-v3.2.0-linux-x86_64.tar.gz</a></td>
+<td>Linux</td>
+<td>x86-64</td>
+<td><span style="font-size: 8px">b941ef5048326ec3db159e3ad4a749ec86d5205497f20422fcbce206e200f2f1</span></td>
+</tr>
+
+<tr>
+<td><a href="https://github.com/martian-lang/martian/releases/download/v3.2.0/martian-v3.2.0-linux-x86_64.tar.xz">martian-v3.2.0-linux-x86_64.tar.gz</a></td>
+<td>Linux</td>
+<td>x86-64</td>
+<td><span style="font-size: 8px">14e0f5ea91b67e9f5f589aaac37c397e499b02c6d2c7caa7963123715363b211</span></td>
+</tr>
+
+<tr>
 <td><a href="https://github.com/martian-lang/martian/releases/download/v3.1.0/martian-v3.1.0-linux-x86_64.tar.gz">martian-v3.1.0-linux-x86_64.tar.gz</a></td>
 <td>Linux</td>
 <td>x86-64</td>
@@ -443,8 +457,8 @@ We hope to have MacOS and Windows support soon.</p>
 
 <ul>
 <li><a href="https://golang.org">Go</a> 1.11 or higher is required to build Martian.</li>
-<li>The Python adapter for wrapping stage code requires Python 2.7.  Python 3 support is present in the current master branch, and will be released with version 3.2.</li>
-<li>To build the user interface, <a href="https://nodejs.org">Node</a> 6 or higher is required, along with NPM.</li>
+<li>The Python adapter for wrapping stage code requires Python 2.7 or 3.6 or higher.</li>
+<li>To build the user interface, <a href="https://nodejs.org">Node</a> 8 or higher is required, along with NPM.</li>
 </ul>
 
 <h3 id="building-the-source">Building the source</h3>
@@ -459,18 +473,22 @@ mrc  mrf  mrg  mrjob  mrp  mrstat
 </code></pre>
 
 <p>To test that everything is working, <code>make longtests</code> runs a few simple test pipelines
-and verifies that their output is correct, including test that pipeline failures are
+and verifies that their output is correct, including tests that pipeline failures are
 handled correctly.</p>
 
 <p>Alternatively, you can use</p>
 
-<pre><code>$ go get github.com/martian-lang/martian/cmd/...
+<pre><code>$ go get golang.org/x/tools/cmd/goyacc
+$ go install golang.org/x/tools/cmd/goyacc
+$ go get github.com/martian-lang/martian/cmd/...
 $ go generate github.com/martian-lang/martian/...
 $ go install github.com/martian-lang/martian/cmd/...
 </code></pre>
 
-<p>However you&rsquo;ll still need to run <code>make web</code> in the repository directory in
-order to build the web UI.</p>
+<p>However that will not you&rsquo;ll still need to run <code>make web</code> in the repository
+directory in order to build the web UI.  Furthermore, the martian binaries
+expect various data files to be located in specific relative locations.
+Building with <code>make</code> is therefore recommended.</p>
 
 <h2 id="environment-setup">Environment Setup</h2>
 
@@ -556,7 +574,7 @@ v2.3.0-rc0.1
 
 			<aside class="copyright" role="note">
 				
-				&copy; 2018 10X Genomics 
+				&copy; 2019 10X Genomics 
 				
 				
 			</aside>
