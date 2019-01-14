@@ -11,6 +11,8 @@ We hope to have MacOS and Windows support soon.
 
 |Download|OS|Arch|SHA256|
 |---|---|---|---|
+|[martian-v3.2.0-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v3.2.0/martian-v3.2.0-linux-x86_64.tar.gz)|Linux|x86-64|<span style="font-size: 8px">b941ef5048326ec3db159e3ad4a749ec86d5205497f20422fcbce206e200f2f1</span>|
+|[martian-v3.2.0-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v3.2.0/martian-v3.2.0-linux-x86_64.tar.xz)|Linux|x86-64|<span style="font-size: 8px">14e0f5ea91b67e9f5f589aaac37c397e499b02c6d2c7caa7963123715363b211</span>|
 |[martian-v3.1.0-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v3.1.0/martian-v3.1.0-linux-x86_64.tar.gz)|Linux|x86-64|<span style="font-size: 8px">669d6722563dc23834162993fcb29d2471317a993b3ca30782fa879b8a6f94ff</span>|
 |[martian-v3.0.0-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v3.0.0/martian-v3.0.0-linux-x86_64.tar.gz)|Linux|x86-64|<span style="font-size: 8px">f0708a27113417d8d69ad61835930dba8a8fd827f11d4fb6ce5c6108e773a57e</span>|
 |[martian-v2.3.2-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v2.3.2/martian-v2.3.2-linux-x86_64.tar.gz)|Linux|x86-64|<span style="font-size: 8px">657eb6018a9371ac6af7267191945fd5ca590963d93d5d8096078f37d92b1107</span>|
@@ -30,8 +32,8 @@ We hope to have MacOS and Windows support soon.
 
 ### Prerequisites
 * [Go](https://golang.org) 1.11 or higher is required to build Martian.
-* The Python adapter for wrapping stage code requires Python 2.7.  Python 3 support is present in the current master branch, and will be released with version 3.2.
-* To build the user interface, [Node](https://nodejs.org) 6 or higher is required, along with NPM.
+* The Python adapter for wrapping stage code requires Python 2.7 or 3.6 or higher.
+* To build the user interface, [Node](https://nodejs.org) 8 or higher is required, along with NPM.
 
 ### Building the source
 
@@ -46,17 +48,22 @@ mrc  mrf  mrg  mrjob  mrp  mrstat
 ~~~~
 
 To test that everything is working, `make longtests` runs a few simple test pipelines
-and verifies that their output is correct, including test that pipeline failures are
+and verifies that their output is correct, including tests that pipeline failures are
 handled correctly.
 
 Alternatively, you can use
 ~~~~
+$ go get golang.org/x/tools/cmd/goyacc
+$ go install golang.org/x/tools/cmd/goyacc
 $ go get github.com/martian-lang/martian/cmd/...
 $ go generate github.com/martian-lang/martian/...
 $ go install github.com/martian-lang/martian/cmd/...
 ~~~~
-However you'll still need to run `make web` in the repository directory in
-order to build the web UI.
+However that will not you'll still need to run `make web` in the repository
+directory in order to build the web UI.  Furthermore, the martian binaries
+expect various data files to be located in specific relative locations.
+Building with `make` is therefore recommended.
+
 
 ## Environment Setup
 

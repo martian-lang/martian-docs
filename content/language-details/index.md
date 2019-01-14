@@ -12,7 +12,7 @@ The Martian syntax is specified as a [YACC grammar](https://github.com/martian-l
 
 ## Symbols and Scope
 
-Symbols in Martian are identifiers for stages, pipelines, and parameters. They may comprise uppercase and lowercase letters, numeric digits, and underscores. A symbol may not begin with a numeric digit, which is reserved for number literals. The Martian lexer's regular expression for symbols is ```[a-zA-Z_][a-zA-Z0-9_]*\\b```.
+Symbols in Martian are identifiers for stages, pipelines, and parameters. They may comprise uppercase and lowercase letters, numeric digits, and underscores. A symbol may not begin with a numeric digit, which is reserved for number literals. Identifiers beginning with two underscores are reserved as well. The Martian lexer's regular expression for symbols is ```^_?[a-zA-Z][a-zA-z0-9_]*\\b```.
 
 Martian defines two scopes within which symbol names must be unique:
 
@@ -47,12 +47,12 @@ Martian supports the following built-in types:
 
 |Type|Description|
 |----|-----------|
-|string|A string.|
+|string|A string. String literals support escaping using json syntax: `\"`, `\\`, `\b`, `\n`, `\r`, `\t`, and `\uxxxx` (unicode U+xxxx).|
 |int|An integer number.|
 |float|A floating point number with support for exponential notation.  |
 |bool|A boolean flag whose valid values are ```true``` and ```false```.|
 |path|A string meant to be interpreted as a filesystem path.|
-|map|A JSON-compatible data structure whose top-level type is an object.|
+|map|A JSON-compatible data structure whose top-level type is an object (dictionary).|
 
 Martian also supports user-defined filetypes.  The name of the file types
 controls the file extension for the default filename pre-populated in the outs.
