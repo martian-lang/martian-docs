@@ -941,9 +941,9 @@ modes are defined in the <code>profiles</code> key of <code>jobmanagers/config.j
 
 <h2 id="completion-hooks">Completion Hooks</h2>
 
-<p>A command may be specified in <code>mrp</code>&rsquo;s <code>--onfinish=&lt;command&gt;</code> flag.  This
-command will run when the pipestance completes or fails.  It will be given
-the following arguments:</p>
+<p>A command may be specified in <code>mrp</code>&rsquo;s <code>--onfinish=&lt;command&gt;</code> flag.  The command
+must be the path to an executable file.  It will run when the pipestance
+completes or fails, with the following command line arguments:</p>
 
 <ul>
 <li>path to pipestance</li>
