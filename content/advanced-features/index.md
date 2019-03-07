@@ -376,9 +376,9 @@ The default martian distribution configures the following profile modes:
 
 ## Completion Hooks
 
-A command may be specified in `mrp`'s `--onfinish=<command>` flag.  This
-command will run when the pipestance completes or fails.  It will be given
-the following arguments:
+A command may be specified in `mrp`'s `--onfinish=<command>` flag.  The command
+must be the path to an executable file.  It will run when the pipestance
+completes or fails, with the following command line arguments:
 
 - path to pipestance
 - {complete|failed}
