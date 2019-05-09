@@ -30,5 +30,8 @@ line tool for remote administration.
 * Override default thread or memory requests from stage MRO.
 * Conditionally disable sub-pipelines (e.g. to support autodetection of which analyses to run).
 
-## 2018
+## 2019
+Better control flows for array inputs.
+
+## 2020
 * Management tool for launching and running many pipelines concurrently.
