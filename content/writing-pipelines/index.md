@@ -258,18 +258,21 @@ stage SORT_ITEMS(
 
 `mrf` does not support any arguments that affect the formatting, otherwise it would not be canonical!
 
-## Compiling* Code
+## Compiling<sup>*</sup> Code
 
 One of the core components and principal benefits of Martian is `mrc`, a tool
 which statically verifies your MRO code before you commit to a potentially
 resource-intensive run of your pipeline. `mrc` identifies and helps you fix
 errors that you might otherwise encounter hours, days, or even weeks into your
-pipeline run.
+pipeline run.  It can also output the pipeline in 
+[GraphViz](https://en.wikipedia.org/wiki/Graphviz) dot format for
+visualization (see below).
 
-While `mrc` does not actually compile* your code into an intermediate or
-binary format, it does perform many of the same parsing and semantic checking
-steps that a compiler would, helping you to write correct code, and making it
-easier to perform major refactorings when necessary.
+While `mrc` is technically more like a linter, in that it does not actually
+compile your code into an intermediate or binary format, it does perform
+many of the same parsing and semantic checking steps that a compiler would,
+helping you to write correct code, and making it easier to perform major
+refactorings when necessary.
 
 ### Running `mrc`
 
@@ -296,4 +299,17 @@ It is recommended best practice to configure a pre-commit hook that runs `mrc --
 
 `mrc` also supports a `--json` option that outputs the abstract syntax tree and
 associated data as a JSON object. This can be useful for further processing of
-the AST in external tools.
+the AST in external tools.  Be warned, however, that the json representation is
+not a stable interface and may change in arbitrary ways in the future.
+
+### Visualizing a pipeline with [GraphViz](https://en.wikipedia.org/wiki/Graphviz)
+
+By using `mrc`'s `--dot` option, you can generate a visualization of the
+pipeline structure.  For example,
+```bash
+$ mrc --dot mro/sc_rna_aggregator.mro | dot -Tsvg -o sc_rna_aggregator.svg
+```
+to get a plot like this:
+![sc_rna_aggregator visualization](/static/img/sc_rna_aggregator.svg)
+
+This is a new feature, and the output could be prettier - pull requests welcome!
