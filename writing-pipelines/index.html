@@ -643,18 +643,21 @@ src py &quot;stages/sort&quot;,)
 
 <p><code>mrf</code> does not support any arguments that affect the formatting, otherwise it would not be canonical!</p>
 
-<h2 id="compiling-code">Compiling* Code</h2>
+<h2 id="compiling-sup-sup-code">Compiling<sup>*</sup> Code</h2>
 
 <p>One of the core components and principal benefits of Martian is <code>mrc</code>, a tool
 which statically verifies your MRO code before you commit to a potentially
 resource-intensive run of your pipeline. <code>mrc</code> identifies and helps you fix
 errors that you might otherwise encounter hours, days, or even weeks into your
-pipeline run.</p>
+pipeline run.  It can also output the pipeline in
+<a href="https://en.wikipedia.org/wiki/Graphviz">GraphViz</a> dot format for
+visualization (see below).</p>
 
-<p>While <code>mrc</code> does not actually compile* your code into an intermediate or
-binary format, it does perform many of the same parsing and semantic checking
-steps that a compiler would, helping you to write correct code, and making it
-easier to perform major refactorings when necessary.</p>
+<p>While <code>mrc</code> is technically more like a linter, in that it does not actually
+compile your code into an intermediate or binary format, it does perform
+many of the same parsing and semantic checking steps that a compiler would,
+helping you to write correct code, and making it easier to perform major
+refactorings when necessary.</p>
 
 <h3 id="running-mrc">Running <code>mrc</code></h3>
 
@@ -686,7 +689,21 @@ It is recommended best practice to configure a pre-commit hook that runs <code>m
 
 <p><code>mrc</code> also supports a <code>--json</code> option that outputs the abstract syntax tree and
 associated data as a JSON object. This can be useful for further processing of
-the AST in external tools.</p>
+the AST in external tools.  Be warned, however, that the json representation is
+not a stable interface and may change in arbitrary ways in the future.</p>
+
+<h3 id="visualizing-a-pipeline-with-graphviz-https-en-wikipedia-org-wiki-graphviz">Visualizing a pipeline with <a href="https://en.wikipedia.org/wiki/Graphviz">GraphViz</a></h3>
+
+<p>By using <code>mrc</code>&rsquo;s <code>--dot</code> option, you can generate a visualization of the
+pipeline structure.  For example,</p>
+
+<pre><code class="language-bash">$ mrc --dot mro/sc_rna_aggregator.mro | dot -Tsvg -o sc_rna_aggregator.svg
+</code></pre>
+
+<p>to get a plot like this:
+<img src="https://martian-lang.org/static/img/sc_rna_aggregator.svg" alt="sc_rna_aggregator visualization" /></p>
+
+<p>This is a new feature, and the output could be prettier - pull requests welcome!</p>
 
 
 			<aside class="copyright" role="note">
