@@ -310,6 +310,6 @@ pipeline structure.  For example,
 $ mrc --dot mro/sc_rna_aggregator.mro | dot -Tsvg -o sc_rna_aggregator.svg
 ```
 to get a plot like this:
-![sc_rna_aggregator visualization](/static/img/sc_rna_aggregator.svg)
+![sc_rna_aggregator visualization](/img/sc_rna_aggregator.svg)
 
 This is a new feature, and the output could be prettier - pull requests welcome!
