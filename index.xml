@@ -81,7 +81,7 @@ $ stage_executable [args] &amp;lt;type&amp;gt; &amp;lt;metadata_path&amp;gt; &am
       
       <guid>https://martian-lang.org/roadmap/</guid>
       <description>Martian Development Roadmap All features here refer to notional plans. They are provided only to provide visibility into the current priorities of the Martian development team, and are subject to change at any time.
-August 2017  Initial GitHub publication  Q3 2017 - 2.3.0  Always-on UI port with basic (unencrypted) authentication and a basic command line tool for remote administration. Support for perf record profiling. Some tracking of stage vmem usage.</description>
+August 2017  Initial GitHub publication  Q3 2017 - 2.3.0  Always-on UI port with basic (unencrypted) authentication and a basic command line tool for remote administration. (done) Support for perf record profiling. (done) Some tracking of stage vmem usage.</description>
     </item>
     
     <item>
