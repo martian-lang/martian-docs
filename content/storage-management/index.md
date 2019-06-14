@@ -31,7 +31,7 @@ metadata is retained, and the total amount of freed space is recorded.
 In `--vdrmode=rolling`, the VDR killer is invoked whenever any stage completes.
 In `--vdrmode=post` it is invoked when the pipeline completes.
 Mrp's default is `--vdrmode=rolling`, however for development purposes, one
-may wish to set `--vdrmode=disabled` to preserve intermediate results.
+may wish to set `--vdrmode=disable` to preserve intermediate results.
 
 Additionally, when VDR is not disabled, all stages which split will have their
 chunks' files cleaned out by VDR when all dependent stages have completed.
