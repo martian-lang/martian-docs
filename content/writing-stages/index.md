@@ -114,7 +114,7 @@ accidentally setting invalid keys in `outs`.
 Stage code may import the
 [martian](https://github.com/martian-lang/martian/blob/master/adapters/python/martian.py)
 module (the shell wrapper adds the version corresponding to the `mrp` process
-to the `PYTHONPATH` - don't try to import it from elsewhere).  This provieds
+to the `PYTHONPATH` - don't try to import it from elsewhere).  This provides
 a number of convenience methods to the stage code:
 
 |Method|Description|
@@ -142,21 +142,22 @@ Python `import` that path as a module.
 Stage executables that are compiled must implement the command-line interface described above.
 
 ### [Rust](https://github.com/martian-lang/martian-rust)
-[ Documentation WIP ]
+Refer to the [GitHub Pages for `martian-rust`](https://martian-lang.github.io/martian-rust).
 
 ### [Go](https://github.com/martian-lang/martian/blob/master/martian/adapter/adapter.go)
 To implement a stage with Go, simply import
 `github.com/martian-lang/martian/martian/adapter` and call the `RunStage`
 method with your stage code logic as parameters from the main() method.
 
-Given `split`, `chunk`, `join` methods are given a `core.Metadata` object
-which provides access to args, outs, and so on.  For an example of how this
-can be used, see the
+The `split`, `chunk`, `join` methods provided to `RunStage` called with
+a `core.Metadata` object which provides access to args, outs, and so on.
+For an example of how this can be used, see the
 [go-based integration test stage](https://github.com/martian-lang/martian/blob/master/martian/test/sum_squares/sum_squares.go)
 as an example.
 
-Stage code can write to the stage `log` file with `util.Log` and related
-methods.
+Stage code can write to the stage `log` file with
+[`util.Log`](https://godoc.org/github.com/martian-lang/martian/martian/util#Log)
+and related methods.
 
 The adapter handles writing the expected output files for the stage through
 the return values of the methods given to `RunStage`.  `RunStage` will also
