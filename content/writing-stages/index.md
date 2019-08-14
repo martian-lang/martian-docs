@@ -10,6 +10,14 @@ Martian supports writing pipeline stages in virtually any language. The only
 requirement for pipeline executables is that they be able to write JSON to
 files.
 
+The martian runtime may need to restart stages for a variety of reasons,
+including user input, hardware failures, or running out of memory.  Even if
+stage code completes successfully, there are cases such as network partitions
+in which the runtime may not be able to confirm successful completion.  Because
+of this, stages should never alter their inputs, and must behave correctly if
+re-run.  Formally, stages should ideally be
+[pure functions](https://en.wikipedia.org/wiki/Pure_function).
+
 A Martian stage is an executable, either interpreted or compiled, that takes
 at least four command-line arguments as follows:
 
@@ -58,12 +66,21 @@ Inputs:
 - `args`: The stage input arguments
 - `chunk_defs`: The chunk definitions produced by the split phase.
 - `chunk_outs`: A json serialized list aggregating the outputs from each chunk.
-- `outs`: The stage outputs.  This is also written to, but for outputs which
-are files, the paths to the expected locations for those files are populated
-by the runtime.
+- `outs`: The stage outputs.  This is written by the stage code, but for
+outputs which are files, the paths to the recommended locations for those files
+are populated by the runtime.
 
 Output: The `outs` file is re-written with values populated for non-file
 output types.
+
+Because the runtime will attempt to reclaim disk space used by files which are
+not required by any incomplete stages (see [Storage Management](../storage-management/)),
+the final outputs of a stage should never contain references to files produced
+by other stages.  This includes paths in the `outs` file as well as symbolic
+links or other ways an output file might depend on an input file.  If the
+outputs of a stage need to include a file produced by a previous stage, that
+file should be copied or [hard-linked](https://en.wikipedia.org/wiki/Hard_link)
+to the stage's outputs.
 
 ### Main/Chunk Interface
 For stages which do not split, the `args` file contains the stage inputs.
