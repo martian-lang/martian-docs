@@ -70,8 +70,7 @@ All Martian pipestance state is persisted in the filesystem in an intuitive, hum
       
       <guid>https://martian-lang.org/writing-stages/</guid>
       <description>Overview Martian supports writing pipeline stages in virtually any language. The only requirement for pipeline executables is that they be able to write JSON to files.
-A Martian stage is an executable, either interpreted or compiled, that takes at least four command-line arguments as follows:
-$ stage_executable [args] &amp;lt;type&amp;gt; &amp;lt;metadata_path&amp;gt; &amp;lt;files_path&amp;gt; &amp;lt;journal_prefix&amp;gt;  In most cases the interpretation of the arguments is handled by a language-specific adapter. The type argument is one of split, join, or main (main is run for chunk phases, or for stages which do not split ).</description>
+The martian runtime may need to restart stages for a variety of reasons, including user input, hardware failures, or running out of memory. Even if stage code completes successfully, there are cases such as network partitions in which the runtime may not be able to confirm successful completion.</description>
     </item>
     
     <item>

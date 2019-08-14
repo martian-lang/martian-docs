@@ -394,6 +394,14 @@
 requirement for pipeline executables is that they be able to write JSON to
 files.</p>
 
+<p>The martian runtime may need to restart stages for a variety of reasons,
+including user input, hardware failures, or running out of memory.  Even if
+stage code completes successfully, there are cases such as network partitions
+in which the runtime may not be able to confirm successful completion.  Because
+of this, stages should never alter their inputs, and must behave correctly if
+re-run.  Formally, stages should ideally be
+<a href="https://en.wikipedia.org/wiki/Pure_function">pure functions</a>.</p>
+
 <p>A Martian stage is an executable, either interpreted or compiled, that takes
 at least four command-line arguments as follows:</p>
 
@@ -446,13 +454,22 @@ to be used for the join phase.</li>
 <li><code>args</code>: The stage input arguments</li>
 <li><code>chunk_defs</code>: The chunk definitions produced by the split phase.</li>
 <li><code>chunk_outs</code>: A json serialized list aggregating the outputs from each chunk.</li>
-<li><code>outs</code>: The stage outputs.  This is also written to, but for outputs which
-are files, the paths to the expected locations for those files are populated
-by the runtime.</li>
+<li><code>outs</code>: The stage outputs.  This is written by the stage code, but for
+outputs which are files, the paths to the recommended locations for those files
+are populated by the runtime.</li>
 </ul>
 
 <p>Output: The <code>outs</code> file is re-written with values populated for non-file
 output types.</p>
+
+<p>Because the runtime will attempt to reclaim disk space used by files which are
+not required by any incomplete stages (see <a href="../storage-management/">Storage Management</a>),
+the final outputs of a stage should never contain references to files produced
+by other stages.  This includes paths in the <code>outs</code> file as well as symbolic
+links or other ways an output file might depend on an input file.  If the
+outputs of a stage need to include a file produced by a previous stage, that
+file should be copied or <a href="https://en.wikipedia.org/wiki/Hard_link">hard-linked</a>
+to the stage&rsquo;s outputs.</p>
 
 <h3 id="main-chunk-interface">Main/Chunk Interface</h3>
 
@@ -507,7 +524,7 @@ accidentally setting invalid keys in <code>outs</code>.</p>
 <p>Stage code may import the
 <a href="https://github.com/martian-lang/martian/blob/master/adapters/python/martian.py">martian</a>
 module (the shell wrapper adds the version corresponding to the <code>mrp</code> process
-to the <code>PYTHONPATH</code> - don&rsquo;t try to import it from elsewhere).  This provieds
+to the <code>PYTHONPATH</code> - don&rsquo;t try to import it from elsewhere).  This provides
 a number of convenience methods to the stage code:</p>
 
 <table>
@@ -588,7 +605,7 @@ Python <code>import</code> that path as a module.</p>
 
 <h3 id="rust-https-github-com-martian-lang-martian-rust"><a href="https://github.com/martian-lang/martian-rust">Rust</a></h3>
 
-<p>[ Documentation WIP ]</p>
+<p>Refer to the <a href="https://martian-lang.github.io/martian-rust">GitHub Pages for <code>martian-rust</code></a>.</p>
 
 <h3 id="go-https-github-com-martian-lang-martian-blob-master-martian-adapter-adapter-go"><a href="https://github.com/martian-lang/martian/blob/master/martian/adapter/adapter.go">Go</a></h3>
 
@@ -596,14 +613,15 @@ Python <code>import</code> that path as a module.</p>
 <code>github.com/martian-lang/martian/martian/adapter</code> and call the <code>RunStage</code>
 method with your stage code logic as parameters from the main() method.</p>
 
-<p>Given <code>split</code>, <code>chunk</code>, <code>join</code> methods are given a <code>core.Metadata</code> object
-which provides access to args, outs, and so on.  For an example of how this
-can be used, see the
+<p>The <code>split</code>, <code>chunk</code>, <code>join</code> methods provided to <code>RunStage</code> called with
+a <code>core.Metadata</code> object which provides access to args, outs, and so on.
+For an example of how this can be used, see the
 <a href="https://github.com/martian-lang/martian/blob/master/martian/test/sum_squares/sum_squares.go">go-based integration test stage</a>
 as an example.</p>
 
-<p>Stage code can write to the stage <code>log</code> file with <code>util.Log</code> and related
-methods.</p>
+<p>Stage code can write to the stage <code>log</code> file with
+<a href="https://godoc.org/github.com/martian-lang/martian/martian/util#Log"><code>util.Log</code></a>
+and related methods.</p>
 
 <p>The adapter handles writing the expected output files for the stage through
 the return values of the methods given to <code>RunStage</code>.  <code>RunStage</code> will also
