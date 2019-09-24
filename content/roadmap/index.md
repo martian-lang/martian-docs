@@ -33,7 +33,7 @@ line tool for remote administration. (done)
 ## Q2 2019 - 3.2.0
 * Support for virtual address space reservations for jobs. (done)
 
-## Q3 2019
+## Q3 2019 - 4.0
 * Support for structured data types in mro.
 * Support for strongly-typed map data.
 * Better control flows for array inputs.
