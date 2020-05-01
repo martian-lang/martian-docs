@@ -115,9 +115,117 @@ files for [Vim](https://www.vim.org/), [Atom](https://atom.io/),
 and [Sublime](https://www.sublimetext.com/) text editors.  If your favorite
 editor is missing from this list, pull requests are welcome.
 
+### Types
+
+#### Built-in types
+
+Martian has several supported built-in basic types:
+- `int`: A 64-bit signed integer type.
+- `float`: A double-precision floating point value.
+- `bool`: `true` or `false`
+- `string`: A utf-8 string.  String literals in pipeline source code are double-quoted and recognize json-style escape sequences.
+- `file`: A generic type indicating that the value will contain a path to a regular file.  Always use absolute paths, as each stage will run in its own working directory.
+- `path`: A generic type indicating that the value will contain a path to a directory.
+- `map`: an untyped map type, with string keys and arbitrary values.  For new code targetting martian 4.0, it is strongly recommended to use a typed map or struct instead.
+
+Implicit conversion from `string` to `file` or `path` is permitted, as well as
+from `int` to `float` (though not the reverse).
+
+#### User-defined file types
+
+Users may define new file types using the `filetype` directive.  These behave
+like `file`, and can be implicitly converted to `string` or `file`, but not from
+one user file type to another.  This allows pipelines to be more clear about
+the format of files being passed around, and to exploit the type checking to
+ensure that files are being used conistently as they are passed around.
+
+#### Structured data types (Martian 4.0 preview)
+
+A `struct` is related to the same concepts in other languages like C, a named
+tuple in Python, or an object in javascript.  They can be declared,
+```
+struct MyType(
+    int   foo,
+    float bar,
+)
+```
+Members of a struct can be extracted using the familiar `.` syntax, e.g.
+```
+call FOO(
+    foo = STRUCT_OUTPUT.struct.foo,
+)
+```
+The output of a stage or pipeline is always a `struct`.  Because of this, the
+name of a stage or pipeline can be used as a type, to indicate a structure with
+the same members and types as the outputs of the stage or pipeline.
+
+Martian structures support a form of "[duck typing](https://en.wikipedia.org/wiki/Duck_typing)".
+If one has a struct `MyType` as declared above, and another type
+```
+struct MyBiggerType(
+    int    foo,
+    int    bar,
+    string baz,
+)
+```
+then a value of type `MyBiggerType` may be used for the input to a stage or
+pipeline which asks for a `MyType`.  This is because for every field in `MyType`
+there is a field with the same name in `MyBiggerType`, and that field in
+`MyBiggerType` has a type that is assignable to the type for that field in
+`MyType`.  Because of this, one can easily take a subset of the data from a
+`struct` with only the values one actually needs.  Values with struct types may
+also always be used for untyped map values.
+
+As an additional convenience, martian supports a "wildcard expansion" of a
+struct value when calling a stage, e.g.
+```
+call STAGE2(
+    foo = self.foo,
+    *   = STAGE1,
+)
+```
+This is equivalent to `input = STAGE1.output` for every output of `STAGE1` that
+is an input to `STAGE2`.  To prevent ambiguity, only one wildcard expansion is
+allowed for each call, and it is an error if one of the outputs of `STAGE1` was
+already assigned in the input call explicitly (e.g. `foo` in the example).
+
+#### Collection types
+
+Martian also supports collections of values as arrays or typed maps.  These are
+declared using a syntax that is familar to users of C-style languages.  Arrays
+are declared as for example `int[]`.  Typed maps (available in the martian 4.0
+preview) always have string keys, and
+are declared as for example `map<int>`.  These can be combined as for example
+`map<int[][]>[]`.
+
+In order to prevent confusing data flows, maps cannot be directly nested.  That
+is, `map<map<int>>` is not permitted, nor is it permitted to nest untyped maps,
+e.g. `map<map>`.  It _is_ permitted to have a map of structs, and those structs
+may contain further maps.
+
+Because the type system has no way to enforce the length of an array or the keys
+of a map, there is no support for indexing into one.  If one knows the keys
+ahead of time, use a struct.
+
+A struct can be assigned to a typed map value if every field in the struct has a
+type that can be assigned to the type of the map.  For example a struct with
+only `int` and `float` fields may be assigned to a value of type `map<float>`.
+
+Typed maps may be converted to untyped maps, and `map<T>` may be converted to
+`map<U>` if type `T` is convertible to type `U`.  The same applies for arrays,
+e.g. converting `T[]` to `U[]`.
+
+A very important convenience is "projection" through structs.  Using the
+`MyType` example struct from the previous section, if we have a value `FOO` of
+type `map<MyType[]>` then `FOO.bar` has type `map<float[]>`.
+
 ### Composability
 
-Pipelines specify input and output parameters the same way stages do, so they may themselves also act as stages. This allows for the composition of an arbitrary mix of individual stages and pipelines into still larger pipelines. We refer to pipelines as "subpipelines" when they are composed into other pipelines.
+Pipelines specify input and output parameters the same way stages do, so they
+may themselves also act as stages. This allows for the composition of an
+arbitrary mix of individual stages and pipelines into still larger pipelines.
+We refer to pipelines as "subpipelines" when they are composed into other
+pipelines.
 
 Because parameter binding is done by stage name, pipelines cannot call the same
 stage or sub-pipeline twice without aliasing it like so:
@@ -148,6 +256,39 @@ pipeline ADD_KEYS(
 }
 ```
 
+## Top-level file outputs
+
+When a top-level pipeline completes, any outputs with file type are moved into
+the pipestance directory's `outs` subdirectory.  Symbolic links are added to
+the original locations of those files in the stage output directories.
+
+For an output with `file` or `path` type, the name of a file in the top-level
+output directory will be the name of the output parameter of the pipeline.  If
+it is a user-defined file type, e.g. json, then the type will be appended to
+the name as an extension, e.g. `.json`.
+
+If a pipeline is defined like for example
+```
+pipeline PIPE(
+    out json foo "help text" "special_file",
+)
+```
+then the string "help text" will be displayed in the console as a label for
+the output file, and the default filename (which would be `foo.json`) is
+overridden to `special_file`.  These annotations apply when defining struct
+types as well.
+
+In martian 4.0, if an output is a struct type, then in the top-level `outs`
+directory there will be a _directory_ for that value, containing files from
+within that structure.  Nested structures are handled recursively as deeper
+directories.
+
+An array of files will become a directory, with files named for the array index,
+e.g. for `json[] foo` there will be `foo/1.json` and so on.  For typed maps,
+`map<json>`, the outputs would be `foo/<key>.json` for each key in the map.
+Arrays or typed maps of structs containing files and up as nested directories
+as one would expect.
+
 ## Organizing Code
 
 ### MRO Files
@@ -157,7 +298,9 @@ by convention they are written in files that have an ```.mro``` extension.
 
 ### Preprocessing with @include
 
-Martian supports lexical preprocessing with an ```@include``` directive, which takes the path to another MRO file as an argument. This directive is evaluated by splicing the contents of the included file into the file where the directive is given, replacing the directive itself. This evaluation is recursive, and Martian keeps track of the inclusion tree in order to be able to report errors using per-source file line numbers.
+Martian supports organizing one's pipeline definitions into multiple files which
+can use an `@include` directive to import the stages, pipelines, and types
+defined in other files.
 
 `_my_stages.mro`
 
@@ -193,7 +336,12 @@ pipeline DUPLICATE_FINDER(
 
 ### Stage Code vs Pipeline Code
 
-By convention, the ```@include``` directive allows the developer to organize code into header files, although there is no formal distinction between header and non-header MRO files in Martian. Typically, stages that are logically grouped together are declared in one file, for example ```_sorting_stages.mro```, and that file would be included into another MRO file that declares a pipeline that calls these included stages. By convention, MRO files containing stage declarations should be named with the suffix ```_stages```.
+The ```@include``` directive allows the developer to organize code.  Typically,
+stages that are logically grouped together are declared in one file, for example
+```_sorting_stages.mro```, and that file would be included into another MRO
+file that declares a pipeline that calls these included stages. By convention,
+MRO files containing stage declarations should be named with the suffix
+```_stages```.
 
 ### Martian Project Directory Structure
 
@@ -226,7 +374,10 @@ martian_project/
 
 ## Formatting Code
 
-Martian includes a canonical code formatting utility called `mrf`. It parses your MRO code into its abstract syntax tree and re-emits the code with canonical whitespacing. In particular, `mrf` performs intelligent column-wise alignment of parameter fields so that this:
+Martian includes a canonical code formatting utility called `mrf`. It parses
+your MRO code into its abstract syntax tree and re-emits the code with
+canonical whitespacing. In particular, `mrf` performs intelligent column-wise
+alignment of parameter fields so that this:
 
 ~~~~
     stage SORT_ITEMS  (in txt unsorted,
@@ -246,17 +397,24 @@ stage SORT_ITEMS(
 )
 ~~~~
 
-`mrf` is an "opinionated" formatter, inspired by tools like `gofmt`, therefore we will borrow
-[their explanation](https://blog.golang.org/go-fmt-your-code) of the benefits of canonical code formatting:
+`mrf` is an "opinionated" formatter, inspired by tools like `gofmt`, therefore
+we will borrow [their explanation](https://blog.golang.org/go-fmt-your-code) of
+the benefits of canonical code formatting:
 
 - **Easier to write**: never worry about minor formatting concerns while hacking away.
 - **Easier to read**: when all code looks the same you need not mentally convert others' formatting style into something you can understand.
 - **Easier to maintain**: mechanical changes to the source don't cause unrelated changes to the file's formatting; diffs show only the real changes.
 - **Uncontroversial**: never have a debate about spacing or brace position ever again!
 
-`mrf` takes a list of MRO filenames as arguments. By default, it will output the formatted code back to `stdout`. If given the `--rewrite` option, it will write the formatted code back into the original files. If given the `--all` option, it will rewrite all MRO files found in your `MROPATH`. For consistency of your MRO codebase, consider configuring editor save-hooks or git commit-hooks that run `mrf --rewrite` or `mrf --all`.
+`mrf` takes a list of MRO filenames as arguments. By default, it will output
+the formatted code back to `stdout`. If given the `--rewrite` option, it will
+write the formatted code back into the original files. If given the `--all`
+option, it will rewrite all MRO files found in your `MROPATH`. For consistency
+of your MRO codebase, consider configuring editor save-hooks or git
+commit-hooks that run `mrf --rewrite` or `mrf --all`.
 
-`mrf` does not support any arguments that affect the formatting, otherwise it would not be canonical!
+`mrf` does not support any arguments that affect the formatting, otherwise it
+would not be canonical!
 
 ## Compiling<sup>*</sup> Code
 
