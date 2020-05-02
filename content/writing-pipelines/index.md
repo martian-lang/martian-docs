@@ -376,7 +376,7 @@ martian_project/
 
 Martian includes a canonical code formatting utility called `mrf`. It parses
 your MRO code into its abstract syntax tree and re-emits the code with
-canonical whitespacing. In particular, `mrf` performs intelligent column-wise
+canonical whitespace. In particular, `mrf` performs intelligent column-wise
 alignment of parameter fields so that this:
 
 ~~~~
@@ -415,6 +415,20 @@ commit-hooks that run `mrf --rewrite` or `mrf --all`.
 
 `mrf` does not support any arguments that affect the formatting, otherwise it
 would not be canonical!
+
+If you run `mrf` with the `--includes` flag, it will (attempt to) fix up
+`@include` directives.  Specifically, if a pipeline in an `mro` source file
+uses a stage, it will ensure that the file defining that stage is _directly_
+included, and that files which are not directly depended on are not included.
+It will only add `@include` statements referring to files in the root of your
+`MROPATH` or in the transitive closure of the existing includes.  The reason
+for the convention of direct inclusions is the same as the reasons explained
+in the [clang include-what-you-use][] tool - briefly, if a file you depend
+on stops depending on another file, and you only included it transitively,
+then your pipeline will fail to compile if the intermediate pipeline removes
+its `@include`.
+
+[clang include-what-you-use]: https://github.com/include-what-you-use/include-what-you-use/blob/master/docs/WhyIWYU.md
 
 ## Compiling<sup>*</sup> Code
 
