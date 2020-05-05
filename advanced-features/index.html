@@ -437,12 +437,18 @@ To support this, Martian 3.0 allows disabling of calls, e.g.</p>
 <p>Disabled pipelines or stages will not run, and their outputs will be populated
 with null values.  Downstream stages must be prepared to deal with this case.</p>
 
+<p>Note that the value being bound to <code>disabled</code> must be a boolean.  Martian does
+not have a concept of &ldquo;falsey&rdquo; values the way for example Python or JavaScript
+do.</p>
+
 <h2 id="parallelization">Parallelization</h2>
 
 <p>Subject to resource constraints, Martian parallelizes work by breaking
 pipeline logic into chunks and parallelizing them in two ways.  First,
 stages can run in parallel if they don&rsquo;t depend on each other&rsquo;s outputs.
 Second, individual stages may split themselves into several chunks.</p>
+
+<h3 id="chunking">Chunking</h3>
 
 <p>Stages which split are specified in mro as, for example,</p>
 
@@ -462,6 +468,55 @@ how to distribute the input data across chunks, giving a &ldquo;value&rdquo; to 
 as well as potentially setting thread and memory requirements for each chunk
 and the join.  The after the chunks run, the join phase aggregates the output
 from all of the chunks into the single output of the stage.</p>
+
+<h3 id="map-call-4-0-preview"><code>map call</code> (4.0 preview)</h3>
+
+<p>To run a stage or sub-pipeline once for each element in an array or map, one can
+say</p>
+
+<pre><code>stage SQUARE(
+    in  float value,
+    out float square,
+    src comp  &quot;square&quot;,
+)
+
+stage SUM(
+    in  float[] values,
+    out float   sum,
+    src comp    &quot;sum&quot;,
+)
+
+pipeline SUM_SQUARES(
+    in  float[] values,
+    out float   sum,
+)
+{
+    map call SQUARE(
+        value = split self.values,
+    )
+
+    call SUM(
+        values = SQUARE.square,
+    )
+
+    return (
+        value = SUM.sum,
+    )
+}
+</code></pre>
+
+<p>which is mostly equivalent to the chunked version shown above in this case,
+however it opens up new possibilities for pipelines.  Furthermore, because the
+next call can be mapped over the outputs of the previous one, in some cases one
+can improve efficiency by avoiding the useless <code>join</code> and <code>split</code> in between.</p>
+
+<p>One or more parameters to a <code>map call</code> must be declared as being <code>split</code>.  If
+more than one parameter is bound in this way, all of them must be bound to
+either arrays with the same lengths or typed maps with the same keys.  If the
+split argument was an array, the output of the stage will be an array with the
+same length.  If it was a typed map, the output will be a typed map with the
+same keys.  Splitting an untyped map is not permitted, as there is no way to
+confirm compatibility of the values.</p>
 
 <h2 id="resource-consumption">Resource consumption</h2>
 
@@ -1013,7 +1068,7 @@ completes or fails, with the following command line arguments:</p>
 
 			<aside class="copyright" role="note">
 				
-				&copy; 2019 10X Genomics 
+				&copy; 2020 10X Genomics 
 				
 				
 			</aside>
