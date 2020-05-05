@@ -49,11 +49,17 @@ pipeline DUPLICATE_FINDER(
 Disabled pipelines or stages will not run, and their outputs will be populated
 with null values.  Downstream stages must be prepared to deal with this case.
 
+Note that the value being bound to `disabled` must be a boolean.  Martian does
+not have a concept of "falsey" values the way for example Python or JavaScript
+do.
+
 ## Parallelization
 Subject to resource constraints, Martian parallelizes work by breaking
 pipeline logic into chunks and parallelizing them in two ways.  First,
 stages can run in parallel if they don't depend on each other's outputs.
 Second, individual stages may split themselves into several chunks.
+
+### Chunking
 
 Stages which split are specified in mro as, for example,
 ```
@@ -72,6 +78,53 @@ how to distribute the input data across chunks, giving a "value" to each,
 as well as potentially setting thread and memory requirements for each chunk
 and the join.  The after the chunks run, the join phase aggregates the output
 from all of the chunks into the single output of the stage.
+
+### `map call` (4.0 preview)
+To run a stage or sub-pipeline once for each element in an array or map, one can
+say
+```
+stage SQUARE(
+    in  float value,
+    out float square,
+    src comp  "square",
+)
+
+stage SUM(
+    in  float[] values,
+    out float   sum,
+    src comp    "sum",
+)
+
+pipeline SUM_SQUARES(
+    in  float[] values,
+    out float   sum,
+)
+{
+    map call SQUARE(
+        value = split self.values,
+    )
+
+    call SUM(
+        values = SQUARE.square,
+    )
+
+    return (
+        value = SUM.sum,
+    )
+}
+```
+which is mostly equivalent to the chunked version shown above in this case,
+however it opens up new possibilities for pipelines.  Furthermore, because the
+next call can be mapped over the outputs of the previous one, in some cases one
+can improve efficiency by avoiding the useless `join` and `split` in between.
+
+One or more parameters to a `map call` must be declared as being `split`.  If
+more than one parameter is bound in this way, all of them must be bound to
+either arrays with the same lengths or typed maps with the same keys.  If the
+split argument was an array, the output of the stage will be an array with the
+same length.  If it was a typed map, the output will be a typed map with the
+same keys.  Splitting an untyped map is not permitted, as there is no way to
+confirm compatibility of the values.
 
 ## Resource consumption
 Martian is designed to run stages in parallel.  Either locally or in cluster
