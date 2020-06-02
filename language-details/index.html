@@ -394,14 +394,18 @@
 
 <p>The Martian syntax is specified as a <a href="https://github.com/martian-lang/martian/blob/master/martian/syntax/grammar.y">YACC grammar</a>.</p>
 
+<p>UTF-8 is the assumed encoding for all source files, as well as for the json
+parameter files passed between <code>mrp</code> and stage processes.</p>
+
 <h2 id="symbols-and-scope">Symbols and Scope</h2>
 
 <p>Symbols in Martian are identifiers for stages, pipelines, and parameters. They may comprise uppercase and lowercase letters, numeric digits, and underscores. A symbol may not begin with a numeric digit, which is reserved for number literals. Identifiers beginning with two underscores are reserved as well. The Martian lexer&rsquo;s regular expression for symbols is <code>^_?[a-zA-Z][a-zA-z0-9_]*\\b</code>.</p>
 
-<p>Martian defines two scopes within which symbol names must be unique:</p>
+<p>Martian defines three scopes within which symbol names must be unique:</p>
 
 <ol>
 <li>Within the scope of one pipeline invocation, which encompasses all recursively included MRO files, no two stages or pipelines may share the same name. This is considered the global scope of a pipestance.</li>
+<li>Within the scope fo one pipeline definition, not including parent or child pipelines, the names assigned to calls must be unique.</li>
 <li>Within the scope of a stage declaration, no two input parameters of a given stage can have the same name, and same for output parameters.</li>
 </ol>
 
@@ -415,6 +419,7 @@
 <li>Stage names should be a subject and verb: <code>FIND_DIPS</code>, <code>CALL_VARIANTS</code></li>
 <li>Pipelines names should be &ldquo;actor nouns&rdquo;: <code>COIN_SORTER</code>, <code>DYSON_SPHERE_DETECTOR</code>, <code>SV_CALLER</code></li>
 <li>Names of pipelines intended to serve as subpipelines should be prefixed with an underscore: <code>_METRICS_REPORTER</code></li>
+<li>Names of <code>struct</code> data types should use <code>PascalCase</code>.</li>
 </ul>
 
 <p>Parameter names should be written in <code>all lowercase snake_case</code>.</p>
@@ -431,6 +436,8 @@
 
 <h2 id="types">Types</h2>
 
+<h3 id="built-in-types">Built-in types</h3>
+
 <p>Martian supports the following built-in types:</p>
 
 <table>
@@ -444,17 +451,17 @@
 <tbody>
 <tr>
 <td>string</td>
-<td>A string. String literals support escaping using json syntax: <code>\&quot;</code>, <code>\\</code>, <code>\b</code>, <code>\n</code>, <code>\r</code>, <code>\t</code>, and <code>\uxxxx</code> (unicode U+xxxx).</td>
+<td>A string. String literals support escaping using json syntax: <code>\&quot;</code>, <code>\\</code>, <code>\b</code>, <code>\n</code>, <code>\r</code>, <code>\t</code>, and <code>\uxxxx</code> (unicode U+xxxx).  Other escape sequences are undefined behavior - the parser <em>may</em> accept them but the formatter will convert them to standard notation.</td>
 </tr>
 
 <tr>
 <td>int</td>
-<td>An integer number.</td>
+<td>A signed 64-bit integer.</td>
 </tr>
 
 <tr>
 <td>float</td>
-<td>A floating point number with support for exponential notation.</td>
+<td>A double-precision floating point number.  Literal values may use exponential notation.</td>
 </tr>
 
 <tr>
@@ -464,15 +471,25 @@
 
 <tr>
 <td>path</td>
-<td>A string meant to be interpreted as a filesystem path.</td>
+<td>A string meant to be interpreted as a filesystem path to a directory.  All paths should be absolute, as each stage runs in its own working directory.</td>
+</tr>
+
+<tr>
+<td>file</td>
+<td>A string meant to be interpreted as a filesystem path to a regular file.  In most cases, a user-defined file type should be preferred.</td>
 </tr>
 
 <tr>
 <td>map</td>
-<td>A JSON-compatible data structure whose top-level type is an object (dictionary).</td>
+<td>A JSON-compatible data structure whose top-level type is an object (dictionary) with string keys.  In most cases, a typed container should be preferred.</td>
 </tr>
 </tbody>
 </table>
+
+<p>Implicit conversion from <code>string</code> to <code>file</code> or <code>path</code> is permitted, as well as
+from <code>int</code> to <code>float</code> (though not the reverse).</p>
+
+<h3 id="user-defined-file-types">User-defined file types</h3>
 
 <p>Martian also supports user-defined filetypes.  The name of the file types
 controls the file extension for the default filename pre-populated in the outs.
@@ -489,6 +506,116 @@ stage SORT(
     src py   &quot;stages/sort&quot;,
 )
 </code></pre>
+
+<p>This allows pipelines to be more clear about the format of files being passed
+around, and to exploit the type checking to ensure that files are being used
+conistently as they are passed around.  Note however that martian does not
+attempt to validate that a file&rsquo;s content matches the declared type.</p>
+
+<h3 id="structured-data-types-martian-4-0-preview">Structured data types (Martian 4.0 preview)</h3>
+
+<p>A <code>struct</code> is related to the same concepts in other languages like C, a named
+tuple in Python, or an object in javascript.  They can be declared,</p>
+
+<pre><code>struct MyType(
+    int   foo,
+    float bar,
+)
+</code></pre>
+
+<p>Members of a struct can be extracted using the familiar <code>.</code> syntax, e.g.</p>
+
+<pre><code>call FOO(
+    foo = STRUCT_OUTPUT.struct.foo,
+)
+</code></pre>
+
+<p>The output of a stage or pipeline is always a <code>struct</code>.  Because of this, the
+name of a stage or pipeline can be used as a type, to indicate a structure with
+the same members and types as the outputs of the stage or pipeline, e.g.</p>
+
+<pre><code>stage STAGE1(
+    in  int    in1,
+    out file   out1,
+    out string out2,
+    out float  out3,
+)
+
+stage STAGE2(
+    in  STAGE1 in1,
+    out string out1,
+)
+````
+This is convenient particularly for strictly sequentia parts of pipelines where
+all of the outputs of one stage become inputs to the next stage, but care
+should be taken to limit the use of this type of typing to stages whose
+development is tightly coupled.  In particular, stages which are not called
+from within the same pipeline should probably not use each other's names as
+types.
+
+Martian structures support a form of &quot;[duck typing](https://en.wikipedia.org/wiki/Duck_typing)&quot;.
+If one has a struct `MyType` as declared above, and another type
+</code></pre>
+
+<p>struct MyBiggerType(
+    int    foo,
+    int    bar,
+    string baz,
+)</p>
+
+<pre><code>then a value of type `MyBiggerType` may be used for the input to a stage or
+pipeline which asks for a `MyType`.  This is because for every field in `MyType`
+there is a field with the same name in `MyBiggerType`, and that field in
+`MyBiggerType` has a type that is assignable to the type for that field in
+`MyType`.  Because of this, one can easily take a subset of the data from a
+`struct` with only the values one actually needs.  Values with struct types may
+also always be used for untyped map values.
+
+As an additional convenience, martian supports a &quot;wildcard expansion&quot; of a
+struct value when calling a stage, e.g.
+</code></pre>
+
+<p>call STAGE2(
+    foo = self.foo,
+    *   = STAGE1,
+)
+``<code>
+This is equivalent to</code>input = STAGE1.output<code>for every output of</code>STAGE1<code>that
+is an input to</code>STAGE2<code>.  To prevent ambiguity, only one wildcard expansion is
+allowed for each call, and it is an error if one of the outputs of</code>STAGE1<code>was
+already assigned in the input call explicitly (e.g.</code>foo` in the example).</p>
+
+<h3 id="collection-types">Collection types</h3>
+
+<p>Martian also supports collections of values as arrays or typed maps.  These are
+declared using a syntax that is familar to users of C-style languages.  Arrays
+are declared as for example <code>int[]</code>.  Typed maps (available in the martian 4.0
+preview) always have string keys, and
+are declared as for example <code>map&lt;int&gt;</code>.  These can be combined as for example
+<code>map&lt;int[][]&gt;[]</code>.</p>
+
+<p>In order to prevent confusing data flows, maps cannot be directly nested.  That
+is, <code>map&lt;map&lt;int&gt;&gt;</code> is not permitted, nor is it permitted to nest untyped maps,
+e.g. <code>map&lt;map&gt;</code>.  It <em>is</em> permitted to have a map of structs, and those structs
+may contain further maps.</p>
+
+<p>A struct can be assigned to a typed map value if every field in the struct has a
+type that can be assigned to the type of the map.  For example a struct with
+only <code>int</code> and <code>float</code> fields may be assigned to a value of type <code>map&lt;float&gt;</code>.</p>
+
+<p>Typed maps may be converted to untyped maps, and <code>map&lt;T&gt;</code> may be converted to
+<code>map&lt;U&gt;</code> if type <code>T</code> is convertible to type <code>U</code>.  The same applies for arrays,
+e.g. converting <code>T[]</code> to <code>U[]</code>.</p>
+
+<p>Because the type system has no way to enforce the length of an array or the keys
+of a map, there is no support for indexing into one.  If one knows the keys
+ahead of time, use a struct.</p>
+
+<p>A very important convenience is &ldquo;projection&rdquo; through structs.  Using the
+<code>MyType</code> example struct from the previous section, if we have a value <code>FOO</code> of
+type <code>map&lt;MyType[]&gt;</code> then <code>FOO.bar</code> has type <code>map&lt;float[]&gt;</code>.  To put it
+another way, using the syntax of a Python list comprehension, if <code>A</code> is an
+array of <code>struct</code> values then <code>A.b == [a.b for a in A]</code></p>
 
 
 			<aside class="copyright" role="note">
