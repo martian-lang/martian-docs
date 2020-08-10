@@ -121,7 +121,7 @@ stage STAGE2(
     out string out1,
 )
 ```
-This is convenient particularly for strictly sequentia parts of pipelines where
+This is convenient particularly for strictly sequential parts of pipelines where
 all of the outputs of one stage become inputs to the next stage, but care
 should be taken to limit the use of this type of typing to stages whose
 development is tightly coupled.  In particular, stages which are not called
