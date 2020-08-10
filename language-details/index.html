@@ -545,45 +545,46 @@ stage STAGE2(
     in  STAGE1 in1,
     out string out1,
 )
-````
-This is convenient particularly for strictly sequentia parts of pipelines where
+</code></pre>
+
+<p>This is convenient particularly for strictly sequentia parts of pipelines where
 all of the outputs of one stage become inputs to the next stage, but care
 should be taken to limit the use of this type of typing to stages whose
 development is tightly coupled.  In particular, stages which are not called
-from within the same pipeline should probably not use each other's names as
-types.
+from within the same pipeline should probably not use each other&rsquo;s names as
+types.</p>
 
-Martian structures support a form of &quot;[duck typing](https://en.wikipedia.org/wiki/Duck_typing)&quot;.
-If one has a struct `MyType` as declared above, and another type
-</code></pre>
+<p>Martian structures support a form of &ldquo;<a href="https://en.wikipedia.org/wiki/Duck_typing">duck typing</a>&rdquo;.
+If one has a struct <code>MyType</code> as declared above, and another type</p>
 
-<p>struct MyBiggerType(
+<pre><code>struct MyBiggerType(
     int    foo,
     int    bar,
     string baz,
-)</p>
-
-<pre><code>then a value of type `MyBiggerType` may be used for the input to a stage or
-pipeline which asks for a `MyType`.  This is because for every field in `MyType`
-there is a field with the same name in `MyBiggerType`, and that field in
-`MyBiggerType` has a type that is assignable to the type for that field in
-`MyType`.  Because of this, one can easily take a subset of the data from a
-`struct` with only the values one actually needs.  Values with struct types may
-also always be used for untyped map values.
-
-As an additional convenience, martian supports a &quot;wildcard expansion&quot; of a
-struct value when calling a stage, e.g.
+)
 </code></pre>
 
-<p>call STAGE2(
+<p>then a value of type <code>MyBiggerType</code> may be used for the input to a stage or
+pipeline which asks for a <code>MyType</code>.  This is because for every field in <code>MyType</code>
+there is a field with the same name in <code>MyBiggerType</code>, and that field in
+<code>MyBiggerType</code> has a type that is assignable to the type for that field in
+<code>MyType</code>.  Because of this, one can easily take a subset of the data from a
+<code>struct</code> with only the values one actually needs.  Values with struct types may
+also always be used for untyped map values.</p>
+
+<p>As an additional convenience, martian supports a &ldquo;wildcard expansion&rdquo; of a
+struct value when calling a stage, e.g.</p>
+
+<pre><code>call STAGE2(
     foo = self.foo,
     *   = STAGE1,
 )
-``<code>
-This is equivalent to</code>input = STAGE1.output<code>for every output of</code>STAGE1<code>that
-is an input to</code>STAGE2<code>.  To prevent ambiguity, only one wildcard expansion is
-allowed for each call, and it is an error if one of the outputs of</code>STAGE1<code>was
-already assigned in the input call explicitly (e.g.</code>foo` in the example).</p>
+</code></pre>
+
+<p>This is equivalent to <code>input = STAGE1.output</code> for every output of <code>STAGE1</code> that
+is an input to <code>STAGE2</code>.  To prevent ambiguity, only one wildcard expansion is
+allowed for each call, and it is an error if one of the outputs of <code>STAGE1</code> was
+already assigned in the input call explicitly (e.g. <code>foo</code> in the example).</p>
 
 <h3 id="collection-types">Collection types</h3>
 
