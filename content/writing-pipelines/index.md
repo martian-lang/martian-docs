@@ -272,7 +272,7 @@ martian_project/
 
 Martian includes a canonical code formatting utility called `mrf`. It parses
 your MRO code into its abstract syntax tree and re-emits the code with
-canonical whitespace. In particular, `mrf` performs intelligent column-wise
+canonical whitespace. In particular, `mro format` performs intelligent column-wise
 alignment of parameter fields so that this:
 
 ~~~~
@@ -293,7 +293,7 @@ stage SORT_ITEMS(
 )
 ~~~~
 
-`mrf` is an "opinionated" formatter, inspired by tools like `gofmt`, therefore
+`mro format` is an "opinionated" formatter, inspired by tools like `gofmt`, therefore
 we will borrow [their explanation](https://blog.golang.org/go-fmt-your-code) of
 the benefits of canonical code formatting:
 
@@ -302,17 +302,17 @@ the benefits of canonical code formatting:
 - **Easier to maintain**: mechanical changes to the source don't cause unrelated changes to the file's formatting; diffs show only the real changes.
 - **Uncontroversial**: never have a debate about spacing or brace position ever again!
 
-`mrf` takes a list of MRO filenames as arguments. By default, it will output
+`mro format` takes a list of MRO filenames as arguments. By default, it will output
 the formatted code back to `stdout`. If given the `--rewrite` option, it will
 write the formatted code back into the original files. If given the `--all`
 option, it will rewrite all MRO files found in your `MROPATH`. For consistency
 of your MRO codebase, consider configuring editor save-hooks or git
 commit-hooks that run `mrf --rewrite` or `mrf --all`.
 
-`mrf` does not support any arguments that affect the formatting, otherwise it
+`mro format` does not support any arguments that affect the formatting, otherwise it
 would not be canonical!
 
-If you run `mrf` with the `--includes` flag, it will (attempt to) fix up
+If you run `mro format` with the `--includes` flag, it will (attempt to) fix up
 `@include` directives.  Specifically, if a pipeline in an `mro` source file
 uses a stage, it will ensure that the file defining that stage is _directly_
 included, and that files which are not directly depended on are not included.
@@ -328,29 +328,29 @@ its `@include`.
 
 ## Compiling<sup>*</sup> Code
 
-One of the core components and principal benefits of Martian is `mrc`, a tool
+One of the core components and principal benefits of Martian is `mro check`, a tool
 which statically verifies your MRO code before you commit to a potentially
-resource-intensive run of your pipeline. `mrc` identifies and helps you fix
+resource-intensive run of your pipeline. `mro check` identifies and helps you fix
 errors that you might otherwise encounter hours, days, or even weeks into your
 pipeline run.  It can also output the pipeline in 
 [GraphViz](https://en.wikipedia.org/wiki/Graphviz) dot format for
 visualization (see below).
 
-While `mrc` is technically more like a linter, in that it does not actually
+While `mro check` is technically more like a linter, in that it does not actually
 compile your code into an intermediate or binary format, it does perform
 many of the same parsing and semantic checking steps that a compiler would,
 helping you to write correct code, and making it easier to perform major
 refactorings when necessary.
 
-### Running `mrc`
+### Running `mro check`
 
-`mrc` takes a list of MRO filenames as arguments and parses and verifies those
+`mro check` takes a list of MRO filenames as arguments and parses and verifies those
 files, emitting line-numbered messages for any errors encountered. If given the
 `--all` option, it will parse and verify all MRO files found in your `MROPATH`.
 The following verification steps are performed:
 
-- **Preprocessing**: All `@include` directives are recursively evaluated.  Any preprocessing errors, such as a file not found, will stop `mrc` and be reported.
-- **Lexing and Parsing**: The MRO code produced by the preprocessor is then lexed and parsed according to the [Martian grammar](https://github.com/martian-lang/martian/blob/master/martian/syntax/grammar.y) to produce an in-memory representation of the pipeline called an [Abstract Syntax Tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) (AST).  Any syntax errors will stop `mrc` and be reported.
+- **Preprocessing**: All `@include` directives are recursively evaluated.  Any preprocessing errors, such as a file not found, will stop `mro check` and be reported.
+- **Lexing and Parsing**: The MRO code produced by the preprocessor is then lexed and parsed according to the [Martian grammar](https://github.com/martian-lang/martian/blob/master/martian/syntax/grammar.y) to produce an in-memory representation of the pipeline called an [Abstract Syntax Tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) (AST).  Any syntax errors will stop `mro check` and be reported.
 - **Semantic Analysis**: The AST produced by the parser abstract syntax tree is then analyzed according a number of semantic rules. Any semantic errors will will be reported.
   - All referenced types are built-ins or user-defined with `filetype`.
   - All called stages and pipelines are defined.
@@ -359,23 +359,25 @@ The following verification steps are performed:
   - All input parameters of stages and pipelines are bound.
   - Inputs and outputs that are bound together have matching types.
   - All pipeline output parameters are bound by a return statement.
+  - The pipeline call graph is evaluated for cyclic dependencies or invalid control bindings.
 
-If no errors are encountered, `mrc` returns 0, otherwise it returns a nonzero code and prints error messages to standard error.
-It is recommended best practice to configure a pre-commit hook that runs `mrc --all`.
+If no errors are encountered, `mro check` returns 0, otherwise it returns a nonzero code and prints error messages to standard error.
+It is recommended best practice to configure a pre-commit hook that runs `mro check --all`.
 
 ### Outputting the Abstract Syntax Tree as JSON
 
-`mrc` also supports a `--json` option that outputs the abstract syntax tree and
+`mro check` also supports a `--json` option that outputs the abstract syntax tree and
 associated data as a JSON object. This can be useful for further processing of
 the AST in external tools.  Be warned, however, that the json representation is
 not a stable interface and may change in arbitrary ways in the future.
 
 ### Visualizing a pipeline with [GraphViz](https://en.wikipedia.org/wiki/Graphviz)
 
-By using `mrc`'s `--dot` option, you can generate a visualization of the
+The default output of `mro graph` is a json representation of the call graph.
+By using `mro graph`'s `--dot` option, you can generate a visualization of the
 pipeline structure.  For example,
 ```bash
-$ mrc --dot mro/sc_rna_aggregator.mro | dot -Tsvg -o sc_rna_aggregator.svg
+$ mro graph --dot mro/sc_rna_aggregator.mro | dot -Tsvg -o sc_rna_aggregator.svg
 ```
 to get a plot like this:
 ![sc_rna_aggregator visualization](/img/sc_rna_aggregator.svg)
