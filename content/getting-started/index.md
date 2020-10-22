@@ -11,6 +11,8 @@ We hope to have MacOS and Windows support soon.
 
 |Download|OS|Arch|SHA256|
 |---|---|---|---|
+|[martian-v4.0.2-linux-x86_64.tar.xz](https://github.com/martian-lang/martian/releases/download/v4.0.2/martian-v4.0.2-linux-x86_64.tar.xz)|Linux|x86-64|<span style="font-size: 8px">485b0939eca8fe5425086c9bd9c3af32a5865e34f2aea7e634d850ce0ee49538</span>|
+|[martian-v4.0.2-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v4.0.2/martian-v4.0.2-linux-x86_64.tar.gz)|Linux|x86-64|<span style="font-size: 8px">3080f3ea3ae56586e7cf407341650a56930e689bdc2473536b4a11550b5ff6b2</span>|
 |[martian-v3.2.5-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v3.2.5/martian-v3.2.5-linux-x86_64.tar.gz)|Linux|x86-64|<span style="font-size: 8px">3b3fb295c120014be344a548670c68a8463e8fe338e84955728e74886c3b5762</span>|
 |[martian-v3.2.5-linux-x86_64.tar.xz](https://github.com/martian-lang/martian/releases/download/v3.2.5/martian-v3.2.5-linux-x86_64.tar.xz)|Linux|x86-64|<span style="font-size: 8px">3ff65723d7c238c3f92680bf0c688d0506343f3415c89692802ebfb183b9d23f</span>|
 |[martian-v3.1.0-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v3.1.0/martian-v3.1.0-linux-x86_64.tar.gz)|Linux|x86-64|<span style="font-size: 8px">669d6722563dc23834162993fcb29d2471317a993b3ca30782fa879b8a6f94ff</span>|
@@ -31,11 +33,13 @@ We hope to have MacOS and Windows support soon.
 ## Building from Source
 
 ### Prerequisites
-* [Go](https://golang.org) 1.11 or higher is required to build Martian.
+* [Go](https://golang.org) 1.14 or higher is required to build Martian.
 * The Python adapter for wrapping stage code requires Python 2.7 or 3.6 or higher.
-* To build the user interface, [Node](https://nodejs.org) 8 or higher is required, along with NPM.
+* To build the user interface, [Node](https://nodejs.org) 10 or higher is required, along with NPM.
 
 ### Building the source
+
+#### Build with `make`
 
 To build the Martian toolchain from source, clone the [Martian GitHub repository](https://github.com/martian-lang/martian), run `make all`, and the compiled binaries will be generated in `bin/`.
 
@@ -44,14 +48,23 @@ $ git clone --recursive https://github.com/martian-lang/martian.git
 $ cd martian
 $ make all
 $ ls bin
-mrc  mrf  mrg  mrjob  mrp  mrstat
+mrjob mro mrp mrstat
 ~~~~
 
 To test that everything is working, `make longtests` runs a few simple test pipelines
 and verifies that their output is correct, including tests that pipeline failures are
 handled correctly.
 
-Alternatively, you can use
+#### Build with [`bazel`](https://bazel.build)
+
+Clone the repository and run
+```
+bazel test //...
+```
+
+#### Build with go
+
+You can use
 ~~~~
 $ go get golang.org/x/tools/cmd/goyacc
 $ go install golang.org/x/tools/cmd/goyacc
@@ -73,17 +86,20 @@ The Martian toolchain comprises five core executables:
 
 |Executable|Role|Details|
 |---|---|---|
-|`mrc`|Compiler/Checker|Parses and validates Martian code
-|`mrf`|Formatter|Canonicalizes Martian code formatting and whitespace
-|`mrp`|Pipeline Runtime|Executes a Martian pipeline or stage.
-|`mrjob`|Stage wrapper|Wraps user stage code, ensuring it obeys the contracts `mrp` expects.
+|`mro check` |Compiler/Checker|Parses and validates Martian code
+|`mro format`|Formatter       |Canonicalizes Martian code formatting and whitespace
+|`mro graph` |Analysis        |Supports queries, e.g. tracing inputs/outputs, as well as formatting the call graph.
+|`mro edit`  |Refactoring     |Rename or remove stages/pipelines/inputs/outputs.
+|`mrp`       |Pipeline Runtime|Executes a Martian pipeline or stage.
+|`mrjob`     |Stage wrapper   |Wraps user stage code, ensuring it obeys the contracts `mrp` expects.
+|`mrstat`    |Progress query  |CLI tool for querying `mrp`'s API and issuing commands.
 
 Make these executables available on your `PATH` and then confirm that you can run them. If you unpacked or cloned Martian into `/home/user/git/martian`, for example, then:
 
 ~~~~
 $ export PATH=$PATH:/home/user/git/martian/bin
-$ mrc --version
-v2.3.0-rc0.1
+$ mro --version
+v4.0.2
 ~~~~
 
 ### Martian Project Path – MROPATH
@@ -118,3 +134,8 @@ martian_project/
                 hello_py/
                     __init__.py
 ~~~~
+
+Stage code (or binaries) are searched for relative to
+- the mro file defining the stage
+- the `MROPATH`
+- the `PATH`
