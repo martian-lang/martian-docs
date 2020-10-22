@@ -26,7 +26,7 @@ We hope to have MacOS and Windows support soon.
   - Martian 2.x has been confirmed working on Linux versions as far back as RHEL/CentOS 5.5 or Ubuntu 10.
   - Martian 3.0 and higher are supported on RHEL/CentOS 6 or Ubuntu 12 or higher.
   - For the time being, `mrp` only functions on Linux.
-  - Ancillary tools such as `mrc`, `mrstat`, and `mrf` are expected to work on MacOS.
+  - Ancillary tools such as `mro` and `mrstat` are expected to work on MacOS.
 * Martian was designed for large bioinformatics pipelines.  One may run into issues on systems with less than 6GB of available memory.  Editing `jobmanagers/config.json` to reduce the default memory request for jobs may alleviate some of those issues.
 
 

@@ -270,7 +270,7 @@ martian_project/
 
 ## Formatting Code
 
-Martian includes a canonical code formatting utility called `mrf`. It parses
+Martian includes a canonical code formatting utility called `mro format`. It parses
 your MRO code into its abstract syntax tree and re-emits the code with
 canonical whitespace. In particular, `mro format` performs intelligent column-wise
 alignment of parameter fields so that this:
@@ -307,7 +307,7 @@ the formatted code back to `stdout`. If given the `--rewrite` option, it will
 write the formatted code back into the original files. If given the `--all`
 option, it will rewrite all MRO files found in your `MROPATH`. For consistency
 of your MRO codebase, consider configuring editor save-hooks or git
-commit-hooks that run `mrf --rewrite` or `mrf --all`.
+commit-hooks that run `mro format --rewrite` or `mro format --all`.
 
 `mro format` does not support any arguments that affect the formatting, otherwise it
 would not be canonical!
