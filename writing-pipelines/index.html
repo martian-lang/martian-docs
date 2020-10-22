@@ -674,7 +674,7 @@ MRO files containing stage declarations should be named with the suffix
 
 <h2 id="formatting-code">Formatting Code</h2>
 
-<p>Martian includes a canonical code formatting utility called <code>mrf</code>. It parses
+<p>Martian includes a canonical code formatting utility called <code>mro format</code>. It parses
 your MRO code into its abstract syntax tree and re-emits the code with
 canonical whitespace. In particular, <code>mro format</code> performs intelligent column-wise
 alignment of parameter fields so that this:</p>
@@ -711,7 +711,7 @@ the formatted code back to <code>stdout</code>. If given the <code>--rewrite</co
 write the formatted code back into the original files. If given the <code>--all</code>
 option, it will rewrite all MRO files found in your <code>MROPATH</code>. For consistency
 of your MRO codebase, consider configuring editor save-hooks or git
-commit-hooks that run <code>mrf --rewrite</code> or <code>mrf --all</code>.</p>
+commit-hooks that run <code>mro format --rewrite</code> or <code>mro format --all</code>.</p>
 
 <p><code>mro format</code> does not support any arguments that affect the formatting, otherwise it
 would not be canonical!</p>
