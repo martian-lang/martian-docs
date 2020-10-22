@@ -111,9 +111,13 @@ The example above does the following:
 
 The Martian GitHub repository includes
 [syntax highlighting](https://github.com/martian-lang/martian/tree/master/tools/syntax)
-files for [Vim](https://www.vim.org/), [Atom](https://atom.io/),
-and [Sublime](https://www.sublimetext.com/) text editors.  If your favorite
-editor is missing from this list, pull requests are welcome.
+files for [Vim](https://www.vim.org/), [vscode](https://code.visualstudio.com/),
+[Atom](https://atom.io/), and [Sublime](https://www.sublimetext.com/) text editors.
+If your favorite editor is missing from this list, pull requests are welcome.
+Instructions for setting up the syntax highlighting are
+[available in the repository](https://github.com/martian-lang/martian/tree/master/tools#editor-syntax-highlighting).
+The vscode extension is not yet "officially" published but can be
+[downloaded from GitHub releases](https://github.com/martian-lang/martian/releases/download/v4.0.2/martian-lang-0.0.1.vsix).
 
 ### Composability
 
