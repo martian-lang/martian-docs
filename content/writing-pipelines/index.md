@@ -356,6 +356,7 @@ The following verification steps are performed:
   - All called stages and pipelines are defined.
   - All parameter names are unique within each stage or pipeline interface.
   - All stage and pipeline names are unique.
+  - Structs may be re-defined in multiple files, but only if the definitions match.
   - All input parameters of stages and pipelines are bound.
   - Inputs and outputs that are bound together have matching types.
   - All pipeline output parameters are bound by a return statement.
