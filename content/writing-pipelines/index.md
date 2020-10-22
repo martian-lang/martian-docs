@@ -232,12 +232,12 @@ pipeline DUPLICATE_FINDER(
 
 ### Stage Code vs Pipeline Code
 
-The ```@include``` directive allows the developer to organize code.  Typically,
+The `@include` directive allows the developer to organize code.  Typically,
 stages that are logically grouped together are declared in one file, for example
-```_sorting_stages.mro```, and that file would be included into another MRO
+`_sorting_stages.mro`, and that file would be included into another MRO
 file that declares a pipeline that calls these included stages. By convention,
 MRO files containing stage declarations should be named with the suffix
-```_stages```.
+`_stages`.
 
 ### Martian Project Directory Structure
 
