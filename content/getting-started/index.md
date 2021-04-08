@@ -11,8 +11,8 @@ We hope to have MacOS and Windows support soon.
 
 |Download|OS|Arch|SHA256|
 |---|---|---|---|
-|[martian-v4.0.3-linux-x86_64.tar.xz](https://github.com/martian-lang/martian/releases/download/v4.0.3/martian-v4.0.3-linux-x86_64.tar.xz)|Linux|x86-64|<span style="font-size: 8px">37e7c9dbea0cb01af6457346e574ea5057618e9cfee1d40580d4790a9553eb0a</span>|
-|[martian-v4.0.3-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v4.0.3/martian-v4.0.3-linux-x86_64.tar.gz)|Linux|x86-64|<span style="font-size: 8px">14411a3ac9cc9a48a1abd8615933cdfd6201abd368a21fe437a04724734255cc</span>|
+|[martian-v4.0.4-linux-x86_64.tar.xz](https://github.com/martian-lang/martian/releases/download/v4.0.4/martian-v4.0.4-linux-x86_64.tar.xz)|Linux|x86-64|<span style="font-size: 8px">d37f8d4f17d5fa4192223a900af0ef29e97c9ac96b3bc820c2ad49162fec1584</span>|
+|[martian-v4.0.4-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v4.0.4/martian-v4.0.4-linux-x86_64.tar.gz)|Linux|x86-64|<span style="font-size: 8px">1083f0cbd4fae609f469b780cad76bddd2c1ef9e7e086312844b001d47aad5ae</span>|
 |[martian-v3.2.5-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v3.2.5/martian-v3.2.5-linux-x86_64.tar.gz)|Linux|x86-64|<span style="font-size: 8px">3b3fb295c120014be344a548670c68a8463e8fe338e84955728e74886c3b5762</span>|
 |[martian-v3.2.5-linux-x86_64.tar.xz](https://github.com/martian-lang/martian/releases/download/v3.2.5/martian-v3.2.5-linux-x86_64.tar.xz)|Linux|x86-64|<span style="font-size: 8px">3ff65723d7c238c3f92680bf0c688d0506343f3415c89692802ebfb183b9d23f</span>|
 |[martian-v3.1.0-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v3.1.0/martian-v3.1.0-linux-x86_64.tar.gz)|Linux|x86-64|<span style="font-size: 8px">669d6722563dc23834162993fcb29d2471317a993b3ca30782fa879b8a6f94ff</span>|
