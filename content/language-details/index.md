@@ -161,7 +161,7 @@ already assigned in the input call explicitly (e.g. `foo` in the example).
 ### Collection types
 
 Martian also supports collections of values as arrays or typed maps.  These are
-declared using a syntax that is familar to users of C-style languages.  Arrays
+declared using a syntax that is familiar to users of C-style languages.  Arrays
 are declared as for example `int[]`.  Typed maps (available in the martian 4.0
 preview) always have string keys, and
 are declared as for example `map<int>`.  These can be combined as for example

@@ -61,7 +61,7 @@ logs. A chunk directory may contain the following:
 
 There are several other metadata files which may be present, either as sentinel
 values for the pipeline runtime, or optional debugging information from stage
-code, for example from performace profiling tools.
+code, for example from performance profiling tools.
 
 ## Pipestance Metadata
 
@@ -104,7 +104,7 @@ directory.
 The start of the `_log` contains information on how `mrp` was started,
 including command-line options used, relevant environment variables, and job
 manager settings. The balance of the log largely comprises notifications of
-stage progess. One can use this logging to monitor the progress of the `mrp`
+stage progress. One can use this logging to monitor the progress of the `mrp`
 through the pipeline's graph.
 
 Here is an example of the top of a log:
