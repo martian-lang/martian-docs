@@ -297,7 +297,7 @@ There are a few additional options available in the `jobmanagers/config.json`
 file which apply in both cluster and local modes, under the `settings` key.
 
 Several popular third-party libraries use environment variables to control
-the number of threads they parallize jobs over, for example `OMP_NUM_THREADS`
+the number of threads they parallelize jobs over, for example `OMP_NUM_THREADS`
 for OpenMP.  The `thread_envs` key specifies a list of environment variables
 which should be set to be equal to the job thread reservation.  These are
 applied in cluster mode, and in local mode if the number of threads is
