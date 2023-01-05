@@ -14,7 +14,7 @@ is no longer needed.
 ## Volatile Data Removal
 
 A call to a stage can be marked `volatile` by specifying
-```
+```coffee
 call STAGE_NAME(
     arg1 = value,
 ) using (
@@ -36,11 +36,11 @@ may wish to set `--vdrmode=disable` to preserve intermediate results.
 Additionally, when VDR is not disabled, all stages which split will have their
 chunks' files cleaned out by VDR when all dependent stages have completed.
 
-### Strict-mode VDR (new in 3.1!)
+### Strict-mode VDR
 
 To enable more aggressive file cleanup, a stage can be marked
 "strict-mode compatible" when it is declared:
-```
+```coffee
 stage STAGE_NAME(
     in  int  value,
     out txt  summary,
@@ -65,7 +65,7 @@ when the stage completes.  Other files are deleted when there are no longer
 any incomplete stages depending on the parameter which mentions that file.
 
 In the example above, imagine a pipeline
-```
+```coffee
 pipeline COMPLEX_VDR(
     in  int value,
     out txt output1,
@@ -114,7 +114,7 @@ access a more "raw" form of the output.
 the top-level pipeline's outputs - they are never deleted.
 
 A stage can be declared as retaining some outputs:
-```
+```coffee
 stage STAGE_NAME(
     in  int  value,
     out txt  summary,
@@ -131,7 +131,7 @@ it is bound to anything else.  This should be used mainly for cases of small
 output files which are important for later debugging.
 
 Additionally, pipelines can declare retained parameters, e.g.
-```
+```coffee
 pipeline PIPELINE_NAME(
     ...
 )

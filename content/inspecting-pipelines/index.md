@@ -16,7 +16,7 @@ All that is required to inspect a Martian pipestance are `cd`, `ls`, and `cat`. 
 
 When `mrp` starts a pipestance, it converts the MRO definition into a graph representation of the pipeline. It then creates a directory tree on disk matching that graph. Here is an example:
 
-~~~~
+```coffee
 piperun1/
     DUPLICATE_FINDER/
         fork0/
@@ -30,7 +30,7 @@ piperun1/
                 split/
                 chnk0/
                 join/        
-~~~~
+```
 
 The basic directory hierarchy is **pipeline** &rarr; **stage / subpipeline** &rarr; **fork** &rarr; **chunk**.
 
@@ -109,7 +109,7 @@ through the pipeline's graph.
 
 Here is an example of the top of a log:
 
-~~~~
+```text
 Martian Runtime - 2.2.0
 2017-04-09 14:22:43 [cmdline] mrp invoke.mro piperun1 --localcores=16
 2017-04-09 14:22:43 [environ] MROFLAGS=--vdrmode=rolling
@@ -130,7 +130,7 @@ Martian Runtime - 2.2.0
 2017-04-09 14:22:43 [jobmngr] Using 94 GB, 100% of system memory.
 2017-04-09 14:22:44 [webserv] UI disabled.
 Running preflight checks (please wait)...
-~~~~
+```
 
 Because the log is mirrored to the `_log` file, you may detach from a running
 `mrp` or redirect its standard output to `/dev/null`, and instead monitor
@@ -158,7 +158,7 @@ By default, the `mrp` webserver listens on a kernel-assigned non-privileged
 network port and generates an authentication token to pass in the URL.
 `mrp` reports the kernel-selected port number and authentication token as a
 URL on the console and in the log, for example
-```
+```text
 Serving UI at http://utopia-planitia.mars.sol:59410?auth=y1ezpEGscyA3jfion7iR58ED-ufs_drYOOKAeIR6GeQ
 ```
 The URL is also written to the pipestance metadata file named `_uiport`.

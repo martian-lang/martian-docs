@@ -23,7 +23,7 @@ language-independent manner.
 
 Here is a basic stage definition example:
 
-~~~~
+```coffee
 filetype txt;
 
 stage SORT_ITEMS(
@@ -32,7 +32,7 @@ stage SORT_ITEMS(
     out txt  sorted,
     src py   "stages/sort",
 )
-~~~~
+```
 
 A stage is minimally defined by three things:
 
@@ -57,12 +57,13 @@ Currently there are 2 values supported for the type parameter:
 
 Adding support for additional languages is
 [fairly straightforward](https://github.com/martian-lang/martian/blob/master/adapters/README.md)
+
 - pull requests welcome!  There is no required or preferred implementation
 language in Martian. The third element of this parameter is a
 language-dependent string that Martian uses to locate the code. In this
 example, ```stages/sort``` is a directory that exists relative to the
-```PYTHONPATH``` environment variable, and contains a valid Python module with
-a ```__init__.py```.
+`PYTHONPATH` environment variable, and contains a valid Python module with
+a `__init__.py`.
 
 ## Pipelines
 
@@ -70,7 +71,7 @@ A pipeline definition comprises calls to defined stages. Each stage call must
 bind its inputs to either the outputs of another upstream stage, or to the
 input parameters of the pipeline itself. Here is a simple example:
 
-~~~~
+```coffee
 filetype txt;
 
 stage SORT_ITEMS(
@@ -101,7 +102,7 @@ pipeline DUPLICATE_FINDER(
         duplicates = FIND_DUPLICATES.duplicates,
     )
 }
-~~~~
+```
 
 The example above does the following:
 
@@ -129,7 +130,8 @@ pipelines.
 
 Because parameter binding is done by stage name, pipelines cannot call the same
 stage or sub-pipeline twice without aliasing it like so:
-```
+
+```coffee
 pipeline ADD_KEYS(
     in  string key1,
     in  string key2,
@@ -168,7 +170,7 @@ it is a user-defined file type, e.g. json, then the type will be appended to
 the name as an extension, e.g. `.json`.
 
 If a pipeline is defined like for example
-```
+```coffee
 pipeline PIPE(
     out json foo "help text" "special_file",
 )
@@ -204,7 +206,7 @@ defined in other files.
 
 `_my_stages.mro`
 
-~~~~
+```coffee
 filetype txt;
 
 stage SORT_ITEMS(
@@ -213,11 +215,11 @@ stage SORT_ITEMS(
     out txt  sorted,
     src py   "stages/sort",
 )
-~~~~
+```
 
 `pipeline.mro`
 
-~~~~
+```coffee
 @include "_my_stages.mro"
 
 pipeline DUPLICATE_FINDER(
@@ -232,7 +234,7 @@ pipeline DUPLICATE_FINDER(
         sorted = SORT_ITEMS.sorted,
     )
 }
-~~~~
+```
 
 ### Stage Code vs Pipeline Code
 
@@ -247,7 +249,7 @@ MRO files containing stage declarations should be named with the suffix
 
 To give you an idea of how a Martian project looks in practice, here's an example:
 
-~~~~
+```text
 martian_project/
     bin/
         hello_go
@@ -270,7 +272,7 @@ martian_project/
             hello/
                 hello_py/
                     __init__.py
-~~~~
+```
 
 ## Formatting Code
 
@@ -279,23 +281,24 @@ your MRO code into its abstract syntax tree and re-emits the code with
 canonical whitespace. In particular, `mro format` performs intelligent column-wise
 alignment of parameter fields so that this:
 
-~~~~
+```coffee
     stage SORT_ITEMS  (in txt unsorted,
 in bool case_sensitive,
 out txt sorted,
-src py "stages/sort",)
-~~~~
+    src py "stages/sort",
+)
+```
 
 becomes this:
 
-~~~~
+```coffee
 stage SORT_ITEMS(
     in  txt  unsorted,
     in  bool case_sensitive,
     out txt  sorted,
     src py   "stages/sort",
 )
-~~~~
+```
 
 `mro format` is an "opinionated" formatter, inspired by tools like `gofmt`, therefore
 we will borrow [their explanation](https://blog.golang.org/go-fmt-your-code) of
@@ -336,7 +339,7 @@ One of the core components and principal benefits of Martian is `mro check`, a t
 which statically verifies your MRO code before you commit to a potentially
 resource-intensive run of your pipeline. `mro check` identifies and helps you fix
 errors that you might otherwise encounter hours, days, or even weeks into your
-pipeline run.  It can also output the pipeline in 
+pipeline run.  It can also output the pipeline in
 [GraphViz](https://en.wikipedia.org/wiki/Graphviz) dot format for
 visualization (see below).
 

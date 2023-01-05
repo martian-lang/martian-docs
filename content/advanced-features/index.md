@@ -16,7 +16,7 @@ Sometimes the choice of which sub-pipelines to run on the data depends on the
 data.  For example, the first part of a pipeline might determine which of
 several algorithms is likely to yield the best results on the given data set.
 To support this, Martian 3.0 allows disabling of calls, e.g.
-```
+```coffee
 pipeline DUPLICATE_FINDER(
     in  txt  unsorted,
     out txt  duplicates,
@@ -62,7 +62,7 @@ Second, individual stages may split themselves into several chunks.
 ### Chunking
 
 Stages which split are specified in mro as, for example,
-```
+```coffee
 stage SUM_SQUARES(
     in  float[] values,
     out float   sum,
@@ -82,7 +82,7 @@ from all of the chunks into the single output of the stage.
 ### `map call` (4.0 preview)
 To run a stage or sub-pipeline once for each element in an array or map, one can
 say
-```
+```coffee
 stage SQUARE(
     in  float value,
     out float square,
@@ -142,7 +142,7 @@ have the same requirements, or if the split needs to compute the requirements
 dynamically.  Alternatively, setting the resource requirements for the split,
 or statically declaring the resources for all 3 phases (or just the chunk, if
 there is no split), can be done in the mro file, e.g.
-```
+```coffee
 stage SUM_SQUARES(
     in  float[] values,
     out float   sum,
@@ -353,7 +353,7 @@ pipeline inputs for a pipeline, for example ensuring that all required
 software dependencies are available in the user's `PATH` environment, or that
 specified input files are present.  A stage can be specified as preflight in
 the call by specifying
-```
+```coffee
 call PREFLIGHT_STAGE(
     arg1 = self.input1,
 ) using (
@@ -377,7 +377,7 @@ See [Storage Management](../storage-management/).
 Often when testing changes to a pipeline, one wants to try the pipeline with
 several different possible values for one or more of the pipeline inputs.
 Parameter sweeping is intended for this use case.  A call such as
-```
+```coffee
 call PIPELINE_NAME(
     arg1 = "foo",
     arg2 = sweep(
@@ -437,7 +437,6 @@ completes or fails, with the following command line arguments:
 - {complete|failed}
 - pipestance ID
 - path to error file (if there was an error)
-
 
 ### mrp Options
 

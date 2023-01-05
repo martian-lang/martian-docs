@@ -72,7 +72,7 @@ Martian enforces compile-time binding type matching between user-defined file
 types, but allows implicit casting between user-defined file types and generic
 "string" or "file" types.  A filetype is defined and referenced like this:
 
-~~~~
+```coffee
 filetype txt;
 
 stage SORT(
@@ -81,26 +81,25 @@ stage SORT(
     out txt  sorted_txt,
     src py   "stages/sort",
 )
-~~~~
-
+```
 
 This allows pipelines to be more clear about the format of files being passed
 around, and to exploit the type checking to ensure that files are being used
 conistently as they are passed around.  Note however that martian does not
 attempt to validate that a file's content matches the declared type.
 
-### Structured data types (Martian 4.0 preview)
+### Structured data types
 
 A `struct` is related to the same concepts in other languages like C, a named
 tuple in Python, or an object in javascript.  They can be declared,
-```
+```coffee
 struct MyType(
     int   foo,
     float bar,
 )
 ```
 Members of a struct can be extracted using the familiar `.` syntax, e.g.
-```
+```coffee
 call FOO(
     foo = STRUCT_OUTPUT.struct.foo,
 )
@@ -108,7 +107,7 @@ call FOO(
 The output of a stage or pipeline is always a `struct`.  Because of this, the
 name of a stage or pipeline can be used as a type, to indicate a structure with
 the same members and types as the outputs of the stage or pipeline, e.g.
-```
+```coffee
 stage STAGE1(
     in  int    in1,
     out file   out1,
@@ -130,7 +129,7 @@ types.
 
 Martian structures support a form of "[duck typing](https://en.wikipedia.org/wiki/Duck_typing)".
 If one has a struct `MyType` as declared above, and another type
-```
+```coffee
 struct MyBiggerType(
     int    foo,
     int    bar,
@@ -147,7 +146,7 @@ also always be used for untyped map values.
 
 As an additional convenience, martian supports a "wildcard expansion" of a
 struct value when calling a stage, e.g.
-```
+```coffee
 call STAGE2(
     foo = self.foo,
     *   = STAGE1,
@@ -189,5 +188,3 @@ A very important convenience is "projection" through structs.  Using the
 type `map<MyType[]>` then `FOO.bar` has type `map<float[]>`.  To put it
 another way, using the syntax of a Python list comprehension, if `A` is an
 array of `struct` values then `A.b == [a.b for a in A]`
-
-

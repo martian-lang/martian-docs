@@ -11,6 +11,7 @@ We hope to have MacOS and Windows support soon.
 
 |Download|OS|Arch|SHA256|
 |---|---|---|---|
+|[martian-v4.0.10-linux-x86_64.tar.xz](https://github.com/martian-lang/martian/releases/download/v4.0.10/martian-v4.0.10-linux-x86_64.tar.xz)|Linux|x86-64|<span style="font-size: 8px">e1e1a8550594a2f8008fadb1a8800e11ed297f8cf004143457dd8e1a186ad01d</span>|
 |[martian-v4.0.4-linux-x86_64.tar.xz](https://github.com/martian-lang/martian/releases/download/v4.0.4/martian-v4.0.4-linux-x86_64.tar.xz)|Linux|x86-64|<span style="font-size: 8px">d37f8d4f17d5fa4192223a900af0ef29e97c9ac96b3bc820c2ad49162fec1584</span>|
 |[martian-v4.0.4-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v4.0.4/martian-v4.0.4-linux-x86_64.tar.gz)|Linux|x86-64|<span style="font-size: 8px">1083f0cbd4fae609f469b780cad76bddd2c1ef9e7e086312844b001d47aad5ae</span>|
 |[martian-v3.2.5-linux-x86_64.tar.gz](https://github.com/martian-lang/martian/releases/download/v3.2.5/martian-v3.2.5-linux-x86_64.tar.gz)|Linux|x86-64|<span style="font-size: 8px">3b3fb295c120014be344a548670c68a8463e8fe338e84955728e74886c3b5762</span>|
@@ -22,20 +23,21 @@ We hope to have MacOS and Windows support soon.
 |[Please contribute!](https://github.com/martian-lang/martian/blob/master/.github/CONTRIBUTING.md)|Windows|x86-64|
 
 ### System Requirements
-* Currently, running pipelines requires a Linux system with kernel version 2.6.23 or later.
-  - Martian 2.x has been confirmed working on Linux versions as far back as RHEL/CentOS 5.5 or Ubuntu 10.
-  - Martian 3.0 and higher are supported on RHEL/CentOS 6 or Ubuntu 12 or higher.
-  - For the time being, `mrp` only functions on Linux.
-  - Ancillary tools such as `mro` and `mrstat` are expected to work on MacOS.
-* Martian was designed for large bioinformatics pipelines.  One may run into issues on systems with less than 6GB of available memory.  Editing `jobmanagers/config.json` to reduce the default memory request for jobs may alleviate some of those issues.
 
+* Currently, running pipelines requires a Linux system with kernel version 2.6.23 or later.
+  * Martian 2.x has been confirmed working on Linux versions as far back as RHEL/CentOS 5.5 or Ubuntu 10.
+  * Martian 3.0 and higher are supported on RHEL/CentOS 6 or Ubuntu 12 or higher.
+  * For the time being, `mrp` only functions on Linux.
+  * Ancillary tools such as `mro` and `mrstat` are expected to work on MacOS.
+* Martian was designed for large bioinformatics pipelines.  One may run into issues on systems with less than 6GB of available memory.  Editing `jobmanagers/config.json` to reduce the default memory request for jobs may alleviate some of those issues.
 
 ## Building from Source
 
 ### Prerequisites
-* [Go](https://golang.org) 1.14 or higher is required to build Martian.
-* The Python adapter for wrapping stage code requires Python 2.7 or 3.6 or higher.
-* To build the user interface, [Node](https://nodejs.org) 10 or higher is required, along with NPM.
+
+* [Go](https://golang.org) 1.18 or higher is required to build Martian.
+* The Python adapter for wrapping stage code requires Python 2.7 (until version 4.0.9) or 3.6 or higher.
+* To build the user interface, [Node](https://nodejs.org) 14 or higher is required, along with `yarn`.
 
 ### Building the source
 
@@ -43,13 +45,13 @@ We hope to have MacOS and Windows support soon.
 
 To build the Martian toolchain from source, clone the [Martian GitHub repository](https://github.com/martian-lang/martian), run `make all`, and the compiled binaries will be generated in `bin/`.
 
-~~~~
+```sh
 $ git clone --recursive https://github.com/martian-lang/martian.git
 $ cd martian
 $ make all
 $ ls bin
 mrjob mro mrp mrstat
-~~~~
+```
 
 To test that everything is working, `make longtests` runs a few simple test pipelines
 and verifies that their output is correct, including tests that pipeline failures are
@@ -58,25 +60,24 @@ handled correctly.
 #### Build with [`bazel`](https://bazel.build)
 
 Clone the repository and run
-```
+```sh
 bazel test //...
 ```
 
 #### Build with go
 
 You can use
-~~~~
+```sh
 $ go get golang.org/x/tools/cmd/goyacc
 $ go install golang.org/x/tools/cmd/goyacc
 $ go get github.com/martian-lang/martian/cmd/...
 $ go generate github.com/martian-lang/martian/...
 $ go install github.com/martian-lang/martian/cmd/...
-~~~~
+```
 However that will not you'll still need to run `make web` in the repository
 directory in order to build the web UI.  Furthermore, the martian binaries
 expect various data files to be located in specific relative locations.
 Building with `make` is therefore recommended.
-
 
 ## Environment Setup
 
@@ -136,6 +137,6 @@ martian_project/
 ~~~~
 
 Stage code (or binaries) are searched for relative to
-- the mro file defining the stage
-- the `MROPATH`
-- the `PATH`
+* the mro file defining the stage
+* the `MROPATH`
+* the `PATH`

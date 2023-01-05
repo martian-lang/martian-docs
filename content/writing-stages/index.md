@@ -21,9 +21,9 @@ re-run.  Formally, stages should ideally be
 A Martian stage is an executable, either interpreted or compiled, that takes
 at least four command-line arguments as follows:
 
-~~~~
+```sh
 $ stage_executable [args] <type> <metadata_path> <files_path> <journal_prefix>
-~~~~
+```
 
 In most cases the interpretation of the arguments is handled by a
 [language-specific adapter](#language-adapters).

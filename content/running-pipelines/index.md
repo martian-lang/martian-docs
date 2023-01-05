@@ -9,24 +9,23 @@ type: post
 Thus far we have shown how to **define** stages and pipelines in MRO files. To **invoke** a pipeline, write an MRO file containing a pipeline `call` statement with the desired input arguments. This `call` statement is called an **invocation**. To invoke the example pipeline from above:
 
 `invoke.mro`
-~~~~
+```coffee
 @include "pipeline.mro"
 
 call DUPLICATE_FINDER(
     unsorted = "/home/duplicator_dave/unsorted.txt",
 )
-~~~~
+```
 
 Typically, an invocation MRO file contains a single `@include` statement that causes the pipeline definition to be included, and a single `call` statement of that pipeline. It is generally discouraged to `call` a pipeline in the same file in which it is defined, because then the pipeline definition cannot be easily reused for other invocations with different input arguments.
-
 
 ## Running mrp
 
 `mrp` is the runtime executable that runs Martian pipelines. When a pipeline is run, the instantiation of it is called a **pipestance**, which is a portmanteau of "pipeline" and "instance". The command-line interface for `mrp` is:
 
-~~~~
+```sh
 $ mrp <invocation_mro> <pipestance_id>
-~~~~
+```
 
 To start a run, provide an invocation MRO file, plus a unique
 **pipestance ID**, comprising only numbers, letters, dashes, and underscores.
@@ -38,7 +37,7 @@ choose a different pipestance ID for each run.
 
 Once `mrp` starts, you should see the following output:
 
-~~~~
+```sh
 $ mrp invoke.mro piperun1
 Martian Runtime - 2.2.0
 
@@ -46,7 +45,7 @@ Running preflight checks (please wait)...
 2018-01-02 14:23:52 [runtime] (ready)           ID.piperun1.DUPLICATE_FINDER.SORT_ITEMS
 2018-01-02 14:23:53 [runtime] (split_complete)  ID.piperun1.DUPLICATE_FINDER.SORT_ITEMS
 2018-01-02 14:23:53 [runtime] (run:local)       ID.piperun1.DUPLICATE_FINDER.SORT_ITEMS.fork0.chnk0.main
-~~~~
+```
 
 At a high level, `mrp` performs the following to run a pipeline:
 
@@ -55,7 +54,6 @@ At a high level, `mrp` performs the following to run a pipeline:
 - Create a directory for the pipestance named with the pipestance ID provided (e.g. piperun1)
 - Begin evaluating dependencies and executing the stages of the pipeline
 - Continuously monitor stages and advance through the pipeline graph when dependencies are satisfied
-
 
 ## Completion and Failure
 
