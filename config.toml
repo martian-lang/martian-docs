@@ -24,7 +24,7 @@ favicon = ""
 permalink = "#"
 
 # Custom assets
-custom_css = ["static/martian.css"]
+custom_css = ["martian.css"]
 custom_js  = []
 
 # Syntax highlighting theme
