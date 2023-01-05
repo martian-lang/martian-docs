@@ -8,104 +8,104 @@ canonifyurls = true
 googleAnalytics = "UA-105429832-1"
 
 [params]
-	# General information
-	author = "Martian authors"
-	description = "Martian is a language and framework for developing and executing complex computational pipelines."
-	copyright = "10X Genomics"
+# General information
+author = "Martian authors"
+description = "Martian is a language and framework for developing and executing complex computational pipelines."
+copyright = "10X Genomics"
 
-	# Repository
-	provider = "GitHub"
-	repo_url = "https://github.com/digitalcraftsman/hugo-material-docs"
+# Repository
+provider = "GitHub"
+repo_url = "https://github.com/martian-lang/martian-docs"
 
-	version = "1.0"
-	logo = "images/logo.png"
-	favicon = ""
+version = "1.0"
+logo = "images/logo.png"
+favicon = ""
 
-	permalink = "#"
+permalink = "#"
 
-	# Custom assets
-	custom_css = ["martian.css"]
-	custom_js  = []
+# Custom assets
+custom_css = ["static/martian.css"]
+custom_js  = []
 
-	# Syntax highlighting theme
-	#highlight_css  = ""
+# Syntax highlighting theme
+#highlight_css  = ""
 
-	[params.palette]
-  	primary = "red"
-  	accent  = "black"
+[params.palette]
+primary = "red"
+accent  = "black"
 
-  [params.font]
-  	text = "Ubuntu"
-  	code = "Ubuntu Mono"
+[params.font]
+text = "Ubuntu"
+code = "Ubuntu Mono"
 
 [social]
-	twitter = ""
-	github  = "martian-lang"
-	email   = ""
+twitter = ""
+github  = "martian-lang"
+email   = ""
 
 
 [[menu.main]]
-	name   = "Home"
-	url    = "/"
-	weight = 1
+name   = "Home"
+url    = "/"
+weight = 1
 
 [[menu.main]]
-	name   = "What is Martian?"
-	url    = "what-is-martian/"
-	weight = 10
+name   = "What is Martian?"
+url    = "what-is-martian/"
+weight = 10
 
 [[menu.main]]
-	name   = "Getting Started"
-	url    = "getting-started/"
-	weight = 20
+name   = "Getting Started"
+url    = "getting-started/"
+weight = 20
 
 [[menu.main]]
-	name   = "Writing Pipelines"
-	url    = "writing-pipelines/"
-	weight = 30
+name   = "Writing Pipelines"
+url    = "writing-pipelines/"
+weight = 30
 
 [[menu.main]]
-	name   = "Running Pipelines"
-	url    = "running-pipelines/"
-	weight = 40
+name   = "Running Pipelines"
+url    = "running-pipelines/"
+weight = 40
 
 [[menu.main]]
-	name   = "Inspecting Pipelines"
-	url    = "inspecting-pipelines/"
-	weight = 50
+name   = "Inspecting Pipelines"
+url    = "inspecting-pipelines/"
+weight = 50
 
 [[menu.main]]
-	name   = "Writing Stages"
-	url    = "writing-stages/"
-	weight = 60
+name   = "Writing Stages"
+url    = "writing-stages/"
+weight = 60
 
 [[menu.main]]
-    name   = "Storage Management"
-    url    = "storage-management/"
-    weight = 70
+name   = "Storage Management"
+url    = "storage-management/"
+weight = 70
 
 [[menu.main]]
-	name   = "Advanced Features"
-	url    = "advanced-features/"
-	weight = 80
+name   = "Advanced Features"
+url    = "advanced-features/"
+weight = 80
 
 [[menu.main]]
-	name   = "Language Details"
-	url    = "language-details/"
-	weight = 90
+name   = "Language Details"
+url    = "language-details/"
+weight = 90
 
 [[menu.main]]
-	name   = "Development Roadmap"
-	url    = "roadmap/"
-	weight = 150
+name   = "Development Roadmap"
+url    = "roadmap/"
+weight = 150
 
 [[menu.main]]
-	name   = "About"
-	url    = "about/"
-	weight = 200
+name   = "About"
+url    = "about/"
+weight = 200
 
 [blackfriday]
-	smartypants	= true
-	fractions = true
-	smartDashes = true
-	plainIDAnchors = true
+smartypants = true
+fractions = true
+smartDashes = true
+plainIDAnchors = true
