@@ -31,7 +31,7 @@ either interpreted or compiled, that takes
 at least four command-line arguments as follows:
 
 ```sh
-$ stage_executable [args] <type> <metadata_path> <files_path> <journal_prefix>
+stage_executable [args] <type> <metadata_path> <files_path> <journal_prefix>
 ```
 
 In most cases the interpretation of the arguments is handled by a
@@ -39,7 +39,8 @@ In most cases the interpretation of the arguments is handled by a
 The `type` argument is one of
 `split`, `join`, or `main` (`main` is run for
 chunk phases, or for stages which do not
-[split](../advanced-features/#parallelization) ).
+[split](../advanced-workflows/#parallelization)
+).
 The stage executable should
 switch on that type and provide implementations for each.
 
@@ -48,7 +49,8 @@ The details of the interface are generally handled by a language-specific
 Currently, there are adapters for Python and Go in the main
 repository,
 and an adapter for
-[Rust](https://github.com/martian-lang/martian-rust) in also available.
+[Rust](https://github.com/martian-lang/martian-rust)
+in also available.
 Adapters for
 scripting languages are generally distributed with martian and should be
 expected to be tied to a specific martian version,
@@ -83,7 +85,7 @@ reservation for each chunk.
 to be used for the join phase.
 
 More details in
-[Advanced Features: Parallelization](../advanced-features/#parallelization).
+[Advanced Features: Parallelization](../advanced-workflows/#parallelization).
 
 ### Join Interface
 
