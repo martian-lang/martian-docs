@@ -90,6 +90,16 @@ url    = "advanced-features/"
 weight = 80
 
 [[menu.main]]
+name   = "Advanced Workflows"
+url    = "advanced-workflows/"
+weight = 81
+
+[[menu.main]]
+name   = "Job Management"
+url    = "job-management/"
+weight = 82
+
+[[menu.main]]
 name   = "Language Details"
 url    = "language-details/"
 weight = 90
@@ -109,3 +119,27 @@ smartypants = true
 fractions = true
 smartDashes = true
 plainIDAnchors = true
+
+[outputs]
+home = ["HTML", "LLMS", "LLMSFULL"]
+page = ["HTML", "MD"]
+
+[mediaTypes."text/markdown"]
+suffixes = ["md"]
+
+[outputFormats.LLMS]
+mediaType = "text/plain"
+baseName = "llms"
+isPlainText = true
+notAlternative = true
+
+[outputFormats.LLMSFULL]
+mediaType = "text/plain"
+baseName = "llms-full"
+isPlainText = true
+notAlternative = true
+
+[outputFormats.MD]
+mediaType = "text/markdown"
+isPlainText = true
+notAlternative = true
