@@ -1,0 +1,28 @@
+{{- $home := . -}}
+# {{ .Site.Title }}
+
+> {{ .Site.Params.description }}
+{{ $docs := slice -}}
+{{- $optional := slice -}}
+{{- range .Site.Menus.main -}}
+{{- if ne .Name "Home" -}}
+{{- if or (eq .Name "Development Roadmap") (eq .Name "About") -}}
+{{- $optional = $optional | append . -}}
+{{- else -}}
+{{- $docs = $docs | append . -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+## Docs
+{{ range $docs }}
+{{- $url := strings.TrimSuffix "/" .URL -}}
+{{- $page := $home.Site.GetPage "page" $url -}}
+- [{{ .Name }}]({{ if $page }}{{ $page.Permalink }}index.md{{ else }}{{ .URL | absURL }}{{ end }})
+{{ end }}
+## Optional
+{{ range $optional }}
+{{- $url := strings.TrimSuffix "/" .URL -}}
+{{- $page := $home.Site.GetPage "page" $url -}}
+- [{{ .Name }}]({{ if $page }}{{ $page.Permalink }}index.md{{ else }}{{ .URL | absURL }}{{ end }})
+{{ end }}

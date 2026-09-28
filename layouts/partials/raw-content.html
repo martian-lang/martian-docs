@@ -1,0 +1,2 @@
+{{ $raw := readFile .File.Filename }}
+{{ replaceRE "(?s)^---\\n.*?\\n---\\n" "" $raw | safeHTML }}
