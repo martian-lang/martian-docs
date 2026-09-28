@@ -24,26 +24,43 @@ We hope to have MacOS and Windows support soon.
 
 ### System Requirements
 
-* Currently, running pipelines requires a Linux system with kernel version 2.6.23 or later.
-  * Martian 2.x has been confirmed working on Linux versions as far back as RHEL/CentOS 5.5 or Ubuntu 10.
-  * Martian 3.0 and higher are supported on RHEL/CentOS 6 or Ubuntu 12 or higher.
+* Currently,
+  running pipelines requires a Linux system with kernel version 2.6.23
+  or later.
+  * Martian 2.x has been confirmed working on Linux versions as far
+    back as RHEL/CentOS 5.5 or Ubuntu 10.
+  * Martian 3.0 and higher are supported on RHEL/CentOS 6 or Ubuntu 12
+    or higher.
   * For the time being, `mrp` only functions on Linux.
-  * Ancillary tools such as `mro` and `mrstat` are expected to work on MacOS.
-* Martian was designed for large bioinformatics pipelines.  One may run into issues on systems with less than 6GB of available memory.  Editing `jobmanagers/config.json` to reduce the default memory request for jobs may alleviate some of those issues.
+  * Ancillary tools such as
+    `mro` and `mrstat` are expected to work on MacOS.
+* Martian was designed for large bioinformatics pipelines.
+  One may run into issues on systems with less than 6GB of available memory.
+  Editing `jobmanagers/config.json`
+  to reduce the default memory request for jobs may alleviate some of
+  those issues.
 
 ## Building from Source
 
 ### Prerequisites
 
-* [Go](https://golang.org) 1.18 or higher is required to build Martian.
-* The Python adapter for wrapping stage code requires Python 2.7 (until version 4.0.9) or 3.6 or higher.
-* To build the user interface, [Node](https://nodejs.org) 14 or higher is required, along with `yarn`.
+* [Go](https://golang.org)
+  1.18 or higher is required to build Martian.
+* The Python adapter for wrapping stage code requires Python 2.7
+  (until version 4.0.9)
+  or 3.6 or higher.
+* To build the user interface,
+  [Node](https://nodejs.org)
+  14 or higher is required, along with `yarn`.
 
 ### Building the source
 
 #### Build with `make`
 
-To build the Martian toolchain from source, clone the [Martian GitHub repository](https://github.com/martian-lang/martian), run `make all`, and the compiled binaries will be generated in `bin/`.
+To build the Martian toolchain from source,
+clone the [Martian GitHub repository](https://github.com/martian-lang/martian),
+run `make all`,
+and the compiled binaries will be generated in `bin/`.
 
 ```sh
 $ git clone --recursive https://github.com/martian-lang/martian.git
@@ -53,13 +70,17 @@ $ ls bin
 mrjob mro mrp mrstat
 ```
 
-To test that everything is working, `make longtests` runs a few simple test pipelines
-and verifies that their output is correct, including tests that pipeline failures are
+To test that everything is working,
+`make longtests`
+runs a few simple test pipelines
+and verifies that their output is correct,
+including tests that pipeline failures are
 handled correctly.
 
 #### Build with [`bazel`](https://bazel.build)
 
 Clone the repository and run
+
 ```sh
 bazel test //...
 ```
@@ -67,6 +88,7 @@ bazel test //...
 #### Build with go
 
 You can use
+
 ```sh
 $ go get golang.org/x/tools/cmd/goyacc
 $ go install golang.org/x/tools/cmd/goyacc
@@ -74,8 +96,12 @@ $ go get github.com/martian-lang/martian/cmd/...
 $ go generate github.com/martian-lang/martian/...
 $ go install github.com/martian-lang/martian/cmd/...
 ```
-However that will not you'll still need to run `make web` in the repository
-directory in order to build the web UI.  Furthermore, the martian binaries
+
+However that will not you'll still need to run
+`make web`
+in the repository
+directory in order to build the web UI.
+Furthermore, the martian binaries
 expect various data files to be located in specific relative locations.
 Building with `make` is therefore recommended.
 
@@ -95,7 +121,11 @@ The Martian toolchain comprises five core executables:
 |`mrjob`     |Stage wrapper   |Wraps user stage code, ensuring it obeys the contracts `mrp` expects.
 |`mrstat`    |Progress query  |CLI tool for querying `mrp`'s API and issuing commands.
 
-Make these executables available on your `PATH` and then confirm that you can run them. If you unpacked or cloned Martian into `/home/user/git/martian`, for example, then:
+Make these executables available on your
+`PATH` and then confirm that you can run them.
+If you unpacked or cloned Martian into
+`/home/user/git/martian`,
+for example, then:
 
 ~~~~
 $ export PATH=$PATH:/home/user/git/martian/bin
@@ -105,11 +135,17 @@ v4.0.2
 
 ### Martian Project Path – MROPATH
 
-The code for a Martian pipeline project typically lives under a single directory. Set `MROPATH` to this directory to allow the Martian executables to find the project code without the need for absolute paths.
+The code for a Martian pipeline project typically lives under a single
+directory.
+Set `MROPATH`
+to this directory to allow the Martian executables to find the project
+code without the need for absolute paths.
 
-When developing multiple projects, switch between them by changing `MROPATH`.
+When developing multiple projects,
+switch between them by changing `MROPATH`.
 
-To give you an idea of how a Martian project looks in practice, here's an example:
+To give you an idea of how a Martian project looks in practice,
+here's an example:
 
 ~~~~
 martian_project/
@@ -137,6 +173,7 @@ martian_project/
 ~~~~
 
 Stage code (or binaries) are searched for relative to
+
 * the mro file defining the stage
 * the `MROPATH`
 * the `PATH`
