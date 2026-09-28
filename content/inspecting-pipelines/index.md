@@ -52,7 +52,7 @@ The basic directory hierarchy is **pipeline**
 
 For more information on forks,
 see
-[Advanced Features: Parameter Sweeping](../advanced-features/#parameter-sweeping).
+[map call](../advanced-features/#map-call).
 
 ## Chunk Metadata
 
@@ -88,7 +88,7 @@ A chunk directory may contain the following:
 |`_errors`/`_assert`|TXT|Created if the chunk fails, and contains the error captured by the [Martian adapter](../writing-stages/#martian-adapter), e.g. a stack trace.|
 |`_complete`|TXT|Created when the chunk completes successfully, and contains a timestamp.|
 |`_progress`|TXT|A string indicating the stage's current level of progress (optionally).  When it is updated, this string is bubbled up to `mrp`'s log.|
-|`_chunk_defs`/`_chunk_outs`|JSON|See [Advanced Features: Parallelization](advanced-workflows/#parallelization)|
+|`_chunk_defs`/`_chunk_outs`|JSON|See [Advanced Features: Parallelization](../advanced-workflows/#parallelization)|
 
 There are several other metadata files which may be present,
 either as sentinel

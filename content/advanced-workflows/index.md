@@ -90,11 +90,11 @@ how to distribute the input data across chunks,
 giving a "value" to each,
 as well as potentially setting thread and memory requirements for each chunk
 and the join.
-The after the chunks run,
+After the chunks run,
 the join phase aggregates the output
 from all of the chunks into the single output of the stage.
 
-### `map call` (4.0 preview)
+### `map call`
 
 To run a stage or sub-pipeline once for each element in an array or map,
 one can
@@ -127,7 +127,7 @@ pipeline SUM_SQUARES(
     )
 
     return (
-        value = SUM.sum,
+        sum = SUM.sum,
     )
 }
 ```

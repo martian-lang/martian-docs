@@ -18,7 +18,7 @@ If a job needs more resources
 than the default, there are two ways to request them.
 
 If the stages splits
-(see above),
+(see [Advanced Features: Parallelization](../advanced-workflows/#chunking)),
 the split stage can override the default
 reservations of the chunk or join phases by setting the
 `__mem_gb`,
@@ -219,7 +219,7 @@ job manager.
 
 |Option|Effect|Default|
 |---|---|---|
-|<nobr>`--maxjobs`</nobr>|Limit the number of jobs queued or pending on the cluster simultaneously.  0 us treated as unlimited.|64|
+|<nobr>`--maxjobs`</nobr>|Limit the number of jobs queued or pending on the cluster simultaneously.  0 is treated as unlimited.|64|
 |<nobr>`--jobinterval`</nobr>|Limit the rate at which jobs are submitted to the cluster.|100ms|
 |<nobr>`--mempercore`</nobr>|For clusters which do not manage memory reservations, specifies the amount of memory `mrp` should expect to be available for each core.  If this number is less than the cores to memory ratio of a job, extra threads will be reserved in order to ensure that the job gets enough memory.  A very high value will effectively be ignored.  A low value will result in idle CPUs, but hopefully prevent cluster nodes from exhausting their memory.|none|
 
